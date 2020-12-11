@@ -1,0 +1,44 @@
+MICROSERVIZI:
+1) login
+	Tabelle DB:
+		-studente
+		-docente(incluso coordinatore)
+		-amministratore
+2) calendario
+	Tabelle DB:
+		-corso
+		-lezione
+		-docente
+		-aula
+		-gruppo di lavoro
+		-studente
+		-consegne
+		-calendario
+3) chat
+	Tabelle DB:
+		-studente
+		-docente
+		-gruppo di lavoro
+		-consegne
+		-calendario
+		-conversazione
+		-corso
+	
+4) area news
+	Tabelle DB:
+		-docente
+		-notizia
+5) corsi(inclusa eventuale area consegna, recensioni e prenotazione posto)
+	Tabelle DB:
+		-docente
+		-corso
+		-studente
+		-lezione
+		-gruppo di lavoro
+		-recensione
+		-consegne
+		-calendario
+	
+6) mensa
+	Tabelle DB:
+		-mense
