@@ -21,7 +21,7 @@ public class CalendarController {
     @PostMapping("/addEvent")
     public ResponseEntity<Boolean> addEvento(@RequestBody Evento evento){
         try{
-            calendarRepository.saveAndFlush(evento);
+            calendarRepository.saveAndFlush(evento); 
             return ResponseEntity.ok(true);
         } catch (Exception e){
             return ResponseEntity.ok(false);
