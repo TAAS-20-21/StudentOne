@@ -1,26 +1,18 @@
 package com.gruppo13.AuthenticationMS.security.oauth2;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.gruppo13.AuthenticationMS.dto.SocialProvider;
-import com.gruppo13.AuthenticationMS.exception.OAuth2AuthenticationProcessingException;
+import com.gruppo13.AuthenticationMS.exception.OAuth2AuthProcessingExc;
 import com.gruppo13.AuthenticationMS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -44,7 +36,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             ex.printStackTrace();
             // Throwing an instance of AuthenticationException will trigger the
             // OAuth2AuthenticationFailureHandler
-            throw new OAuth2AuthenticationProcessingException(ex.getMessage(), ex.getCause());
+            throw new OAuth2AuthProcessingExc(ex.getMessage(), ex.getCause());
         }
     }
 }

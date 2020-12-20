@@ -103,8 +103,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * session. We'll save the request in a Base64 encoded cookie instead.
      */
     @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
+    public HttpCookieOAuth2Request cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2Request();
     }
 
     // This bean is load the user specific data when form login is used.

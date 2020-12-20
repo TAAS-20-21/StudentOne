@@ -9,7 +9,7 @@ import java.util.Optional;
 import com.gruppo13.AuthenticationMS.dto.LocalUser;
 import com.gruppo13.AuthenticationMS.dto.SignUpRequest;
 import com.gruppo13.AuthenticationMS.dto.SocialProvider;
-import com.gruppo13.AuthenticationMS.exception.OAuth2AuthenticationProcessingException;
+import com.gruppo13.AuthenticationMS.exception.OAuth2AuthProcessingExc;
 import com.gruppo13.AuthenticationMS.exception.UserAlreadyExistAuthenticationException;
 import com.gruppo13.AuthenticationMS.model.Role;
 import com.gruppo13.AuthenticationMS.model.User;
@@ -79,15 +79,15 @@ public class UserServiceImpl implements UserService {
     public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, attributes);
         if (StringUtils.isEmpty(oAuth2UserInfo.getName())) {
-            throw new OAuth2AuthenticationProcessingException("Name not found from OAuth2 provider");
+            throw new OAuth2AuthProcessingExc("Name not found from OAuth2 provider");
         } else if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
-            throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+            throw new OAuth2AuthProcessingExc("Email not found from OAuth2 provider");
         }
         SignUpRequest userDetails = toUserRegistrationObject(registrationId, oAuth2UserInfo);
         User user = findUserByEmail(oAuth2UserInfo.getEmail());
         if (user != null) {
             if (!user.getProvider().equals(registrationId) && !user.getProvider().equals(SocialProvider.LOCAL.getProviderType())) {
-                throw new OAuth2AuthenticationProcessingException(
+                throw new OAuth2AuthProcessingExc(
                         "Looks like you're signed up with " + user.getProvider() + " account. Please use your " + user.getProvider() + " account to login.");
             }
             user = updateExistingUser(user, oAuth2UserInfo);

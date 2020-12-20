@@ -1,6 +1,6 @@
 package com.gruppo13.AuthenticationMS.security.oauth2;
 
-import static com.gruppo13.AuthenticationMS.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.gruppo13.AuthenticationMS.security.oauth2.HttpCookieOAuth2Request.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,14 +29,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private AppProperties appProperties;
 
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private HttpCookieOAuth2Request httpCookieOAuth2Request;
 
     @Autowired
     OAuth2AuthenticationSuccessHandler(TokenProvider tokenProvider, AppProperties appProperties,
-                                       HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+                                       HttpCookieOAuth2Request httpCookieOAuth2Request) {
         this.tokenProvider = tokenProvider;
         this.appProperties = appProperties;
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.httpCookieOAuth2Request = httpCookieOAuth2Request;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+        httpCookieOAuth2Request.removeAuthorizationRequestCookies(request, response);
     }
 
     private boolean isAuthorizedRedirectUri(String uri) {

@@ -1,6 +1,6 @@
 package com.gruppo13.AuthenticationMS.security.oauth2;
 
-import com.gruppo13.AuthenticationMS.exception.OAuth2AuthenticationProcessingException;
+import com.gruppo13.AuthenticationMS.exception.OAuth2AuthProcessingExc;
 import com.gruppo13.AuthenticationMS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
@@ -28,7 +28,7 @@ public class CustomOidcUserService extends OidcUserService {
             ex.printStackTrace();
             // Throwing an instance of AuthenticationException will trigger the
             // OAuth2AuthenticationFailureHandler
-            throw new OAuth2AuthenticationProcessingException(ex.getMessage(), ex.getCause());
+            throw new OAuth2AuthProcessingExc(ex.getMessage(), ex.getCause());
         }
     }
 }
