@@ -6,21 +6,31 @@ import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
-import { SignUpComponent } from './sign-up/sign-up.component';
-import { HeaderComponent } from './header/header.component';
-import { HomePageComponent } from './pages/home-page/home-page.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import { SocialLoginModule, SocialAuthServiceConfig  } from "angularx-social-login";
 import {GoogleLoginProvider} from 'angularx-social-login';
+import { FormsModule } from '@angular/forms';
+import { BoardUserComponent } from './board-user/board-user.component';
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
+import { RegisterComponent } from './register/register.component';
+import { BoardAdminComponent } from './board-admin/board-admin.component';
+import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
+import { authInterceptorProviders } from './common/auth.interceptor';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomePageComponent,
-    SignUpComponent,
-    HeaderComponent
+    BoardAdminComponent,
+    BoardModeratorComponent,
+    BoardUserComponent,
+    HomeComponent,
+    LoginComponent,
+    ProfileComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -30,23 +40,11 @@ import {GoogleLoginProvider} from 'angularx-social-login';
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
-    SocialLoginModule
+    SocialLoginModule,
+    FormsModule
   ],
   providers: [
-    {
-      provide: 'SocialAuthServiceConfig',
-      useValue: {
-        autoLogin: true,
-        providers: [
-          {
-            id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(
-              '607394223265-4ducgrur9gtade85h9lthrhlsgta7jdr.apps.googleusercontent.com'
-            )
-          }
-        ]
-      } as SocialAuthServiceConfig,
-    }
+    authInterceptorProviders
   ],
   bootstrap: [AppComponent]
 })
