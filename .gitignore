@@ -1,7 +1,10 @@
-/*/target/
-/*/bin/
-/*/.settings/
-/*/.idea/
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
+.idea/
+.eclipse
 .project
-.settings
-.sts4-cache
