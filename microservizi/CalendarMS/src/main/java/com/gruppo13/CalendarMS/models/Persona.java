@@ -8,13 +8,6 @@ import java.util.Date;
 public  abstract  class Persona implements Serializable {
     private static final long serialVersionUID = 2220251204130856463L;
 
-<<<<<<< HEAD
-    private String nome;
-
-    private String cognome;
-
-=======
->>>>>>> 19a3a1254ef25bf7ccc5bbf94a3bb780dc616347
     private String email;
 
     private String password;
