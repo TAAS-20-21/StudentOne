@@ -15,6 +15,12 @@ public class Studente extends Persona implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public Studente(String name) {
+        this.setName(name);
+    }
+
+    public Studente() {}
+
     public Long getId() {
         return id;
     }
