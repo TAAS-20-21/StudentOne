@@ -1,4 +1,5 @@
 package com.gruppo13.AuthenticationMS.controller;
+
 import com.gruppo13.AuthenticationMS.config.CurrentUser;
 import com.gruppo13.AuthenticationMS.dto.LocalUser;
 import com.gruppo13.AuthenticationMS.util.GeneralUtils;

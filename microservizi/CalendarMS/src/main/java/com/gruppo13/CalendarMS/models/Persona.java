@@ -8,6 +8,7 @@ public  abstract  class Persona implements Serializable {
     private static final long serialVersionUID = 2220251204130856463L;
 
     private String nome;
+
     private String cognome;
 
     private String email;
