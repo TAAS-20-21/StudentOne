@@ -2,25 +2,29 @@ package com.gruppo13.AuthenticationMS.config;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.gruppo13.AuthenticationMS.dto.SocialProvider;
 import com.gruppo13.AuthenticationMS.model.Role;
+import com.gruppo13.AuthenticationMS.model.TypeRole;
 import com.gruppo13.AuthenticationMS.model.User;
 import com.gruppo13.AuthenticationMS.repository.RoleRepository;
 import com.gruppo13.AuthenticationMS.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.core.annotation.Order;
 
 
-@Component
-public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
-
-    private boolean alreadySetup = false;
+@Configuration
+public class SetupDataLoader{
 
     @Autowired
     private UserRepository userRepository;
@@ -31,44 +35,38 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
-    @Transactional
-    public void onApplicationEvent(final ContextRefreshedEvent event) {
-        if (alreadySetup) {
-            return;
+    @Bean
+    @Order(0)
+    public void buildRoleName() {
+        if(!roleRepository.existsByTypeRole(TypeRole.ROLE_USER)) {
+            Role roleUser = new Role(TypeRole.ROLE_USER);
+            roleRepository.save(roleUser);
         }
-        // Create initial roles
-        Role userRole = createRoleIfNotFound(Role.ROLE_USER);
-        Role adminRole = createRoleIfNotFound(Role.ROLE_ADMIN);
-        Role modRole = createRoleIfNotFound(Role.ROLE_MODERATOR);
-        createUserIfNotFound("admin@javachinna.com", Set.of(userRole, adminRole, modRole));
-        alreadySetup = true;
-    }
 
-    @Transactional
-    private final User createUserIfNotFound(final String email, Set<Role> roles) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
+        if(!roleRepository.existsByTypeRole(TypeRole.ROLE_ADMIN)) {
+            Role roleAdmin = new Role(TypeRole.ROLE_ADMIN);
+            roleRepository.save(roleAdmin);
+        }
+
+        if(!roleRepository.existsByTypeRole(TypeRole.ROLE_COORDINATOR)) {
+            Role roleHR = new Role(TypeRole.ROLE_COORDINATOR);
+            roleRepository.save(roleHR);
+        }
+    }
+    @Bean
+    @Order(1)
+    public void creaUserAdmin() {
+        User user = null;
+        if (userRepository.count() == 0){
+
             user = new User();
-            user.setDisplayName("Admin");
-            user.setEmail(email);
-            user.setPassword(passwordEncoder.encode("admin"));
+            user.setEmail("studentone@admin.it");
+            user.setPassword(passwordEncoder.encode("studentone"));
+            Set<Role> roles = new HashSet<Role>();
+            roles.add(roleRepository.findByTypeRole(TypeRole.ROLE_ADMIN).orElse(null));
             user.setRoles(roles);
-            user.setProvider(SocialProvider.LOCAL.getProviderType());
-            Date now = Calendar.getInstance().getTime();
-            user.setCreatedDate(now);
-            user.setModifiedDate(now);
-            user = userRepository.save(user);
-        }
-        return user;
-    }
+            userRepository.save(user);
 
-    @Transactional
-    private final Role createRoleIfNotFound(final String name) {
-        Role role = roleRepository.findByName(name);
-        if (role == null) {
-            role = roleRepository.save(new Role(name));
         }
-        return role;
     }
 }

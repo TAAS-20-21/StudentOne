@@ -3,12 +3,7 @@ package com.gruppo13.AuthenticationMS.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 
 /**
  * The persistent class for the role database table.
@@ -16,45 +11,34 @@ import javax.persistence.ManyToMany;
  */
 @Entity
 public class Role implements Serializable {
-    private static final long serialVersionUID = 1L;
-    public static final String USER = "USER";
-    public static final String ROLE_USER = "ROLE_USER";
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String ROLE_MODERATOR = "ROLE_MODERATOR";
-
+    private static final long serialVersionUID = 8837453630224340272L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROLE_ID")
-    private Long roleId;
+    private Long id;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private TypeRole typeRole;
 
     // bi-directional many-to-many association to User
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
-    public Role(String name) {
-        this.name = name;
+    public Role(TypeRole typeRole) {
+        this.typeRole = typeRole;
     }
 
     public Role() {
 
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public TypeRole getTypeRole() {
+        return typeRole;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setTypeRole(TypeRole typeRole) {
+        this.typeRole = typeRole;
     }
 
     public Set<User> getUsers() {
@@ -63,38 +47,5 @@ public class Role implements Serializable {
 
     public void setUsers(Set<User> users) {
         this.users = users;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Role role = (Role) obj;
-        if (!role.equals(role.name)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Role [name=").append(name).append("]").append("[id=").append(roleId).append("]");
-        return builder.toString();
     }
 }

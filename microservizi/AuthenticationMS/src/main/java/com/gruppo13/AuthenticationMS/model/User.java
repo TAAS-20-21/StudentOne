@@ -1,7 +1,6 @@
 package com.gruppo13.AuthenticationMS.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -21,7 +20,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "PROVIDER_USER_ID")
@@ -29,22 +28,21 @@ public class User implements Serializable {
 
     private String email;
 
-    @Column(name = "DISPLAY_NAME")
-    private String displayName;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "created_date", nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Date createdDate;
+    @Column(name = "surname")
+    private String surname;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Date modifiedDate;
-
+    @JsonIgnore
     private String password;
 
     private String provider;
 
-    // bi-directional many-to-many association to Role
-    @JsonIgnore
+    private boolean isProfessor;
+
+    private String student_number_id;
+
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
     private Set<Role> roles;
@@ -76,28 +74,20 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getName() {
+        return name;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public String getSurname() {
+        return this.surname;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getPassword() {
@@ -122,5 +112,21 @@ public class User implements Serializable {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getStudent_number_id() {
+        return student_number_id;
+    }
+
+    public void setStudent_number_id(String student_number_id) {
+        this.student_number_id = student_number_id;
+    }
+
+    public boolean isProfessor() {
+        return isProfessor;
+    }
+
+    public void setProfessor(boolean professor) {
+        isProfessor = professor;
     }
 }
