@@ -16,6 +16,12 @@ public class Docente extends Persona implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public Docente(){}
+
+    public Docente(String name) {
+        this.setName(name);
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
