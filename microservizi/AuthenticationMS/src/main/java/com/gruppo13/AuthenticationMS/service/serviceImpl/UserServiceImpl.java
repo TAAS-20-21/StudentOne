@@ -12,6 +12,7 @@ import com.gruppo13.AuthenticationMS.dto.SocialProvider;
 import com.gruppo13.AuthenticationMS.exception.OAuth2AuthProcessingExc;
 import com.gruppo13.AuthenticationMS.exception.UserAlreadyExistAuthenticationException;
 import com.gruppo13.AuthenticationMS.model.Role;
+import com.gruppo13.AuthenticationMS.model.TypeRole;
 import com.gruppo13.AuthenticationMS.model.User;
 import com.gruppo13.AuthenticationMS.repository.RoleRepository;
 import com.gruppo13.AuthenticationMS.repository.UserRepository;
@@ -42,15 +43,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(value = "transactionManager")
     public User registerNewUser(final SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException {
-        if (signUpRequest.getUserID() != null && userRepository.existsById(signUpRequest.getUserID())) {
-            throw new UserAlreadyExistAuthenticationException("User with User id " + signUpRequest.getUserID() + " already exist");
-        } else if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new UserAlreadyExistAuthenticationException("User with email id " + signUpRequest.getEmail() + " already exist");
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            throw new UserAlreadyExistAuthenticationException("User with email " + signUpRequest.getEmail() + " already exist");
         }
         User user = buildUser(signUpRequest);
-        Date now = Calendar.getInstance().getTime();
-        user.setCreatedDate(now);
-        user.setModifiedDate(now);
         user = userRepository.save(user);
         userRepository.flush();
         return user;
@@ -58,11 +54,12 @@ public class UserServiceImpl implements UserService {
 
     private User buildUser(final SignUpRequest formDTO) {
         User user = new User();
-        user.setDisplayName(formDTO.getDisplayName());
+        user.setName(formDTO.getName());
+        user.setSurname(formDTO.getSurname());
         user.setEmail(formDTO.getEmail());
         user.setPassword(passwordEncoder.encode(formDTO.getPassword()));
         final HashSet<Role> roles = new HashSet<Role>();
-        roles.add(roleRepository.findByName(Role.ROLE_USER));
+        roles.add(roleRepository.findByTypeRole(TypeRole.ROLE_USER).orElse(null));
         user.setRoles(roles);
         user.setProvider(formDTO.getSocialProvider().getProviderType());
         user.setProviderUserId(formDTO.getProviderUserId());
@@ -80,6 +77,8 @@ public class UserServiceImpl implements UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, attributes);
         if (StringUtils.isEmpty(oAuth2UserInfo.getName())) {
             throw new OAuth2AuthProcessingExc("Name not found from OAuth2 provider");
+        }else if(StringUtils.isEmpty(oAuth2UserInfo.getSurname())){
+            throw new OAuth2AuthProcessingExc("Surname not found from OAuth2 provider");
         } else if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthProcessingExc("Email not found from OAuth2 provider");
         }
@@ -99,12 +98,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setDisplayName(oAuth2UserInfo.getName());
+        existingUser.setName(oAuth2UserInfo.getName());
+        existingUser.setSurname(oAuth2UserInfo.getSurname());
         return userRepository.save(existingUser);
     }
 
     private SignUpRequest toUserRegistrationObject(String registrationId, OAuth2UserInfo oAuth2UserInfo) {
-        return SignUpRequest.getBuilder().addProviderUserID(oAuth2UserInfo.getId()).addDisplayName(oAuth2UserInfo.getName()).addEmail(oAuth2UserInfo.getEmail())
+        return SignUpRequest.getBuilder().addProviderUserID(oAuth2UserInfo.getId()).addName(oAuth2UserInfo.getName()).addSurname(oAuth2UserInfo.getSurname()).addEmail(oAuth2UserInfo.getEmail())
                 .addSocialProvider(GeneralUtils.toSocialProvider(registrationId)).addPassword("changeit").build();
     }
 
