@@ -33,11 +33,6 @@ public class AuthController {
     @Autowired
     TokenProvider tokenProvider;
 
-    @PostMapping("/figlioDiP")
-    public ResponseEntity<?> figliodip(){
-        return ResponseEntity.ok("new JwtAuthenticationResponse(jwt, GeneralUtils.buildUserInfo(localUser))");
-    }
-
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));

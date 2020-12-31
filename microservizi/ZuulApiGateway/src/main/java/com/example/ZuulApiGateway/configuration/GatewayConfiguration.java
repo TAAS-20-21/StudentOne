@@ -12,11 +12,18 @@ public class GatewayConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .exceptionHandling()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/authentication/**")
                 .permitAll()
-                .antMatchers("/**")
-                .permitAll();
+                .anyRequest()
+                .authenticated();
+
     }
 }
