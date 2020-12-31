@@ -10,20 +10,12 @@ public class GatewayConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .exceptionHandling()
-                .and()
                 .authorizeRequests()
                 .antMatchers("/authentication/**")
                 .permitAll()
-                .anyRequest()
-                .authenticated();
+                .antMatchers("/**")
+                .permitAll();
 
     }
 }

@@ -5,7 +5,9 @@ server:
 zuul:
   routes:
     authentication:
+      sensitiveHeaders:
       url: http://localhost:8081/StudentOne
     calendar:
+      sensitiveHeaders:
       url: http://localhost:8082/StudentOne
 

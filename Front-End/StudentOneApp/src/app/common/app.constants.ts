@@ -5,4 +5,6 @@ export class AppConstants {
   public static API_URL = AppConstants.API_BASE_URL + "authentication/api/";
   public static AUTH_API = AppConstants.API_URL + "auth/";
   public static GOOGLE_AUTH_URL = AppConstants.OAUTH2_URL + "google" + AppConstants.REDIRECT_URL;
+
+  public static GETALLEVENT = "http://localhost:8080/StudentOne/calendar/api/calendar/getAllEvents"
 }

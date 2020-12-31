@@ -34,4 +34,8 @@ export class UserService {
   getCurrentUser(): Observable<any> {
     return this.http.get(AppConstants.API_URL + 'user/me', httpOptions);
   }
+
+  getAllEvent(): Observable<any> {
+    return this.http.get(AppConstants.GETALLEVENT, httpOptions);
+  }
 }

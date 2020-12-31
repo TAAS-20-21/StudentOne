@@ -27,6 +27,9 @@ export class LoginComponent implements OnInit {
     if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
       this.currentUser = this.tokenStorage.getUser();
+      this.userService.getAllEvent().subscribe(data =>{
+        console.log(data);
+      })
     }
     else if(token){
         this.tokenStorage.saveToken(token);
