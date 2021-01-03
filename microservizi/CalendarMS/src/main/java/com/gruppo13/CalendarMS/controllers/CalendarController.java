@@ -1,6 +1,6 @@
 package com.gruppo13.CalendarMS.controllers;
 
-import com.gruppo13.CalendarMS.models.Event;
+import com.google.api.services.calendar.model.Event;
 import com.gruppo13.CalendarMS.repositories.CalendarRepository;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,8 @@ public class CalendarController {
     public ResponseEntity<?> getAllEvents(){
         //return ResponseEntity.ok(calendarRepository.findAll());
         String email = "francilomuscio@gmail.com";
-        String token = "ya29.a0AfH6SMBZQZiuVDSvqkr1fCqTHSrG_FDqfu6OtDl6xy99CoI2S527FUH-ycp5-Igs6GP9H2kU3LBYWfq0ZaWtt7jkpErZaDcPOaHt4QfoLY8mzduNGqPCQ9APvSzE_OWPUd6uCfQDK3vxSTX0jkYVYx2Vo0-06UoSUs7SjSE6OgE";
+        String token = "ya29.a0AfH6SMAiejFDBgRXchTrs_PbKlov6UUkcYki1oH9XZNANGtliJYV66wC2un_VL-rxXUCWvEhc_Wt" +
+                "q9GA84lTn0PF9u2jWILlT08jjFVb_8VUXznfkqnxNiES1PTU71S92N6imrDbze46mFmRhoKPC4l-dtGOxxL8dOAhNSoDK1A";
         String URI = "https://www.googleapis.com/calendar/v3/calendars/"+email+"/events";
 
         URL url = null;
@@ -52,42 +53,49 @@ public class CalendarController {
     }
 
     @PostMapping("/addEvent")
-    public ResponseEntity<Boolean> addEvent(){
+    public ResponseEntity<String> addEvent(){
         try{
-            String email = "francilomuscio@gmail.com";
-            String token = "ya29.a0AfH6SMBZQZiuVDSvqkr1fCqTHSrG_FDqfu6OtDl6xy99CoI2S527FUH-ycp5-Igs6GP9H2kU3LBYWfq0ZaWtt7jkpErZaDcPOaHt4QfoLY8mzduNGqPCQ9APvSzE_OWPUd6uCfQDK3vxSTX0jkYVYx2Vo0-06UoSUs7SjSE6OgE";
-            String URI = "https://www.googleapis.com/calendar/v3/calendars/" + email + "/events";
-            URL url = null;
-            String response = new String();
-            url = new URL(URI);
-            HttpURLConnection connection = null;
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Authorization", "Bearer " + token);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestMethod("POST");
-            String message;
-            JSONObject json = new JSONObject();
-            JSONObject json_end = new JSONObject();
-            JSONObject json_start = new JSONObject();
+            Event event = new Event()
+                    .setSummary("Google I/O 2015")
+                    .setLocation("800 Howard St., San Francisco, CA 94103")
+                    .setDescription("A chance to hear more about Google's developer products.");
 
-            json_end.put("dateTime", "2021-01-20T17:00:00+01:00");
-            json_start.put("dateTime", "2021-01-20T09:00:00+01:00");
-            json.put("end", json_end);
-            json.put("start", json_start);
-            json.put("summary", "Test");
+            DateTime startDateTime = new DateTime("2015-05-28T09:00:00-07:00");
+            EventDateTime start = new EventDateTime()
+                    .setDateTime(startDateTime)
+                    .setTimeZone("America/Los_Angeles");
+            event.setStart(start);
 
-            OutputStream os = connection.getOutputStream();
-            os.write(json.toString().getBytes("UTF-8"));
-            os.close();
+            DateTime endDateTime = new DateTime("2015-05-28T17:00:00-07:00");
+            EventDateTime end = new EventDateTime()
+                    .setDateTime(endDateTime)
+                    .setTimeZone("America/Los_Angeles");
+            event.setEnd(end);
 
+            String[] recurrence = new String[] {"RRULE:FREQ=DAILY;COUNT=2"};
+            event.setRecurrence(Arrays.asList(recurrence));
 
-            //request.setEntity(new UrlEncodedFormEntity(pairs ));
-            //calendarRepository.saveAndFlush(event);
-            return ResponseEntity.ok(true);
+            EventAttendee[] attendees = new EventAttendee[] {
+                    new EventAttendee().setEmail("lpage@example.com"),
+                    new EventAttendee().setEmail("sbrin@example.com"),
+            };
+            event.setAttendees(Arrays.asList(attendees));
+
+            EventReminder[] reminderOverrides = new EventReminder[] {
+                    new EventReminder().setMethod("email").setMinutes(24 * 60),
+                    new EventReminder().setMethod("popup").setMinutes(10),
+            };
+            Event.Reminders reminders = new Event.Reminders()
+                    .setUseDefault(false)
+                    .setOverrides(Arrays.asList(reminderOverrides));
+            event.setReminders(reminders);
+
+            String calendarId = "primary";
+            event = service.events().insert(calendarId, event).execute();
+            System.out.printf("Event created: %s\n", event.getHtmlLink());
         } catch (Exception e){
             e.printStackTrace();
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok("false");
         }
     }
 
