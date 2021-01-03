@@ -8,7 +8,7 @@ import java.util.Calendar;
 
 @Entity
 @Table(	name = "Event")
-public class Event implements Serializable {
+public class CustomEvent implements Serializable {
 
     private static final long serialVersionUID = -8168051983099495603L;
 
@@ -30,9 +30,9 @@ public class Event implements Serializable {
     @Column(name = "EVENT_TYPE")
     private eventType type;
 
-    public Event(){}
+    public CustomEvent(){}
 
-    public Event(String date_and_time){
+    public CustomEvent(String date_and_time){
         this.startTime = date_and_time;
     }
 

@@ -1,6 +1,6 @@
 package com.gruppo13.CalendarMS.controllers;
 
-import com.gruppo13.CalendarMS.models.Event;
+import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +16,17 @@ public class EventController {
     EventRepository eventRepo;
 
     @GetMapping("/event")
-    public List<Event> getAllEvent() {
-        List<Event> events = new ArrayList<Event>();
-        eventRepo.findAll().forEach(events::add);
+    public List<CustomEvent> getAllEvent() {
+        List<CustomEvent> customEvents = new ArrayList<CustomEvent>();
+        eventRepo.findAll().forEach(customEvents::add);
 
-        return events;
+        return customEvents;
     }
 
     @PostMapping(value = "/event/create")
-    public Event postEvent(@RequestBody Event event) {
-        Event _event = eventRepo.saveAndFlush(new Event(event.getStartTime()));
+    public CustomEvent postEvent(@RequestBody CustomEvent customEvent) {
+        CustomEvent _Custom_event = eventRepo.saveAndFlush(new CustomEvent(customEvent.getStartTime()));
 
-        return _event;
+        return _Custom_event;
     }
 }
