@@ -4,11 +4,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(	name = "Docente",
+@Table(	name = "Teacher",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
-public class Docente extends Persona implements Serializable {
+public class Teacher extends Person implements Serializable {
 
     private static final long serialVersionUID = -7103857371480503611L;
 
@@ -16,9 +16,9 @@ public class Docente extends Persona implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    public Docente(){}
+    public Teacher(){}
 
-    public Docente(String name) {
+    public Teacher(String name) {
         this.setName(name);
     }
 

@@ -1,6 +1,6 @@
 package com.gruppo13.CalendarMS.controllers;
 
-import com.gruppo13.CalendarMS.models.Docente;
+import com.gruppo13.CalendarMS.models.Teacher;
 import com.gruppo13.CalendarMS.repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +16,16 @@ public class TeacherController {
     TeacherRepository teacherRepo;
 
     @GetMapping("/teacher")
-    public List<Docente> getAllTeacher() {
-        List<Docente> teachers = new ArrayList<Docente>();
+    public List<Teacher> getAllTeacher() {
+        List<Teacher> teachers = new ArrayList<Teacher>();
         teacherRepo.findAll().forEach(teachers::add);
 
         return teachers;
     }
 
     @PostMapping(value = "/teacher/create")
-    public Docente postPerson(@RequestBody Docente teacher) {
-        Docente _teacher = teacherRepo.saveAndFlush(new Docente(teacher.getName()));
+    public Teacher postPerson(@RequestBody Teacher teacher) {
+        Teacher _teacher = teacherRepo.saveAndFlush(new Teacher(teacher.getName()));
 
         return _teacher;
     }

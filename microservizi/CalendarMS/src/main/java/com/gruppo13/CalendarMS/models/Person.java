@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
-public  abstract  class Persona implements Serializable {
+public  abstract  class Person implements Serializable {
     private static final long serialVersionUID = 2220251204130856463L;
 
     private String email;

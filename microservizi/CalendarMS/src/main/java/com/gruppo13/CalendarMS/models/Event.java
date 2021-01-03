@@ -7,8 +7,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 @Entity
-@Table(	name = "Evento")
-public class Evento implements Serializable {
+@Table(	name = "Event")
+public class Event implements Serializable {
 
     private static final long serialVersionUID = -8168051983099495603L;
 
@@ -30,9 +30,9 @@ public class Evento implements Serializable {
     @Column(name = "EVENT_TYPE")
     private eventType type;
 
-    public Evento(){}
+    public Event(){}
 
-    public Evento(String date_and_time){
+    public Event(String date_and_time){
         this.startTime = date_and_time;
     }
 

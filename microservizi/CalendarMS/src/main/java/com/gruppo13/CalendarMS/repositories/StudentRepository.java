@@ -1,13 +1,13 @@
 package com.gruppo13.CalendarMS.repositories;
 
-import com.gruppo13.CalendarMS.models.Studente;
+import com.gruppo13.CalendarMS.models.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Studente, Long> {
+public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Studente findByEmail(String email);
+    Student findByEmail(String email);
 
     boolean existsByEmail(String email);
 }
