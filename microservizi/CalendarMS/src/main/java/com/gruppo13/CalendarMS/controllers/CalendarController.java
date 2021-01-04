@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import com.gruppo13.CalendarMS.calendar.CalendarFromTokenCreator;
 import com.gruppo13.CalendarMS.util.EventObject;
@@ -59,36 +60,26 @@ public class CalendarController {
             startDateTime = paramEvent.getStartDateTime();
             endDateTime = paramEvent.getEndDateTime();
 
-            System.out.println("Summary: " + summary);
-            System.out.println("Location: " + location);
-            System.out.println("Description: " + description);
-            System.out.println("Start time: " + startDateTime);
-            return ResponseEntity.ok("true");
-
-            /*Calendar service = new CalendarFromTokenCreator().getService();
+            Calendar service = new CalendarFromTokenCreator().getService();
 
             Event event = new Event()
-                    .setSummary("Google I/O 2015")
-                    .setLocation("800 Howard St., San Francisco, CA 94103")
-                    .setDescription("A chance to hear more about Google's developer products.");
+                    .setSummary(summary)
+                    .setLocation(location)
+                    .setDescription(description);
 
-            DateTime startDateTime = new DateTime("2021-01-04T09:00:00-07:00");
             EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime)
-                    .setTimeZone("America/Los_Angeles");
+                    .setDateTime(startDateTime);
             event.setStart(start);
 
-            DateTime endDateTime = new DateTime("2021-01-04T17:00:00-07:00");
             EventDateTime end = new EventDateTime()
-                    .setDateTime(endDateTime)
-                    .setTimeZone("America/Los_Angeles");
+                    .setDateTime(endDateTime);
             event.setEnd(end);
 
             String calendarId = "primary";
             event = service.events().insert(calendarId, event).execute();
             System.out.printf("Event created: %s\n", event.getHtmlLink());
 
-            return ResponseEntity.ok(event.getHtmlLink());*/
+            return ResponseEntity.ok(event.getHtmlLink());
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.ok("false");
