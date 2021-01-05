@@ -25,7 +25,7 @@ public class TeacherController {
 
     @PostMapping(value = "/teacher/create")
     public Teacher postPerson(@RequestBody Teacher teacher) {
-        Teacher _teacher = teacherRepo.saveAndFlush(new Teacher(teacher.getName()));
+        Teacher _teacher = teacherRepo.saveAndFlush(new Teacher(teacher));
 
         return _teacher;
     }

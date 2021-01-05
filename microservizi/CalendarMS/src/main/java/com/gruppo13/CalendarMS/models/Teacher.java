@@ -2,6 +2,7 @@ package com.gruppo13.CalendarMS.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(	name = "Teacher",
@@ -14,20 +15,36 @@ public class Teacher extends Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    @ManyToMany
+    @JoinTable(
+            name = "assigned_courses",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<Course> assignedCourses;
+
 
     public Teacher(){}
 
-    public Teacher(String name) {
-        this.setName(name);
+    public Teacher(Teacher teacher) {
+        this.setName(teacher.getName());
+        this.setAssignedCourses(teacher.getAssignedCourses());
     }
 
-    public void setId(long id) {
+    public Set<Course> getAssignedCourses() {
+        return assignedCourses;
+    }
+
+    public void setAssignedCourses(Set<Course> assignedCourses) {
+        this.assignedCourses = assignedCourses;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    @Id
-    public long getId() {
+    public Long getId() {
         return id;
     }
 }

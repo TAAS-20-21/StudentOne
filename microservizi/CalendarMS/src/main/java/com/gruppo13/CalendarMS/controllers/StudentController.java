@@ -25,8 +25,7 @@ public class StudentController {
 
     @PostMapping(value = "/student/create")
     public Student postPerson(@RequestBody Student student) {
-        Student _students = studentRepo.saveAndFlush(new Student(student.getName()));
-
+        Student _students = studentRepo.saveAndFlush(new Student(student));
         return _students;
     }
 }
