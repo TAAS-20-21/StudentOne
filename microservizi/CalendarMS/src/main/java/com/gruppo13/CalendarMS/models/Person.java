@@ -18,6 +18,9 @@ public  abstract  class Person implements Serializable {
     @Column(name = "SURNAME")
     private String surname;
 
+    @Column(name = "CALENDAR_KEY", unique = true)
+    private String calendar_key;
+
     public String getName() {
         return name;
     }
