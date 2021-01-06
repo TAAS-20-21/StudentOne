@@ -19,6 +19,11 @@ import { RegisterComponent } from './register/register.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { authInterceptorProviders } from './common/auth.interceptor';
+import { DemoComponent } from './calendar/calendar.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DemoModule } from './calendar/module';
 
 
 @NgModule({
@@ -30,7 +35,7 @@ import { authInterceptorProviders } from './common/auth.interceptor';
     HomeComponent,
     LoginComponent,
     ProfileComponent,
-    RegisterComponent
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,10 @@ import { authInterceptorProviders } from './common/auth.interceptor';
     MatToolbarModule,
     MatIconModule,
     SocialLoginModule,
-    FormsModule
+    FormsModule,
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
+    NgbModule,
+	DemoModule
   ],
   providers: [
     authInterceptorProviders
