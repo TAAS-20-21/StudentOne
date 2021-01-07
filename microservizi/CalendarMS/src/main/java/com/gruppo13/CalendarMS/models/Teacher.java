@@ -29,6 +29,9 @@ public class Teacher extends Person implements Serializable {
 
     public Teacher(Teacher teacher) {
         this.setName(teacher.getName());
+        this.setEmail(teacher.getEmail());
+        this.setPassword(teacher.getPassword());
+        this.setSurname(teacher.getSurname());
         this.setAssignedCourses(teacher.getAssignedCourses());
     }
 
