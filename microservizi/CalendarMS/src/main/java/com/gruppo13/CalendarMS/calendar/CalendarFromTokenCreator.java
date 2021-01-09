@@ -16,7 +16,8 @@ public class CalendarFromTokenCreator {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     private static Credential getCredentials() throws IOException {
-        String accessToken = "ya29.a0AfH6SMBZO-iv25Y3BOio2HeXOfNUD9W37Crn99NR_dCDTO-iB0uLo0n_-vksc7F27HH47II_DSbTqOq-Hqy9imN_8IA6dNn2xRsIn73jjPEp9YjDNxE2im8kRP0Bszxm9azOAR9nmZSQ1BqrLciA_GwtivikCur0Jk8u_rqcaBI";
+        String accessToken = "ya29.a0AfH6SMAEbFSZXqf0HnB4EPzDeKkGcIeRgzwln7d5ykLVyALJw9IqSwPHylibLnp5vtoG1QIf4O5vhd851K" +
+                "RjZI770uVDSO-gH-mAnMJmHeX4QNGuvJXbSKDsIV11uMntOkNdR-UvmrZDplIc0dvr8uudbYjKzMN6oixcEji0Hgo";
         return new GoogleCredential().setAccessToken(accessToken);
     }
 

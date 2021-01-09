@@ -24,7 +24,6 @@ public class Teacher extends Person implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> assignedCourses;
 
-
     public Teacher(){}
 
     public Teacher(Teacher teacher) {

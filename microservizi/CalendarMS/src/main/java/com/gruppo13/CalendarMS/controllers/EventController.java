@@ -25,7 +25,7 @@ public class EventController {
 
     @PostMapping(value = "/event/create")
     public CustomEvent postEvent(@RequestBody CustomEvent customEvent) {
-        CustomEvent _Custom_event = eventRepo.saveAndFlush(new CustomEvent(customEvent.getStartTime()));
+        CustomEvent _Custom_event = eventRepo.saveAndFlush(new CustomEvent(customEvent));
 
         return _Custom_event;
     }

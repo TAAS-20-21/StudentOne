@@ -38,6 +38,9 @@ public class Course implements Serializable{
     @ManyToMany(mappedBy = "assignedCourses")
     private Set<Teacher> assign_teachers;
 
+    @OneToMany(mappedBy="course")
+    private Set<CustomEvent> lesson;
+
     public Course() {}
 
     public Course(String name) {

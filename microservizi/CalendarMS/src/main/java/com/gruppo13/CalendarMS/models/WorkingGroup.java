@@ -20,6 +20,10 @@ public class WorkingGroup {
             inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> members;
 
+    @OneToMany(mappedBy="workingGroup")
+    private Set<CustomEvent> meeting;
+
+
     public WorkingGroup() {
     }
 

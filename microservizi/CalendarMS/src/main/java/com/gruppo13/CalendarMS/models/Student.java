@@ -26,6 +26,7 @@ public class Student extends Person implements Serializable {
     @ManyToMany(mappedBy = "members")
     private Set<WorkingGroup> workingGroups;
 
+
     public Student(Student student) {
         this.setName(student.getName());
         this.setEmail(student.getEmail());
