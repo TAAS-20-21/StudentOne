@@ -19,6 +19,7 @@ import { RegisterComponent } from './register/register.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { authInterceptorProviders } from './common/auth.interceptor';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { authInterceptorProviders } from './common/auth.interceptor';
     MatToolbarModule,
     MatIconModule,
     SocialLoginModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ],
   providers: [
     authInterceptorProviders
