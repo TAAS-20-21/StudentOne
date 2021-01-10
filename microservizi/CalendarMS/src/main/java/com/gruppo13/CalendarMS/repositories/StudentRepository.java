@@ -2,7 +2,10 @@ package com.gruppo13.CalendarMS.repositories;
 
 import com.gruppo13.CalendarMS.models.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
@@ -10,4 +13,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Student findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    //@Query(value = "SELECT cl.student_id FROM course_like cl WHERE cl.course_id = ?1", nativeQuery = true)
+    //List<Long> getStudentIdByCourse(Long courseId);
+
+
 }

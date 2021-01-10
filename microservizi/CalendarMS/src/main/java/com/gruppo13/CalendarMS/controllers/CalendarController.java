@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.repositories.CalendarRepository;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
+import com.gruppo13.CalendarMS.repositories.StudentRepository;
 import org.json.JSONObject;
 import org.mortbay.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,8 @@ public class CalendarController {
     Integer MIN = 0;
     Integer MAX = 1000;
 
-    //private JSON paramEvent;
+    @Autowired
+    StudentRepository studentRepo;
 
     @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(){
@@ -56,17 +58,17 @@ public class CalendarController {
     }
 
     @PostMapping(value = "/addEvent", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<List<Long>> addEvent(@RequestBody EventObject paramEvent){
+    public ResponseEntity<String> addEvent(@RequestBody EventObject paramEvent) {
         String summary = new String();
         String location = new String();
         String description = new String();
         DateTime startDateTime;
-        DateTime endDateTime ;
+        DateTime endDateTime;
         String id = new String("studentone");
 
-        id += Integer.toString(MIN + (int)(Math.random() * ((MAX - MIN) + 1)));
+        id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
 
-        try{
+        try {
             summary = paramEvent.getSummary();
             location = paramEvent.getLocation();
             description = paramEvent.getDescription();
@@ -99,19 +101,17 @@ public class CalendarController {
             _event.setStartTime(startDateTime.toString());
             _event.setEndTime(endDateTime.toString());
             _event.setType(paramEvent.getType());
-            if(paramEvent.getCourse() != null)
+            if (paramEvent.getCourse() != null)
                 _event.setCourse(paramEvent.getCourse());
             else {
                 _event.setWorkingGroup(paramEvent.getWorkingGroup());
             }
             eventRepo.saveAndFlush(_event);
-            eventRepo.lessonMembers();
 
-            return ResponseEntity.ok(eventRepo.lessonMembers());
-        } catch (Exception e){
+            return ResponseEntity.ok("ok");
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
 }
