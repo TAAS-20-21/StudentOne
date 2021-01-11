@@ -4,11 +4,13 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.Events;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.repositories.CalendarRepository;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
+import com.gruppo13.CalendarMS.util.ModifierObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.gruppo13.CalendarMS.calendar.CalendarFromTokenCreator;
 import com.gruppo13.CalendarMS.util.EventObject;
@@ -54,8 +57,7 @@ public class CalendarController {
             }
 
             for(CustomEvent event:eventList){
-                if(!event.isSync())
-                    synchWithGoogle(event);
+                synchWithGoogle(event);
             }
             return ResponseEntity.ok(eventList.toArray());
         } catch (Exception e) {
@@ -108,7 +110,6 @@ public class CalendarController {
             _event.setStartTime(new Date(startDateTime.getValue()));
             _event.setEndTime(new Date(endDateTime.getValue()));
             _event.setType(paramEvent.getType());
-            _event.setSync(true);
             if (paramEvent.getCourse() != null)
                 _event.setCourse(paramEvent.getCourse());
             else {
@@ -122,6 +123,60 @@ public class CalendarController {
             return null;
         }
     }
+
+    @PostMapping(value = "/modify/end_time", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyEndTime(@RequestBody ModifierObject obj){
+        Optional<CustomEvent> event = eventRepo.findById(obj.getId());
+        CustomEvent newEvent;
+        if(event != null){
+            newEvent = event.get();
+            newEvent.setEndTime(obj.getDate());
+            eventRepo.saveAndFlush(newEvent);
+
+           /* try {
+                Calendar service = new CalendarFromTokenCreator().getService();
+                Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+
+                EventDateTime end = new EventDateTime()
+                        .setDateTime(new DateTime(obj.getDate()));
+                _event.setEnd(end);
+                Event updatedEvent = service.events().update("primary", _event.getId(), _event).execute();
+                return ResponseEntity.ok(updatedEvent.getUpdated().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }*/
+        }
+        return ResponseEntity.ok("ok");
+    }
+
+
+
+
+    /*@PostMapping(value = "/modify/start_time", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyStartTime(@RequestBody Date date){
+
+    }
+
+    @PostMapping("/modify/title", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyTitle(@RequestBody String title){
+
+    }
+
+    @PostMapping("/modify/event_type", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyEventType(@RequestBody CustomEvent.eventType eventType){
+
+    }
+
+    @PostMapping("/modify/course_id", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyCourse(@RequestBody Long courseId){
+
+    }
+
+    @PostMapping("/modify/working_group_id", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyGroupId(@RequestBody Long groupId){
+
+    }*/
 
     private void synchWithGoogle(CustomEvent paramEvent) {
         String summary = new String();
@@ -157,7 +212,6 @@ public class CalendarController {
             String calendarId = "primary";
             event = service.events().insert(calendarId, event).execute();
             System.out.printf("Event created: %s\n", event.getHtmlLink());
-            paramEvent.setSync(true);
             eventRepo.saveAndFlush(paramEvent);
         } catch (Exception e) {
             e.printStackTrace();

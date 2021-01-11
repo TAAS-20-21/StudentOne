@@ -38,9 +38,6 @@ public class CustomEvent implements Serializable {
     @Column(name = "EVENT_TYPE")
     private eventType type;
 
-    @Column(name = "IS_SYNCH")
-    private boolean isSync;
-
     @ManyToOne
     @JoinColumn(name="course_id")
     private Course course;
@@ -80,14 +77,6 @@ public class CustomEvent implements Serializable {
 
     public void setWorkingGroup(WorkingGroup workingGroup) {
         this.workingGroup = workingGroup;
-    }
-
-    public boolean isSync() {
-        return isSync;
-    }
-
-    public void setSync(boolean sync) {
-        isSync = sync;
     }
 
     public String getGoogleId() {
