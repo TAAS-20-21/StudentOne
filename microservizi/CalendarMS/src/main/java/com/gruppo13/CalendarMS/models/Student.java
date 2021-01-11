@@ -23,6 +23,7 @@ public class Student extends Person implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> likedCourses;
 
+
     @ManyToMany(mappedBy = "members")
     private Set<WorkingGroup> workingGroups;
 

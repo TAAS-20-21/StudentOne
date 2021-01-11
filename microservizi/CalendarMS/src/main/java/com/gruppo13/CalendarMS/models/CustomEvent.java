@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -26,10 +27,10 @@ public class CustomEvent implements Serializable {
     private String googleId;
 
     @Column(name = "START_TIME")
-    private String startTime;
+    private Date startTime;
 
     @Column(name = "END_TIME")
-    private String endTime;
+    private Date endTime;
 
     @Column(name = "TITLE")
     private String title;
@@ -44,9 +45,11 @@ public class CustomEvent implements Serializable {
     @JoinColumn(name="course_id")
     private Course course;
 
+
     @ManyToOne
     @JoinColumn(name="working_group_id")
     private WorkingGroup workingGroup;
+
 
     public CustomEvent(){}
 
@@ -95,19 +98,19 @@ public class CustomEvent implements Serializable {
         this.googleId = googleId;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public String getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 

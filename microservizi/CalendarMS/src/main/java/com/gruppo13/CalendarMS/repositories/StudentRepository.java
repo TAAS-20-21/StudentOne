@@ -14,8 +14,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     boolean existsByEmail(String email);
 
-    //@Query(value = "SELECT cl.student_id FROM course_like cl WHERE cl.course_id = ?1", nativeQuery = true)
-    //List<Long> getStudentIdByCourse(Long courseId);
+    @Query(value = "SELECT cl.course_id FROM course_like cl WHERE cl.student_id = ?1", nativeQuery = true)
+    List<Long> getCourseIdByStudent(Long studentId);
 
 
 }
