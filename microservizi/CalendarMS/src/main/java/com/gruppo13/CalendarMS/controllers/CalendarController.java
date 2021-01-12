@@ -131,50 +131,151 @@ public class CalendarController {
         if(event != null){
             newEvent = event.get();
             newEvent.setEndTime(obj.getDate());
-            eventRepo.saveAndFlush(newEvent);
+            //eventRepo.saveAndFlush(newEvent);
 
-           /* try {
+           try {
                 Calendar service = new CalendarFromTokenCreator().getService();
                 Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
 
+                service.events().delete("primary", _event.getId()).execute();
+
+
+                String id = new String("studentone");
+                id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+                newEvent.setGoogleId(id);
+                Event temp = new Event()
+                        .setId(id)
+                        .setSummary(newEvent.getTitle())
+                        .setLocation("")
+                        .setDescription("");;
+
+                EventDateTime start = new EventDateTime()
+                       .setDateTime(new DateTime(newEvent.getStartTime()));
                 EventDateTime end = new EventDateTime()
-                        .setDateTime(new DateTime(obj.getDate()));
-                _event.setEnd(end);
-                Event updatedEvent = service.events().update("primary", _event.getId(), _event).execute();
-                return ResponseEntity.ok(updatedEvent.getUpdated().toString());
+                       .setDateTime(new DateTime(obj.getDate()));
+                temp.setStart(start);
+                temp.setEnd(end);
+
+                Event updatedEvent = service.events().insert("primary", temp).execute();
+                eventRepo.saveAndFlush(newEvent);
+               return ResponseEntity.ok(id);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
-            }*/
+            }
         }
         return ResponseEntity.ok("ok");
     }
 
+    @PostMapping(value = "/modify/start_time", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyStartTime(@RequestBody ModifierObject obj){
+        Optional<CustomEvent> event = eventRepo.findById(obj.getId());
+        CustomEvent newEvent;
+        if(event != null){
+            newEvent = event.get();
+            newEvent.setStartTime(obj.getDate());
+            //eventRepo.saveAndFlush(newEvent);
+
+            try {
+                Calendar service = new CalendarFromTokenCreator().getService();
+                Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+
+                service.events().delete("primary", _event.getId()).execute();
 
 
+                String id = new String("studentone");
+                id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+                newEvent.setGoogleId(id);
+                Event temp = new Event()
+                        .setId(id)
+                        .setSummary(newEvent.getTitle())
+                        .setLocation("")
+                        .setDescription("");;
 
-    /*@PostMapping(value = "/modify/start_time", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyStartTime(@RequestBody Date date){
+                EventDateTime start = new EventDateTime()
+                        .setDateTime(new DateTime(obj.getDate()));
+                EventDateTime end = new EventDateTime()
+                        .setDateTime(new DateTime(newEvent.getEndTime()));
+                temp.setStart(start);
+                temp.setEnd(end);
+
+                Event updatedEvent = service.events().insert("primary", temp).execute();
+                eventRepo.saveAndFlush(newEvent);
+                return ResponseEntity.ok(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return ResponseEntity.ok("ok");
+    }
+
+    @PostMapping(value ="/modify/title", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyTitle(@RequestBody ModifierObject obj){
+        Optional<CustomEvent> event = eventRepo.findById(obj.getId());
+        CustomEvent newEvent;
+        if(event != null){
+            newEvent = event.get();
+            newEvent.setTitle(obj.getStr());
+            //eventRepo.saveAndFlush(newEvent);
+
+            try {
+                Calendar service = new CalendarFromTokenCreator().getService();
+                Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+
+                service.events().delete("primary", _event.getId()).execute();
+
+
+                String id = new String("studentone");
+                id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+                newEvent.setGoogleId(id);
+                Event temp = new Event()
+                        .setId(id)
+                        .setSummary(newEvent.getTitle())
+                        .setLocation("")
+                        .setDescription("");;
+
+                EventDateTime start = new EventDateTime()
+                        .setDateTime(new DateTime(newEvent.getStartTime()));
+                EventDateTime end = new EventDateTime()
+                        .setDateTime(new DateTime(newEvent.getEndTime()));
+                temp.setStart(start);
+                temp.setEnd(end);
+
+                Event updatedEvent = service.events().insert("primary", temp).execute();
+                eventRepo.saveAndFlush(newEvent);
+                return ResponseEntity.ok(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return ResponseEntity.ok("ok");
+    }
+
+    @PostMapping(value = "/modify/event_type", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyEventType(@RequestBody ModifierObject obj){
+        Optional<CustomEvent> event = eventRepo.findById(obj.getId());
+        CustomEvent newEvent;
+        if(event != null) {
+            newEvent = event.get();
+            newEvent.setType(obj.getEventType());
+            eventRepo.saveAndFlush(newEvent);
+            return ResponseEntity.ok(newEvent.getGoogleId());
+        }
+        return null;
+    }
+
+    /*
+    //AGGIUGENGERE UN SISTEMA DI SINCRONIZZAZIONE CON GOOGLE: SE MODIFICO IL CODICE DEL GRUPPO/CORSO ALLORA TUTTI GLI STUDENTI
+    //COL CODICE VECCHIO NON DEVONO PIU VEDERE L'EVENTO
+    @PostMapping(value = "/modify/course_id", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyCourse(@RequestBody ModifierObject obj){
 
     }
 
-    @PostMapping("/modify/title", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyTitle(@RequestBody String title){
-
-    }
-
-    @PostMapping("/modify/event_type", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyEventType(@RequestBody CustomEvent.eventType eventType){
-
-    }
-
-    @PostMapping("/modify/course_id", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyCourse(@RequestBody Long courseId){
-
-    }
-
-    @PostMapping("/modify/working_group_id", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyGroupId(@RequestBody Long groupId){
+    @PostMapping(value = "/modify/working_group_id", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyGroupId(@RequestBody ModifierObject obj){
 
     }*/
 
