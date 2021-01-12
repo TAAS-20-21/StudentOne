@@ -7,6 +7,7 @@ import com.gruppo13.AuthenticationMS.dto.LocalUser;
 import com.gruppo13.AuthenticationMS.dto.SignUpRequest;
 import com.gruppo13.AuthenticationMS.exception.UserAlreadyExistAuthenticationException;
 import com.gruppo13.AuthenticationMS.model.User;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 
@@ -19,5 +20,5 @@ public interface UserService {
 
     Optional<User> findUserById(Long id);
 
-    LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo);
+    LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OAuth2AccessToken accessToken, OidcUserInfo userInfo);
 }

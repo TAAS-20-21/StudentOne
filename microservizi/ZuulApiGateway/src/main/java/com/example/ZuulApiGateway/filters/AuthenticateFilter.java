@@ -77,8 +77,8 @@ public class AuthenticateFilter extends ZuulFilter {
                             params = Maps.newHashMap();
                         }
                         params.put("user", Lists.newArrayList(user));
-
                         ctx.setRequestQueryParams(params);
+                        ctx.addZuulRequestHeader("Authorization", token.replace("Bearer ",""));
                     }
                 } else {
                     ctx.setSendZuulResponse(false);

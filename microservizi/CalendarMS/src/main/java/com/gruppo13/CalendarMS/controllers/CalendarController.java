@@ -20,7 +20,7 @@ public class CalendarController {
 
 
     @GetMapping("/getAllEvents")
-    public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject) {
+    public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject, @RequestHeader("Authorization")String token) {
         Gson gson = new Gson();
         final User user = gson.fromJson(jsonObject, User.class);
         return ResponseEntity.ok(calendarRepository.findAll());
