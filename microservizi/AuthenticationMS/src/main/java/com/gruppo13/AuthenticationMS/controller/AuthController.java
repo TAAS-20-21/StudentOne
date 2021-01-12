@@ -2,6 +2,7 @@ package com.gruppo13.AuthenticationMS.controller;
 
 import javax.validation.Valid;
 
+import com.gruppo13.AuthenticationMS.config.CurrentUser;
 import com.gruppo13.AuthenticationMS.dto.*;
 import com.gruppo13.AuthenticationMS.exception.UserAlreadyExistAuthenticationException;
 import com.gruppo13.AuthenticationMS.security.jwt.TokenProvider;
@@ -52,4 +53,6 @@ public class AuthController {
         }
         return ResponseEntity.ok().body(new ApiResponse(true, "User registered successfully"));
     }
+
+
 }

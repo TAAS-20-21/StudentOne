@@ -1,5 +1,6 @@
 package com.gruppo13.AuthenticationMS.controller;
 import com.gruppo13.AuthenticationMS.config.CurrentUser;
+import com.gruppo13.AuthenticationMS.dto.ApiResponse;
 import com.gruppo13.AuthenticationMS.dto.LocalUser;
 import com.gruppo13.AuthenticationMS.util.GeneralUtils;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class UserController {
 
-    @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getCurrentUser(@CurrentUser LocalUser user) {
+    @GetMapping("/authenticateToken")
+    public ResponseEntity<?> authenticateToken(@CurrentUser LocalUser user) {
         return ResponseEntity.ok(GeneralUtils.buildUserInfo(user));
     }
 
@@ -41,4 +41,5 @@ public class UserController {
     public ResponseEntity<?> getModeratorContent() {
         return ResponseEntity.ok("Moderator content goes here");
     }
+
 }
