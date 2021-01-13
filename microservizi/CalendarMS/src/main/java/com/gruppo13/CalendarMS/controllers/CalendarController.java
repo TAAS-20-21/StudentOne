@@ -43,8 +43,9 @@ public class CalendarController {
     @Autowired
     WorkingGroupRepository wkRepo;
 
-    @GetMapping("/getAllEvents")
     // public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject, @RequestHeader("Authorization")String token)
+
+    @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(){
         try{
             List<Long> courseList = studentRepo.getCourseIdByStudent(1L);
