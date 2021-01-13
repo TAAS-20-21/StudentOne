@@ -87,7 +87,7 @@
       top: 0;
       width: $contW;
       height: 100%;
-      background-image: url('https://www.stuffside.com/wp-content/uploads/2018/10/Sunset-Minimal-5K-Wallpaper-5120x2880.jpg?x76452');
+      background-image: url('/assets/img/sfondo.jpg');
       background-size: cover;
       transition: transform $switchAT ease-in-out;
     }
@@ -225,5 +225,5 @@
   .form-group {
     margin-bottom:0ch;
   }
-  
+
   }
