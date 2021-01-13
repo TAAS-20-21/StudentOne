@@ -1,3 +1,57 @@
+.legenda {
+  text-align: right;
+  margin-right: 100px;
+}
+
+.dot {
+  height: 10px;
+  width: 9px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 30px;
+}
+
+.blue {
+  background-color: '#1e90ff',
+}
+
+.yellow {
+  background-color: '#e3bc08',
+}
+
+.green {
+  background-color: '#00FF00' /*ore ordinarie*/
+}
+
+.darkorange {
+  background-color: '#FF8C00' /*straordinario*/
+}
+
+.red {
+  background-color: '#ad2121' /*straordinario festivo*/
+}
+
+.midnight {
+  background-color: '#191970' /*straordinarie notturne*/
+}
+
+.darkviolet {
+  background-color: '#9400D3' /*reperibilità attiva*/
+}
+
+.purple {
+  background-color: '#800080' /*reperibilità passiva*/
+}
+
+.darkblue {
+  background-color: '#00008B' /*reperibilità notturna*/
+}
+
+.mediumpurple {
+  background-color: '#9370DB' /*reperibilità festiva*/
+}
+
 h3 {
   margin: 0 0 10px;
 }

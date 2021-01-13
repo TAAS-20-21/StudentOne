@@ -3,8 +3,8 @@ package com.gruppo13.CalendarMS.controllers;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.repositories.CalendarRepository;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +60,22 @@ public class CalendarController {
             for(CustomEvent event:eventList){
                 synchWithGoogle(event);
             }
+
+
+            /*
+            DA AGGIUNGERE QUANDO CI SARANNO PIU' UTENTI
+            Calendar service = new CalendarFromTokenCreator().getService();
+            Events events = service.events().list("primary").execute();
+            List<Event> items = events.getItems();
+            for(Event el: items){
+                if(!eventRepo.existsByGoogleId(el.getId())){
+                    service.events().delete("primary", el.getId()).execute();
+                }
+            }
+            */
+
+
+
             return ResponseEntity.ok(eventList.toArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,18 +283,26 @@ public class CalendarController {
         return null;
     }
 
-    /*
-    //AGGIUGENGERE UN SISTEMA DI SINCRONIZZAZIONE CON GOOGLE: SE MODIFICO IL CODICE DEL GRUPPO/CORSO ALLORA TUTTI GLI STUDENTI
-    //COL CODICE VECCHIO NON DEVONO PIU VEDERE L'EVENTO
-    @PostMapping(value = "/modify/course_id", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyCourse(@RequestBody ModifierObject obj){
+    @PostMapping(value = "/deleteEvent", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> deleteEvent(@RequestBody ModifierObject obj){
+        Optional<CustomEvent> event = eventRepo.findById(obj.getId());
+        CustomEvent newEvent;
+        if(event != null) {
+            newEvent = event.get();
 
+
+            try {
+                Calendar service = new CalendarFromTokenCreator().getService();
+                service.events().delete("primary", newEvent.getGoogleId()).execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            eventRepo.deleteById(obj.getId());
+            return ResponseEntity.ok(newEvent.getGoogleId());
+        }
+        return ResponseEntity.ok("ok");
     }
-
-    @PostMapping(value = "/modify/working_group_id", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyGroupId(@RequestBody ModifierObject obj){
-
-    }*/
 
     private void synchWithGoogle(CustomEvent paramEvent) {
         String summary = new String();

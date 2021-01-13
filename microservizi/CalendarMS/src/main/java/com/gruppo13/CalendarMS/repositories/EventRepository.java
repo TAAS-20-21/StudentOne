@@ -12,6 +12,8 @@ public interface EventRepository extends JpaRepository<CustomEvent, Long> {
 
     boolean existsById(Long id);
 
+    boolean existsByGoogleId(String googleId);
+
     List<CustomEvent> findByCourseId(Long courseId);
 
     List<CustomEvent> findByWorkingGroupId(Long wkId);

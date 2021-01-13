@@ -19,11 +19,9 @@ import { RegisterComponent } from './register/register.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { authInterceptorProviders } from './common/auth.interceptor';
-import { DemoComponent } from './calendar/calendar.component';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DemoModule } from './calendar/module';
 
 
 @NgModule({
@@ -48,9 +46,8 @@ import { DemoModule } from './calendar/module';
     SocialLoginModule,
     FormsModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
-    NgbModule,
-	DemoModule
-  ],
+    NgbModule
+	],
   providers: [
     authInterceptorProviders
   ],
