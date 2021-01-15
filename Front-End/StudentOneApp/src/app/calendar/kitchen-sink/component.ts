@@ -41,8 +41,8 @@ const colors: any = {
 @Component({
   selector: 'mwl-demo-component',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['calendar.component.css'],
-  templateUrl: 'calendar.component.html'
+  styleUrls: ['styles.css'],
+  templateUrl: 'template.html',
 })
 export class DemoComponent {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;

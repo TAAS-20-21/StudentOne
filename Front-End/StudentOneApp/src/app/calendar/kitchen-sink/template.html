@@ -1,3 +1,7 @@
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+</head>
+
 <div class="row text-center">
   <div class="col-md-4">
     <div class="btn-group">
@@ -101,7 +105,6 @@
   </button>
   <div class="clearfix"></div>
 </h3>
-
 <div class="table-responsive">
   <table class="table table-bordered">
     <thead>
@@ -142,13 +145,9 @@
         <td>
           <input
             class="form-control"
-            type="text"
-            mwlFlatpickr
+            type="date"
             [(ngModel)]="event.start"
             (ngModelChange)="refresh.next()"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="true"
             dateFormat="Y-m-dTH:i"
             altFormat="F j, Y H:i"
             placeholder="Not set"
@@ -157,18 +156,14 @@
         <td>
           <input
             class="form-control"
-            type="text"
-            mwlFlatpickr
+            type="date"
             [(ngModel)]="event.end"
             (ngModelChange)="refresh.next()"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="true"
             dateFormat="Y-m-dTH:i"
             altFormat="F j, Y H:i"
             placeholder="Not set"
           />
-		 </td>
+        </td>
         <td>
           <button class="btn btn-danger" (click)="deleteEvent(event)">
             Delete
@@ -178,7 +173,6 @@
     </tbody>
   </table>
 </div>
-
 <ng-template #modalContent let-close="close">
   <div class="modal-header">
     <h5 class="modal-title">Event action occurred</h5>

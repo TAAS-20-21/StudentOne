@@ -7,7 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
-import { DemoComponent } from './calendar/calendar.component';
+import { DemoComponent } from './calendar/kitchen-sink/component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
