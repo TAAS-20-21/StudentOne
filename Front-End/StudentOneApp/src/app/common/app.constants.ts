@@ -8,3 +8,10 @@ export class AppConstants {
 
   public static GETALLEVENT = "http://localhost:8080/StudentOne/calendar/api/calendar/getAllEvents"
 }
+
+export class SocketCostants{
+  private static API_BASE_URL = "http://localhost:8080/StudentOne/";
+
+  private static SOCKET_URL = SocketCostants.API_BASE_URL + "/socket"
+
+}
