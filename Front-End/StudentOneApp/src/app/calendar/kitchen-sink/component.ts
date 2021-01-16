@@ -143,14 +143,14 @@ export class DemoComponent {
     newEnd,
   }: CalendarEventTimesChangedEvent): void {
     this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
+		if (iEvent === event) {
+			return {
+			  ...event,
+			  start: newStart,
+			  end: newEnd,
+			};
+		}
+		return iEvent;
     });
     this.handleEvent('Dropped or resized', event);
   }

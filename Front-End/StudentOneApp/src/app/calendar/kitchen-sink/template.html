@@ -145,7 +145,7 @@
         <td>
           <input
             class="form-control"
-            type="date"
+            type="datetime-local"
             [(ngModel)]="event.start"
             (ngModelChange)="refresh.next()"
             dateFormat="Y-m-dTH:i"
@@ -156,7 +156,7 @@
         <td>
           <input
             class="form-control"
-            type="date"
+            type="datetime-local"
             [(ngModel)]="event.end"
             (ngModelChange)="refresh.next()"
             dateFormat="Y-m-dTH:i"
