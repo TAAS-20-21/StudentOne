@@ -22,10 +22,24 @@ import { authInterceptorProviders } from './common/auth.interceptor';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+<<<<<<< HEAD
 import { OurCalendarModule } from './calendar/full-calendar/app.module';
+=======
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
+import { OurCalendarComponent } from './calendar/calendar.component';
 
-import 'flatpickr/dist/flatpickr.css'; // you may need to adjust the css import depending on your build tool
-import { FlatpickrModule } from 'angularx-flatpickr';
+FullCalendarModule.registerPlugins([
+  dayGridPlugin,
+  timeGridPlugin,
+  listPlugin,
+  interactionPlugin
+])
+>>>>>>> f18990ac56d3f80693f1ea807a9e6c1448413493
+
 
 @NgModule({
   declarations: [
@@ -37,6 +51,7 @@ import { FlatpickrModule } from 'angularx-flatpickr';
     LoginComponent,
     ProfileComponent,
     RegisterComponent,
+    OurCalendarComponent
   ],
   imports: [
     BrowserModule,
@@ -50,8 +65,12 @@ import { FlatpickrModule } from 'angularx-flatpickr';
     FormsModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     NgbModule,
+<<<<<<< HEAD
 	FlatpickrModule.forRoot(),
 	OurCalendarModule
+=======
+    FullCalendarModule
+>>>>>>> f18990ac56d3f80693f1ea807a9e6c1448413493
   ],
   providers: [
     authInterceptorProviders
