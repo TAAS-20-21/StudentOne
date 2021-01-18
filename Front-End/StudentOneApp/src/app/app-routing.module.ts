@@ -7,11 +7,8 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
-<<<<<<< HEAD
-import { OurCalendarComponent } from './calendar/full-calendar/app.component';
-=======
 import { OurCalendarComponent } from './calendar//calendar.component';
->>>>>>> f18990ac56d3f80693f1ea807a9e6c1448413493
+
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },

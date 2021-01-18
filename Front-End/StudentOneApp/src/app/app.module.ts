@@ -22,9 +22,7 @@ import { authInterceptorProviders } from './common/auth.interceptor';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-<<<<<<< HEAD
-import { OurCalendarModule } from './calendar/full-calendar/app.module';
-=======
+
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -38,7 +36,7 @@ FullCalendarModule.registerPlugins([
   listPlugin,
   interactionPlugin
 ])
->>>>>>> f18990ac56d3f80693f1ea807a9e6c1448413493
+
 
 
 @NgModule({
@@ -65,12 +63,7 @@ FullCalendarModule.registerPlugins([
     FormsModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     NgbModule,
-<<<<<<< HEAD
-	FlatpickrModule.forRoot(),
-	OurCalendarModule
-=======
     FullCalendarModule
->>>>>>> f18990ac56d3f80693f1ea807a9e6c1448413493
   ],
   providers: [
     authInterceptorProviders
