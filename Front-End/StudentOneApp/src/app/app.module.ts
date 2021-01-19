@@ -29,6 +29,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { OurCalendarComponent } from './calendar/calendar.component';
+//DIALOG
+import { ReactiveFormsModule } from '@angular/forms';
+import {MatDialogModule} from "@angular/material/dialog";
+import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
+//DIALOG
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -49,7 +54,10 @@ FullCalendarModule.registerPlugins([
     LoginComponent,
     ProfileComponent,
     RegisterComponent,
-    OurCalendarComponent
+    OurCalendarComponent,
+	//DIALOG
+	EventDialogComponent
+	//DIALOG
   ],
   imports: [
     BrowserModule,
@@ -61,13 +69,20 @@ FullCalendarModule.registerPlugins([
     MatIconModule,
     SocialLoginModule,
     FormsModule,
-    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     NgbModule,
-    FullCalendarModule
+    FullCalendarModule,
+	//DIALOG
+	MatDialogModule,
+	ReactiveFormsModule,
+	BrowserModule
+	//DIALOG
   ],
   providers: [
     authInterceptorProviders
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  //DIALOG
+  entryComponents: [EventDialogComponent]
+  //DIALOG
 })
 export class AppModule { }

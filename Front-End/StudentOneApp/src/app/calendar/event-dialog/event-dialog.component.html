@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Informazioni Evento:</h2>
+
+
+<mat-dialog-content [formGroup]="form">
+
+    <mat-form-field>
+		<label>Nome Evento:&nbsp;&nbsp;</label>
+        <input matInput
+                placeholder="Nome Evento"
+               formControlName="title"
+			   type="text">
+    </mat-form-field>
+
+    <mat-form-field>
+		<br>
+		<br>
+		<label>Orario di inizio:&nbsp;&nbsp;</label>
+		<input matInput
+               formControlName="startTime"
+			   type="time">
+    </mat-form-field>
+
+    <mat-form-field>
+		<br>
+		<br>
+		<label>Orario di fine:&nbsp;&nbsp;</label>
+        <input matInput
+               formControlName="endTime"
+			   type="time">
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+    <button class="mat-raised-button"
+            (click)="close()">
+        Close
+    </button>
+
+    <button class="mat-raised-button mat-primary"
+            (click)="save()">
+        Save
+    </button>
+
+</mat-dialog-actions>
