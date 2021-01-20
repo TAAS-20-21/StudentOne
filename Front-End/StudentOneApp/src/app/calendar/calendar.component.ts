@@ -106,16 +106,51 @@ export class OurCalendarComponent {
     this.currentEvents = events;
   }
   
-  addEvent(selectInfo: DateSelectArg, data){
-	const calendarApi = selectInfo.view.calendar;
-	calendarApi.unselect();
-	calendarApi.addEvent({
-		id: createEventId(),
-		title: data.title,
-		start: selectInfo.startStr + 'T' + data.startTime +':00',
-		end: selectInfo.startStr + 'T' + data.endTime +':00',
-		allDay: false
-	});
-  }
+	addEvent(selectInfo: DateSelectArg, data){
+		const calendarApi = selectInfo.view.calendar;
+		calendarApi.unselect();
+		if(!data[1]){
+			calendarApi.addEvent({
+				id: createEventId(),
+				title: data[0].title,
+				start: selectInfo.startStr + 'T' + data[0].startTime +':00',
+				end: selectInfo.startStr + 'T' + data[0].endTime +':00',
+				allDay: false
+			});
+		}else{
+			var _dayOfTheWeek: Array<string> = [];
+			if(data[0].lun){
+				_dayOfTheWeek.push('1');
+			}
+			if(data[0].mar){
+				_dayOfTheWeek.push('2');
+			}
+			if(data[0].mer){
+				_dayOfTheWeek.push('3');
+			}
+			if(data[0].gio){
+				_dayOfTheWeek.push('4');
+			}
+			if(data[0].ven){
+				_dayOfTheWeek.push('5');
+			}
+			if(data[0].sab){
+				_dayOfTheWeek.push('6');
+			}
+			if(data[0].dom){
+				_dayOfTheWeek.push('0');
+			}
+			calendarApi.addEvent({
+				id: createEventId(),
+				title: data[0].title,
+				startTime: data[0].startTime +':00',
+				endTime: data[0].endTime +':00',
+				startRecur: selectInfo.startStr,
+				endRecur: data[0].endRecur,
+				daysOfWeek: _dayOfTheWeek,
+				allDay: false
+			});
+		}
 
+	}
 }

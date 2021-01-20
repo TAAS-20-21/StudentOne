@@ -31,10 +31,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { OurCalendarComponent } from './calendar/calendar.component';
 //DIALOG
 import { ReactiveFormsModule } from '@angular/forms';
-import {MatDialogModule} from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
 import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 //DIALOG
 
 FullCalendarModule.registerPlugins([
@@ -78,7 +79,8 @@ FullCalendarModule.registerPlugins([
 	MatFormFieldModule,
 	ReactiveFormsModule,
 	MatInputModule,
-	BrowserModule
+	BrowserModule,
+	MatCheckboxModule
 	//DIALOG
   ],
   //DIALOG
