@@ -33,6 +33,8 @@ import { OurCalendarComponent } from './calendar/calendar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from "@angular/material/dialog";
 import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 //DIALOG
 
 FullCalendarModule.registerPlugins([
@@ -73,10 +75,17 @@ FullCalendarModule.registerPlugins([
     FullCalendarModule,
 	//DIALOG
 	MatDialogModule,
+	MatFormFieldModule,
 	ReactiveFormsModule,
+	MatInputModule,
 	BrowserModule
 	//DIALOG
   ],
+  //DIALOG
+  exports: [
+	MatFormFieldModule
+  ],
+  //DIALOG
   providers: [
     authInterceptorProviders
   ],
