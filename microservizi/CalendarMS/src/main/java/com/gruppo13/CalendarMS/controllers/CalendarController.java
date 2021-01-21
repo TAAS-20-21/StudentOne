@@ -45,6 +45,7 @@ public class CalendarController {
 
     // public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject, @RequestHeader("Authorization")String token)
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(){
         try{
@@ -60,7 +61,7 @@ public class CalendarController {
             }
 
             for(CustomEvent event:eventList){
-                synchWithGoogle(event);
+                //synchWithGoogle(event);
             }
 
 

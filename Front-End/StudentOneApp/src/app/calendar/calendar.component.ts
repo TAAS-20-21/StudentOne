@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/angular';
-import { INITIAL_EVENTS, createEventId } from './event-utils';
+import { Component, ViewChild  } from '@angular/core';
+import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, FullCalendarComponent } from '@fullcalendar/angular';
+import { createEventId } from './event-utils';
 import { EventChangeArg, EventAddArg, EventRemoveArg } from '@fullcalendar/common'
 //DIALOG
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { EventDialogComponent } from './event-dialog/event-dialog.component'
 //DIALOG
+import { CalendarService } from 'src/app/services/calendar.service';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -13,7 +14,21 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component'
 })
 export class OurCalendarComponent {
   //DIALOG  
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private calendarService: CalendarService) {}
+  
+  ngOnInit(): void {
+	  this.calendarService.getAll()
+	  .subscribe(
+		response => {
+		  this.addInitialEvents(response);
+		},
+		error => {
+		  console.log(error);
+		});
+  }
+
+  
+  
   openDialog(selectInfo: DateSelectArg) {
 
     const dialogConfig = new MatDialogConfig();
@@ -29,6 +44,8 @@ export class OurCalendarComponent {
 		}
     });
   }
+  
+  @ViewChild('fullcalendar', { static: false }) fullcalendar: FullCalendarComponent;
   //DIALOG
   calendarVisible = true;
   calendarOptions: CalendarOptions = {
@@ -37,8 +54,7 @@ export class OurCalendarComponent {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
     },
-    initialView: 'dayGridMonth',
-    initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+    initialView: 'dayGridMonth', // alternatively, use the `events` setting to fetch from a feed
     weekends: true,
     editable: true,
     selectable: true,
@@ -65,7 +81,6 @@ export class OurCalendarComponent {
 	console.log(addInfo.event.endStr);
 	console.log("FINE ADD");
   }
-  
   
   handleEventChange(changeInfo: EventChangeArg){
 	console.log("INIZIO CHANGE");
@@ -104,6 +119,7 @@ export class OurCalendarComponent {
 
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
+
   }
   
 	addEvent(selectInfo: DateSelectArg, data){
@@ -152,5 +168,20 @@ export class OurCalendarComponent {
 			});
 		}
 
+	}
+	
+	addInitialEvents(data){
+		const calendarApi = this.fullcalendar.getApi();
+		console.log(data);
+		for (let entry of data) {
+			calendarApi.addEvent({
+				id: createEventId(),
+				title: entry.title,
+				start: entry.startTime,
+				end: entry.endTime,
+				allDay: false
+			});
+		}
+		
 	}
 }
