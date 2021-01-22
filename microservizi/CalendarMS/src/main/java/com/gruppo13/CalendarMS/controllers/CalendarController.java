@@ -298,7 +298,6 @@ public class CalendarController {
             Calendar service = new CalendarFromTokenCreator().getService();
             Event _event = service.events().get("primary", paramEvent.getGoogleId()).execute();
         }catch(GoogleJsonResponseException e){
-            System.out.println("ERRORE: " + e.getMessage());
             if(e.getMessage().startsWith("404 Not Found")){
                 try {
                     Calendar service = new CalendarFromTokenCreator().getService();
