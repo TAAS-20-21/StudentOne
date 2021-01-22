@@ -47,6 +47,9 @@ public class CustomEvent implements Serializable {
     @JoinColumn(name="working_group_id")
     private WorkingGroup workingGroup;
 
+    @Column(name = "ANGULAR_ID")
+    private Long angularId;
+
 
     public CustomEvent(){}
 
@@ -126,4 +129,8 @@ public class CustomEvent implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Long getAngularId() { return angularId; }
+
+    public void setAngularId(Long angularId) { this.angularId = angularId; }
 }

@@ -6,32 +6,47 @@ import { Event } from '../models/calendar.model';
 const baseUrl = 'http://localhost:8082/StudentOne/api/calendar';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class CalendarService {
 
-  constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Event[]> {
-	const url = baseUrl + '/getAllEvents'
-    return this.http.get<Event[]>(url);
-  }
-/*
-  get(id: any): Observable<Event> {
-    return this.http.get(`${baseUrl}/${id}`);
-  }
+	getAll(): Observable<Event[]> {
+		const url = baseUrl + '/getAllEvents'
+		return this.http.get<Event[]>(url);
+	}
 
-  create(data: any): Observable<any> {
-    return this.http.post(baseUrl, data);
-  }
+	create(data: any): Observable<any> {
+		const url = baseUrl + '/addEvent';
+		return this.http.post(url, data);
+	}
+  
+	delete(data: any): Observable<any> {
+		const url = baseUrl + '/deleteEvent';
+		return this.http.post(url, data);
+	}
+  
+	changeStartTime(data: any): Observable<any> {
+		const url = baseUrl + '/modify/start_time';
+		return this.http.post(url, data);
+	}
+  
+	changeEndTime(data: any): Observable<any> {
+		const url = baseUrl + '/modify/end_time';
+		return this.http.post(url, data);
+	}
+  
+	findByAngularId(data: any): Observable<any>{
+		const url = baseUrl + '/findByAngularId';
+		return this.http.post(url, data);
+	}
+	/*
+	update(id: any, data: any): Observable<any> {
+		return this.http.put(`${baseUrl}/${id}`, data);
+	}
 
-  update(id: any, data: any): Observable<any> {
-    return this.http.put(`${baseUrl}/${id}`, data);
-  }
 
-  delete(id: any): Observable<any> {
-    return this.http.delete(`${baseUrl}/${id}`);
-  }
 
   deleteAll(): Observable<any> {
     return this.http.delete(baseUrl);

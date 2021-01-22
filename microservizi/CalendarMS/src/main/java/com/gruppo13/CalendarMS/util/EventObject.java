@@ -15,6 +15,7 @@ public class EventObject {
     private WorkingGroup workingGroup;
     private Course course;
     private CustomEvent.eventType type;
+    private Long angularId;
 
     public WorkingGroup getWorkingGroup() {
         return workingGroup;
@@ -79,4 +80,8 @@ public class EventObject {
     public void setEndDateTime(DateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
+
+    public Long getAngularId() { return angularId; }
+
+    public void setAngularId(Long angularId) { this.angularId = angularId; }
 }

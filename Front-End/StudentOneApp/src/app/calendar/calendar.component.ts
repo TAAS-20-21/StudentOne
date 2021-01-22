@@ -1,6 +1,5 @@
 import { Component, ViewChild  } from '@angular/core';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, FullCalendarComponent } from '@fullcalendar/angular';
-import { createEventId } from './event-utils';
 import { EventChangeArg, EventAddArg, EventRemoveArg } from '@fullcalendar/common'
 //DIALOG
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
@@ -13,126 +12,238 @@ import { CalendarService } from 'src/app/services/calendar.service';
   styleUrls: ['./calendar.component.scss']
 })
 export class OurCalendarComponent {
-  //DIALOG  
-  constructor(private dialog: MatDialog, private calendarService: CalendarService) {}
+	//DIALOG  
+	constructor(private dialog: MatDialog, private calendarService: CalendarService) {}
   
-  ngOnInit(): void {
-	  this.calendarService.getAll()
-	  .subscribe(
-		response => {
-		  this.addInitialEvents(response);
-		},
-		error => {
-		  console.log(error);
+	ngOnInit(): void {
+		this.calendarService.getAll()
+		.subscribe(
+			response => {
+			this.addInitialEvents(response);
+			},
+			error => {
+				console.log(error);
+			});
+	}
+
+  
+  
+	openDialog(selectInfo: DateSelectArg) {
+
+		const dialogConfig = new MatDialogConfig();
+
+		dialogConfig.disableClose = true;
+		dialogConfig.autoFocus = true;
+		
+		const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
+
+		dialogRef.afterClosed().subscribe( (data) => {
+			if(data){
+				this.addEvent(selectInfo, data);
+			}
 		});
-  }
-
+	}
   
-  
-  openDialog(selectInfo: DateSelectArg) {
-
-    const dialogConfig = new MatDialogConfig();
-
-	dialogConfig.disableClose = true;
-	dialogConfig.autoFocus = true;
+	@ViewChild('fullcalendar', { static: false }) fullcalendar: FullCalendarComponent;
+	//DIALOG
+	calendarVisible = true;
+	calendarOptions: CalendarOptions = {
+		headerToolbar: {
+		  left: 'prev,next today',
+		  center: 'title',
+		  right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+		},
+		initialView: 'dayGridMonth', // alternatively, use the `events` setting to fetch from a feed
+		weekends: true,
+		editable: true,
+		selectable: true,
+		selectMirror: true,
+		dayMaxEvents: true,
+		select: this.handleDateSelect.bind(this),
+		eventClick: this.handleEventClick.bind(this),
 	
-	const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
-
-	dialogRef.afterClosed().subscribe( (data) => {
-		if(data){
-			this.addEvent(selectInfo, data);
+		eventsSet: this.handleEvents.bind(this),
+		//you can update a remote database when these fire:
+		eventAdd: this.handleEventAdd.bind(this),
+		eventChange: this.handleEventChange.bind(this),
+		eventRemove: this.handleEventRemove.bind(this)
+	};
+	currentEvents: EventApi[] = [];
+  
+  
+	//SEE @fullcalendar/interaction/main.js row:1444
+	//SEE @fullcalendar/common/main.d.ts row 1790
+	handleEventAdd(addInfo: EventAddArg){
+		const _dataToUpload = {
+			id: addInfo.event.id
 		}
-    });
-  }
+		this.calendarService.findByAngularId(_dataToUpload)
+		.subscribe(
+			response => {
+				this.uploadEvent(addInfo, response);
+			},
+			error => {
+				console.log(error)
+			}); 
+	}	
+	
+	
+	uploadEvent(addInfo, queryRes){
+		//UPLOAD TO DB
+		if(queryRes ==null){
+			const _dataToUpload = {
+				summary : addInfo.event.title,
+				startDateTime : addInfo.event.startStr,
+				endDateTime : addInfo.event.endStr,
+				//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+				workingGroup: {
+					id: 1
+				},
+				course: null,
+				type:null,
+				angularId: addInfo.event.id
+			}
+			
+			this.calendarService.create(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log(response);
+					},
+					error => {
+						console.log(error);
+					});
+		}
+	}
   
-  @ViewChild('fullcalendar', { static: false }) fullcalendar: FullCalendarComponent;
-  //DIALOG
-  calendarVisible = true;
-  calendarOptions: CalendarOptions = {
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-    },
-    initialView: 'dayGridMonth', // alternatively, use the `events` setting to fetch from a feed
-    weekends: true,
-    editable: true,
-    selectable: true,
-    selectMirror: true,
-    dayMaxEvents: true,
-    select: this.handleDateSelect.bind(this),
-    eventClick: this.handleEventClick.bind(this),
-    
-    eventsSet: this.handleEvents.bind(this),
-    //you can update a remote database when these fire:
-    eventAdd: this.handleEventAdd.bind(this),
-    eventChange: this.handleEventChange.bind(this),
-    eventRemove: this.handleEventRemove.bind(this)
-  };
-  currentEvents: EventApi[] = [];
+	handleEventChange(changeInfo: EventChangeArg){
+		this.changeEnd(changeInfo);
+		this.changeStart(changeInfo);		
+	}
+	
+	changeStart(changeInfo){
+		const _startToUpload = {
+				id: changeInfo.event.id,
+			}
+		this.calendarService.findByAngularId(_startToUpload)
+		.subscribe(
+			response => {
+				this.changeStartEvent(changeInfo, response);
+			},
+			error => {
+				console.log(error)
+			});
+	}
+	
+	changeStartEvent(changeInfo, response){
+		const _startToUpload = {
+			id: response.id,
+			date: changeInfo.event.startStr
+		}
+		console.log(_startToUpload);
+		this.calendarService.changeStartTime(_startToUpload)
+			.subscribe(
+				response => {
+				console.log(response);
+			},
+			error => {
+				console.log(error);
+			});
+	}
+	
+	changeEnd(changeInfo){
+		const _endToUpload = {
+				id: changeInfo.event.id
+			}
+		this.calendarService.findByAngularId(_endToUpload)
+		.subscribe(
+			response => {
+				this.changeEndEvent(changeInfo, response);
+			},
+			error => {
+				console.log(error)
+			}); 
+	}
+	
+	changeEndEvent(changeInfo, response){
+		const _endToUpload = {
+			id: response.id,
+			date: changeInfo.event.endStr
+		}
+		console.log(_endToUpload);
+		this.calendarService.changeEndTime(_endToUpload)
+			.subscribe(
+				response => {
+				console.log(response);
+			},
+			error => {
+				console.log(error);
+			});
+	}
+
+	handleEventRemove(removeInfo: EventRemoveArg){
+		const _dataToUpload = {
+			id: removeInfo.event.id
+		}
+		this.calendarService.findByAngularId(_dataToUpload)
+		.subscribe(
+			response => {
+				this.deleteEvent(response);
+			},
+			error => {
+				console.log(error);
+			});
+	
+	}
   
+	deleteEvent(response){
+		const _dataToUpload = {
+			id: response.id
+		}
+		this.calendarService.delete(_dataToUpload)
+			.subscribe(
+				response => {
+					console.log(response);
+				},
+				error => {
+					console.log(error);
+				});
+	}
   
-  //SEE @fullcalendar/interaction/main.js row:1444
-  //SEE @fullcalendar/common/main.d.ts row 1790
-  handleEventAdd(addInfo: EventAddArg){
-	console.log("INIZIO ADD");
-	console.log(addInfo.event.title);
-	console.log(addInfo.event.startStr);
-	console.log(addInfo.event.endStr);
-	console.log("FINE ADD");
-  }
+	handleCalendarToggle() {
+		this.calendarVisible = !this.calendarVisible;
+	}
+
+	handleWeekendsToggle() {
+		const { calendarOptions } = this;
+		calendarOptions.weekends = !calendarOptions.weekends;
+	}
+
+	handleDateSelect(selectInfo: DateSelectArg) {
+		this.openDialog(selectInfo);
+	}
+
+	handleEventClick(clickInfo: EventClickArg) {
+		if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
+			clickInfo.event.remove();
+		}
+	}
+
+	handleEvents(events: EventApi[]) {
+		this.currentEvents = events;
+	}
   
-  handleEventChange(changeInfo: EventChangeArg){
-	console.log("INIZIO CHANGE");
-	console.log(changeInfo.event.title);
-	console.log(changeInfo.event.startStr);
-	console.log(changeInfo.event.endStr);
-	console.log("FINE CHANGE");
-  }
-
-  handleEventRemove(removeInfo: EventRemoveArg){
-	console.log("INIZIO REMOVE");
-	console.log(removeInfo.event.title);
-	console.log(removeInfo.event.startStr);
-	console.log(removeInfo.event.endStr);
-	console.log("FINE REMOVE"); 
-  }
-  
-  handleCalendarToggle() {
-    this.calendarVisible = !this.calendarVisible;
-  }
-
-  handleWeekendsToggle() {
-    const { calendarOptions } = this;
-    calendarOptions.weekends = !calendarOptions.weekends;
-  }
-
-  handleDateSelect(selectInfo: DateSelectArg) {
-	this.openDialog(selectInfo);
-  }
-
-  handleEventClick(clickInfo: EventClickArg) {
-    if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
-      clickInfo.event.remove();
-    }
-  }
-
-  handleEvents(events: EventApi[]) {
-    this.currentEvents = events;
-
-  }
-  
-	addEvent(selectInfo: DateSelectArg, data){
+	addEvent(selectInfo: DateSelectArg, data){		
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
 		if(!data[1]){
 			calendarApi.addEvent({
-				id: createEventId(),
+				id: this.createEventId(),
 				title: data[0].title,
-				start: selectInfo.startStr + 'T' + data[0].startTime +':00',
-				end: selectInfo.startStr + 'T' + data[0].endTime +':00',
+				start: selectInfo.startStr + 'T' + data[0].startTime +':00+01:00',
+				end: selectInfo.startStr + 'T' + data[0].endTime +':00+01:00',
 				allDay: false
 			});
+			console.log(calendarApi.getEvents());
 		}else{
 			var _dayOfTheWeek: Array<string> = [];
 			if(data[0].lun){
@@ -157,7 +268,7 @@ export class OurCalendarComponent {
 				_dayOfTheWeek.push('0');
 			}
 			calendarApi.addEvent({
-				id: createEventId(),
+				id: this.createEventId(),
 				title: data[0].title,
 				startTime: data[0].startTime +':00',
 				endTime: data[0].endTime +':00',
@@ -167,21 +278,33 @@ export class OurCalendarComponent {
 				allDay: false
 			});
 		}
-
 	}
 	
 	addInitialEvents(data){
 		const calendarApi = this.fullcalendar.getApi();
-		console.log(data);
 		for (let entry of data) {
-			calendarApi.addEvent({
-				id: createEventId(),
-				title: entry.title,
-				start: entry.startTime,
-				end: entry.endTime,
-				allDay: false
-			});
+			if(calendarApi.getEventById(entry.angularId) == null){
+				calendarApi.addEvent({
+					id: entry.angularId,
+					title: entry.title,
+					start: entry.startTime,
+					end: entry.endTime,
+					allDay: false
+				});
+			}
+		}	
+	}
+	
+	createEventId(){
+		const calendarApi = this.fullcalendar.getApi();
+		const events = calendarApi.getEvents();
+		var max: number = 0;
+		for( let entry of events){
+			if(Number(entry._def.publicId) >= max){
+				max = Number(entry._def.publicId);
+			}
 		}
-		
+		max++;
+		return String(max);
 	}
 }

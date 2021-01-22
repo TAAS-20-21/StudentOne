@@ -18,4 +18,6 @@ public interface EventRepository extends JpaRepository<CustomEvent, Long> {
 
     List<CustomEvent> findByWorkingGroupId(Long wkId);
 
+    CustomEvent findByAngularId(Long aId);
+
 }
