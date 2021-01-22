@@ -1,5 +1,6 @@
 package com.gruppo13.CalendarMS.controllers;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -295,30 +297,36 @@ public class CalendarController {
         try {
             Calendar service = new CalendarFromTokenCreator().getService();
             Event _event = service.events().get("primary", paramEvent.getGoogleId()).execute();
-            if(_event == null) {
-                summary = paramEvent.getTitle();
-                startDateTime = new DateTime(paramEvent.getStartTime());
-                endDateTime = new DateTime(paramEvent.getEndTime());
-                Event event = new Event()
-                        .setId(id)
-                        .setSummary(summary)
-                        .setLocation(location)
-                        .setDescription(description);
+        }catch(GoogleJsonResponseException e){
+            System.out.println("ERRORE: " + e.getMessage());
+            if(e.getMessage().startsWith("404 Not Found")){
+                try {
+                    Calendar service = new CalendarFromTokenCreator().getService();
+                    summary = paramEvent.getTitle();
+                    startDateTime = new DateTime(paramEvent.getStartTime());
+                    endDateTime = new DateTime(paramEvent.getEndTime());
+                    Event event = new Event()
+                            .setId(paramEvent.getGoogleId())
+                            .setSummary(summary)
+                            .setLocation(location)
+                            .setDescription(description);
 
-                EventDateTime start = new EventDateTime()
-                        .setDateTime(startDateTime);
-                event.setStart(start);
+                    EventDateTime start = new EventDateTime()
+                            .setDateTime(startDateTime);
+                    event.setStart(start);
 
-                EventDateTime end = new EventDateTime()
-                        .setDateTime(endDateTime);
-                event.setEnd(end);
+                    EventDateTime end = new EventDateTime()
+                            .setDateTime(endDateTime);
+                    event.setEnd(end);
 
-                String calendarId = "primary";
-                event = service.events().insert(calendarId, event).execute();
-                System.out.printf("Event created: %s\n", event.getHtmlLink());
-                //eventRepo.saveAndFlush(paramEvent);
+                    String calendarId = "primary";
+                    event = service.events().insert(calendarId, event).execute();
+                    System.out.printf("Event created: %s\n", event.getHtmlLink());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
