@@ -7,7 +7,8 @@ import java.util.Date;
 public class ModifierObject {
     private Long id;
     private String str;
-    private Date date;
+    private Date startDate;
+    private Date endDate;
     private CustomEvent.eventType eventType;
     private Long newId;
 
@@ -27,13 +28,13 @@ public class ModifierObject {
         this.str = str;
     }
 
-    public Date getDate() {
-        return date;
-    }
+    public Date getStartDate() { return startDate; }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    public void setStartDate(Date startDate) { this.startDate = startDate; }
+
+    public Date getEndDate() { return endDate; }
+
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
 
     public CustomEvent.eventType getEventType() {
         return eventType;

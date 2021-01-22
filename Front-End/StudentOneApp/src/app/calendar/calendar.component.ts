@@ -6,6 +6,8 @@ import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { EventDialogComponent } from './event-dialog/event-dialog.component'
 //DIALOG
 import { CalendarService } from 'src/app/services/calendar.service';
+
+
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -36,7 +38,14 @@ export class OurCalendarComponent {
 		dialogConfig.autoFocus = true;
 		
 		const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
-
+		
+		/*const calendarApi = this.fullcalendar.getApi(); 
+		const viewType = calendarApi.currentData.currentViewType;
+		if(viewType != 'dayGridMonth'){
+			console.log(selectInfo.startStr.substr(0,10));
+		}*/
+		
+		
 		dialogRef.afterClosed().subscribe( (data) => {
 			if(data){
 				this.addEvent(selectInfo, data);
@@ -66,8 +75,9 @@ export class OurCalendarComponent {
 		//you can update a remote database when these fire:
 		eventAdd: this.handleEventAdd.bind(this),
 		eventChange: this.handleEventChange.bind(this),
-		eventRemove: this.handleEventRemove.bind(this)
-	};
+		eventRemove: this.handleEventRemove.bind(this),
+		locale: 'en'
+		};
 	currentEvents: EventApi[] = [];
   
   
@@ -116,61 +126,33 @@ export class OurCalendarComponent {
 	}
   
 	handleEventChange(changeInfo: EventChangeArg){
-		this.changeEnd(changeInfo);
-		this.changeStart(changeInfo);		
+		//this.changeEnd(changeInfo);
+		//this.changeStart(changeInfo);	
+		this.changeTime(changeInfo);
 	}
 	
-	changeStart(changeInfo){
-		const _startToUpload = {
+	changeTime(changeInfo){
+		const _dataToUpload = {
 				id: changeInfo.event.id,
-			}
-		this.calendarService.findByAngularId(_startToUpload)
+		}
+		this.calendarService.findByAngularId(_dataToUpload)
 		.subscribe(
 			response => {
-				this.changeStartEvent(changeInfo, response);
+				this.changeTimeEvent(changeInfo, response);
 			},
 			error => {
 				console.log(error)
 			});
 	}
 	
-	changeStartEvent(changeInfo, response){
-		const _startToUpload = {
+	changeTimeEvent(changeInfo, response){
+		const _dataToUpload = {
 			id: response.id,
-			date: changeInfo.event.startStr
+			startDate: changeInfo.event.startStr,
+			endDate: changeInfo.event.endStr
 		}
-		console.log(_startToUpload);
-		this.calendarService.changeStartTime(_startToUpload)
-			.subscribe(
-				response => {
-				console.log(response);
-			},
-			error => {
-				console.log(error);
-			});
-	}
-	
-	changeEnd(changeInfo){
-		const _endToUpload = {
-				id: changeInfo.event.id
-			}
-		this.calendarService.findByAngularId(_endToUpload)
-		.subscribe(
-			response => {
-				this.changeEndEvent(changeInfo, response);
-			},
-			error => {
-				console.log(error)
-			}); 
-	}
-	
-	changeEndEvent(changeInfo, response){
-		const _endToUpload = {
-			id: response.id,
-			date: changeInfo.event.endStr
-		}
-		console.log(_endToUpload);
-		this.calendarService.changeEndTime(_endToUpload)
+		console.log(_dataToUpload);
+		this.calendarService.changeTime(_dataToUpload)
 			.subscribe(
 				response => {
 				console.log(response);
@@ -235,15 +217,28 @@ export class OurCalendarComponent {
 	addEvent(selectInfo: DateSelectArg, data){		
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
+		const viewType = calendarApi.currentData.currentViewType;
+		//console.log(viewType == 'dayGridMonth');
 		if(!data[1]){
-			calendarApi.addEvent({
-				id: this.createEventId(),
-				title: data[0].title,
-				start: selectInfo.startStr + 'T' + data[0].startTime +':00+01:00',
-				end: selectInfo.startStr + 'T' + data[0].endTime +':00+01:00',
-				allDay: false
-			});
-			console.log(calendarApi.getEvents());
+			if(viewType == 'dayGridMonth'){
+				calendarApi.addEvent({
+					id: this.createEventId(),
+					title: data[0].title,
+					start: selectInfo.startStr + 'T' + data[0].startTime +':00+01:00',
+					end: selectInfo.startStr + 'T' + data[0].endTime +':00+01:00',
+					allDay: false
+				});
+				//console.log(calendarApi.getEvents());
+			}else{
+				
+				calendarApi.addEvent({
+					id: this.createEventId(),
+					title: data[0].title,
+					start: selectInfo.startStr.substr(0,10) + 'T' + data[0].startTime +':00+01:00',
+					end: selectInfo.startStr.substr(0,10) + 'T' + data[0].endTime +':00+01:00',
+					allDay: false
+				});
+			}
 		}else{
 			var _dayOfTheWeek: Array<string> = [];
 			if(data[0].lun){
@@ -270,8 +265,8 @@ export class OurCalendarComponent {
 			calendarApi.addEvent({
 				id: this.createEventId(),
 				title: data[0].title,
-				startTime: data[0].startTime +':00',
-				endTime: data[0].endTime +':00',
+				startTime: data[0].startTime +':00+01:00',
+				endTime: data[0].endTime +':00+01:00',
 				startRecur: selectInfo.startStr,
 				endRecur: data[0].endRecur,
 				daysOfWeek: _dayOfTheWeek,
@@ -282,6 +277,7 @@ export class OurCalendarComponent {
 	
 	addInitialEvents(data){
 		const calendarApi = this.fullcalendar.getApi();
+		console.log(calendarApi);
 		for (let entry of data) {
 			if(calendarApi.getEventById(entry.angularId) == null){
 				calendarApi.addEvent({

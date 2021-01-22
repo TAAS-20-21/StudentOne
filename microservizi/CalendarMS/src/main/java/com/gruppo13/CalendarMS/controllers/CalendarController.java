@@ -150,62 +150,20 @@ public class CalendarController {
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping(value = "/modify/end_time", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyEndTime(@RequestBody ModifierObject obj){
+    @PostMapping(value = "/modify/time", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> modifyTime(@RequestBody ModifierObject obj){
         Optional<CustomEvent> event = eventRepo.findById(obj.getId());
         CustomEvent newEvent;
         if(event != null){
             newEvent = event.get();
-            newEvent.setEndTime(obj.getDate());
-            //eventRepo.saveAndFlush(newEvent);
-
-           try {
-                /*Calendar service = new CalendarFromTokenCreator().getService();
-                Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
-
-                service.events().delete("primary", _event.getId()).execute();
-
-
-                String id = new String("studentone");
-                id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
-                newEvent.setGoogleId(id);
-                Event temp = new Event()
-                        .setId(id)
-                        .setSummary(newEvent.getTitle())
-                        .setLocation("")
-                        .setDescription("");;
-
-                EventDateTime start = new EventDateTime()
-                       .setDateTime(new DateTime(newEvent.getStartTime()));
-                EventDateTime end = new EventDateTime()
-                       .setDateTime(new DateTime(obj.getDate()));
-                temp.setStart(start);
-                temp.setEnd(end);
-
-                Event updatedEvent = service.events().insert("primary", temp).execute();*/
-                eventRepo.saveAndFlush(newEvent);
-               return ResponseEntity.ok(newEvent.getGoogleId());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return ResponseEntity.ok("ok");
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping(value = "/modify/start_time", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyStartTime(@RequestBody ModifierObject obj){
-        Optional<CustomEvent> event = eventRepo.findById(obj.getId());
-        CustomEvent newEvent;
-        if(event != null){
-            newEvent = event.get();
-            newEvent.setStartTime(obj.getDate());
-            System.out.println(newEvent.getStartTime());
+            if(obj.getEndDate() != null)
+                newEvent.setEndTime(obj.getEndDate());
+            if(obj.getStartDate() != null)
+                newEvent.setStartTime(obj.getStartDate());
             //eventRepo.saveAndFlush(newEvent);
 
             try {
-                /*Calendar service = new CalendarFromTokenCreator().getService();
+                Calendar service = new CalendarFromTokenCreator().getService();
                 Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
 
                 service.events().delete("primary", _event.getId()).execute();
@@ -219,15 +177,14 @@ public class CalendarController {
                         .setSummary(newEvent.getTitle())
                         .setLocation("")
                         .setDescription("");;
-
                 EventDateTime start = new EventDateTime()
-                        .setDateTime(new DateTime(obj.getDate()));
+                        .setDateTime(new DateTime(newEvent.getStartTime()));
                 EventDateTime end = new EventDateTime()
                         .setDateTime(new DateTime(newEvent.getEndTime()));
                 temp.setStart(start);
                 temp.setEnd(end);
 
-                Event updatedEvent = service.events().insert("primary", temp).execute();*/
+                Event updatedEvent = service.events().insert("primary", temp).execute();
                 eventRepo.saveAndFlush(newEvent);
                 return ResponseEntity.ok(newEvent.getGoogleId());
             } catch (Exception e) {
@@ -359,7 +316,7 @@ public class CalendarController {
             String calendarId = "primary";
             event = service.events().insert(calendarId, event).execute();
             System.out.printf("Event created: %s\n", event.getHtmlLink());
-            eventRepo.saveAndFlush(paramEvent);
+            //eventRepo.saveAndFlush(paramEvent);
         } catch (Exception e) {
             e.printStackTrace();
         }

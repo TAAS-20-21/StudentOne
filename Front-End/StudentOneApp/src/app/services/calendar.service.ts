@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Event } from '../models/calendar.model';
 
+
 const baseUrl = 'http://localhost:8082/StudentOne/api/calendar';
 
 @Injectable({
@@ -27,16 +28,11 @@ export class CalendarService {
 		return this.http.post(url, data);
 	}
   
-	changeStartTime(data: any): Observable<any> {
-		const url = baseUrl + '/modify/start_time';
-		return this.http.post(url, data);
+	changeTime(data:any): Observable<any> {
+		const url = baseUrl + '/modify/time';
+		return this.http.post(url,data);
 	}
-  
-	changeEndTime(data: any): Observable<any> {
-		const url = baseUrl + '/modify/end_time';
-		return this.http.post(url, data);
-	}
-  
+	
 	findByAngularId(data: any): Observable<any>{
 		const url = baseUrl + '/findByAngularId';
 		return this.http.post(url, data);
