@@ -43,8 +43,8 @@ export class OurCalendarComponent {
 		const viewType = calendarApi.currentData.currentViewType;
 		if(viewType != 'dayGridMonth'){
 			console.log(selectInfo.startStr.substr(0,10));
-		}*/
-		
+		}
+		console.log(calendarApi);*/
 		
 		dialogRef.afterClosed().subscribe( (data) => {
 			if(data){
@@ -215,10 +215,11 @@ export class OurCalendarComponent {
 	}
   
 	addEvent(selectInfo: DateSelectArg, data){		
+		const _calendarApi = this.fullcalendar.getApi()
+		const viewType = _calendarApi.currentData.currentViewType;
+		//console.log(viewType == 'dayGridMonth');
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
-		const viewType = calendarApi.currentData.currentViewType;
-		//console.log(viewType == 'dayGridMonth');
 		if(!data[1]){
 			if(viewType == 'dayGridMonth'){
 				calendarApi.addEvent({

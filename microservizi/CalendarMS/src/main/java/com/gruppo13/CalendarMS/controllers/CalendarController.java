@@ -61,7 +61,7 @@ public class CalendarController {
             }
 
             for(CustomEvent event:eventList){
-                //synchWithGoogle(event);
+                synchWithGoogle(event);
             }
 
 
@@ -293,30 +293,31 @@ public class CalendarController {
         id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
 
         try {
-            summary = paramEvent.getTitle();
-            startDateTime = new DateTime(paramEvent.getStartTime());
-            endDateTime = new DateTime(paramEvent.getEndTime());
-
             Calendar service = new CalendarFromTokenCreator().getService();
+            Event _event = service.events().get("primary", paramEvent.getGoogleId()).execute();
+            if(_event == null) {
+                summary = paramEvent.getTitle();
+                startDateTime = new DateTime(paramEvent.getStartTime());
+                endDateTime = new DateTime(paramEvent.getEndTime());
+                Event event = new Event()
+                        .setId(id)
+                        .setSummary(summary)
+                        .setLocation(location)
+                        .setDescription(description);
 
-            Event event = new Event()
-                    .setId(id)
-                    .setSummary(summary)
-                    .setLocation(location)
-                    .setDescription(description);
+                EventDateTime start = new EventDateTime()
+                        .setDateTime(startDateTime);
+                event.setStart(start);
 
-            EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime);
-            event.setStart(start);
+                EventDateTime end = new EventDateTime()
+                        .setDateTime(endDateTime);
+                event.setEnd(end);
 
-            EventDateTime end = new EventDateTime()
-                    .setDateTime(endDateTime);
-            event.setEnd(end);
-
-            String calendarId = "primary";
-            event = service.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
-            //eventRepo.saveAndFlush(paramEvent);
+                String calendarId = "primary";
+                event = service.events().insert(calendarId, event).execute();
+                System.out.printf("Event created: %s\n", event.getHtmlLink());
+                //eventRepo.saveAndFlush(paramEvent);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
