@@ -12,16 +12,15 @@ import com.gruppo13.CalendarMS.repositories.EventRepository;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
 import com.gruppo13.CalendarMS.util.ModifierObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.gruppo13.CalendarMS.calendar.CalendarFromTokenCreator;
 import com.gruppo13.CalendarMS.util.EventObject;
@@ -66,7 +65,6 @@ public class CalendarController {
                 synchWithGoogle(event);
             }
 
-
             /*
             DA AGGIUNGERE QUANDO CI SARANNO PIU' UTENTI
             Calendar service = new CalendarFromTokenCreator().getService();
@@ -78,7 +76,6 @@ public class CalendarController {
                 }
             }
             */
-
 
 
             return ResponseEntity.ok(eventList.toArray());
@@ -109,7 +106,7 @@ public class CalendarController {
             startDateTime = paramEvent.getStartDateTime();
             endDateTime = paramEvent.getEndDateTime();
 
-            Calendar service = new CalendarFromTokenCreator().getService();
+            /*Calendar service = new CalendarFromTokenCreator().getService();
 
             Event event = new Event()
                     .setId(id)
@@ -128,7 +125,7 @@ public class CalendarController {
             String calendarId = "primary";
 
             event = service.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
+            System.out.printf("Event created: %s\n", event.getHtmlLink());*/
 
             CustomEvent _event = new CustomEvent();
             _event.setGoogleId(id);
@@ -137,6 +134,10 @@ public class CalendarController {
             _event.setEndTime(new Date(endDateTime.getValue()));
             _event.setType(paramEvent.getType());
             _event.setAngularId(paramEvent.getAngularId());
+            _event.setStartRecur(paramEvent.getStartRecur());
+            _event.setEndRecur(paramEvent.getEndRecur());
+
+            _event.setDaysOfWeek(paramEvent.getDaysOfWeek());
             if (paramEvent.getCourse() != null)
                 _event.setCourse(paramEvent.getCourse());
             else {
@@ -220,7 +221,7 @@ public class CalendarController {
                         .setId(id)
                         .setSummary(newEvent.getTitle())
                         .setLocation("")
-                        .setDescription("");;
+                        .setDescription("");
 
                 EventDateTime start = new EventDateTime()
                         .setDateTime(new DateTime(newEvent.getStartTime()));

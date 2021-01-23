@@ -5,6 +5,9 @@ import com.gruppo13.CalendarMS.models.Course;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.models.WorkingGroup;
 
+import javax.persistence.Column;
+import java.util.Date;
+
 public class EventObject {
 
     private String summary = "Undefined";
@@ -16,6 +19,9 @@ public class EventObject {
     private Course course;
     private CustomEvent.eventType type;
     private Long angularId;
+    private Date startRecur;
+    private Date endRecur;
+    private String daysOfWeek;
 
     public WorkingGroup getWorkingGroup() {
         return workingGroup;
@@ -84,4 +90,28 @@ public class EventObject {
     public Long getAngularId() { return angularId; }
 
     public void setAngularId(Long angularId) { this.angularId = angularId; }
+
+    public Date getStartRecur() {
+        return startRecur;
+    }
+
+    public void setStartRecur(Date startRecur) {
+        this.startRecur = startRecur;
+    }
+
+    public Date getEndRecur() {
+        return endRecur;
+    }
+
+    public void setEndRecur(Date endRecur) {
+        this.endRecur = endRecur;
+    }
+
+    public String getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(String daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
+    }
 }

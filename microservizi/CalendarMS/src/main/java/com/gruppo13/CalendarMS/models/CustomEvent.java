@@ -1,5 +1,8 @@
 package com.gruppo13.CalendarMS.models;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
@@ -37,6 +40,16 @@ public class CustomEvent implements Serializable {
 
     @Column(name = "EVENT_TYPE")
     private eventType type;
+
+    @Column(name = "START_RECUR")
+    private Date startRecur;
+
+    @Column(name = "END_RECUR")
+    private Date endRecur;
+
+    @Column(name = "DAYS_OF_WEEK", length=7)
+    private String daysOfWeek;
+
 
     @ManyToOne
     @JoinColumn(name="course_id")
@@ -133,4 +146,28 @@ public class CustomEvent implements Serializable {
     public Long getAngularId() { return angularId; }
 
     public void setAngularId(Long angularId) { this.angularId = angularId; }
+
+    public Date getStartRecur() {
+        return startRecur;
+    }
+
+    public void setStartRecur(Date startRecur) {
+        this.startRecur = startRecur;
+    }
+
+    public Date getEndRecur() {
+        return endRecur;
+    }
+
+    public void setEndRecur(Date endRecur) {
+        this.endRecur = endRecur;
+    }
+
+    public String getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(String daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
+    }
 }
