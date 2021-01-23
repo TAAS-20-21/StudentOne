@@ -101,17 +101,67 @@ export class OurCalendarComponent {
 	uploadEvent(addInfo, queryRes){
 		//UPLOAD TO DB
 		if(queryRes ==null){
-			const _dataToUpload = {
-				summary : addInfo.event.title,
-				startDateTime : addInfo.event.startStr,
-				endDateTime : addInfo.event.endStr,
-				//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
-				workingGroup: {
-					id: 1
-				},
-				course: null,
-				type:null,
-				angularId: addInfo.event.id
+			let _dataToUpload;
+			if(addInfo.event.startStr != ""){
+
+			//PER EVENTI SINGOLI
+				_dataToUpload = {
+					summary : addInfo.event.title,
+					startDateTime : addInfo.event.startStr,
+					endDateTime : addInfo.event.endStr,
+					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+					workingGroup: {
+						id: 1
+					},
+					course: null,
+					type:null,
+					angularId: addInfo.event.id
+				}
+				console.log(addInfo.event.endStr);
+			}
+			else {
+			
+				//PER EVENTI RICORRENTI
+				let _daysOfWeek:string = ""; 
+
+				let daysTypeData = addInfo.event._def.recurringDef.typeData;
+				for (var i = 0; i < daysTypeData.daysOfWeek.length; i++){
+					_daysOfWeek += daysTypeData.daysOfWeek[i];
+				}
+				
+				//step necessari per ricavare l'orario d'inizio dell'evento ricorrente
+				let startData = new Date(Date.UTC(daysTypeData.startRecur.getFullYear(), daysTypeData.startRecur.getMonth(), daysTypeData.startRecur.getDate()));
+				let dataInMilliseconds: number;
+				let dataInMillisecondsTmp: number;
+				let startTimeInMilliseconds: number;
+				let endTimeInMilliseconds: number;
+				
+				dataInMilliseconds = startData.getTime(); //otteniamo i ms della data d'inizio della ricorrenza
+				startTimeInMilliseconds = daysTypeData.startTime.milliseconds;	//otteniamo i ms dell'ora d'inizio dell'evento
+				dataInMillisecondsTmp = dataInMilliseconds + startTimeInMilliseconds - 3600000; //il decremento è stato fatto per far fronte al GMT+1:00 impostato in automatico
+				
+				let startTime = new Date(dataInMillisecondsTmp);
+				
+				//step necessari per ricavare l'orario di fine dell'evento ricorrente
+				endTimeInMilliseconds = daysTypeData.endTime.milliseconds;	//otteniamo i ms dell'ora di fine dell'evento
+				dataInMillisecondsTmp = dataInMilliseconds + endTimeInMilliseconds - 3600000; //il decremento è stato fatto per far fronte al GMT+1:00 impostato in automatico
+				let endTime = new Date(dataInMillisecondsTmp);
+				console.log(startTime);
+				const _dataToUpload = {
+					summary : addInfo.event.title,
+					startDateTime : startTime,
+					endDateTime : endTime,
+					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+					workingGroup: {
+						id: 1
+					},
+					course: null,
+					type:null,
+					angularId: addInfo.event.id,
+					startRecur: daysTypeData.startRecur,
+					endRecur: daysTypeData.endRecur,
+					daysOfWeek: _daysOfWeek
+				}
 			}
 			
 			this.calendarService.create(_dataToUpload)
@@ -126,8 +176,6 @@ export class OurCalendarComponent {
 	}
   
 	handleEventChange(changeInfo: EventChangeArg){
-		//this.changeEnd(changeInfo);
-		//this.changeStart(changeInfo);	
 		this.changeTime(changeInfo);
 	}
 	
@@ -278,16 +326,28 @@ export class OurCalendarComponent {
 	
 	addInitialEvents(data){
 		const calendarApi = this.fullcalendar.getApi();
-		console.log(calendarApi);
 		for (let entry of data) {
 			if(calendarApi.getEventById(entry.angularId) == null){
-				calendarApi.addEvent({
-					id: entry.angularId,
-					title: entry.title,
-					start: entry.startTime,
-					end: entry.endTime,
-					allDay: false
-				});
+				if(entry.daysOfWeek == null){
+					calendarApi.addEvent({
+						id: entry.angularId,
+						title: entry.title,
+						start: entry.startTime,
+						end: entry.endTime,
+						allDay: false
+					});
+				}else{
+					calendarApi.addEvent({
+						id: entry.angularId,
+						title: entry.title,
+						startTime: entry.startTime + ':00+01:00',
+						endTime: entry.endTime + ':00+01:00',
+						startRecur: entry.startRecur,
+						endRecur: entry.endRecur,
+						daysOfWeek: entry.daysOfWeek.split(""),
+						allDay: false				
+					});
+				}
 			}
 		}	
 	}
