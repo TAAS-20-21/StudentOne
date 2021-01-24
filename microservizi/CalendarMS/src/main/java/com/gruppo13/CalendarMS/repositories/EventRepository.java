@@ -20,4 +20,9 @@ public interface EventRepository extends JpaRepository<CustomEvent, Long> {
 
     CustomEvent findByAngularId(Long aId);
 
+    void deleteByGoogleId(String gId);
+
+    @Query(value = "SELECT MAX(e.angular_id) FROM event e", nativeQuery = true)
+    Long maxAngularId();
+
 }

@@ -206,40 +206,102 @@ public class CalendarController {
         CustomEvent newEvent;
         if(event != null){
             newEvent = event.get();
-            if(obj.getEndDate() != null)
-                newEvent.setEndTime(obj.getEndDate());
-            if(obj.getStartDate() != null)
-                newEvent.setStartTime(obj.getStartDate());
-            //eventRepo.saveAndFlush(newEvent);
+            if(newEvent.getStartRecur() == null) {
+                if (obj.getEndDate() != null)
+                    newEvent.setEndTime(obj.getEndDate());
+                if (obj.getStartDate() != null)
+                    newEvent.setStartTime(obj.getStartDate());
 
-            try {
-                Calendar service = new CalendarFromTokenCreator().getService();
-                Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+                try {
+                    Calendar service = new CalendarFromTokenCreator().getService();
+                    Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+                    System.out.println(newEvent.getGoogleId());
+                    service.events().delete("primary", _event.getId()).execute();
 
-                service.events().delete("primary", _event.getId()).execute();
 
+                    String id = new String("studentone");
+                    id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+                    newEvent.setGoogleId(id);
+                    Event temp = new Event()
+                            .setId(id)
+                            .setSummary(newEvent.getTitle())
+                            .setLocation("")
+                            .setDescription("");
+                    ;
+                    EventDateTime start = new EventDateTime()
+                            .setDateTime(new DateTime(newEvent.getStartTime()));
+                    EventDateTime end = new EventDateTime()
+                            .setDateTime(new DateTime(newEvent.getEndTime()));
+                    temp.setStart(start);
+                    temp.setEnd(end);
 
-                String id = new String("studentone");
-                id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
-                newEvent.setGoogleId(id);
-                Event temp = new Event()
-                        .setId(id)
-                        .setSummary(newEvent.getTitle())
-                        .setLocation("")
-                        .setDescription("");;
-                EventDateTime start = new EventDateTime()
-                        .setDateTime(new DateTime(newEvent.getStartTime()));
-                EventDateTime end = new EventDateTime()
-                        .setDateTime(new DateTime(newEvent.getEndTime()));
-                temp.setStart(start);
-                temp.setEnd(end);
+                    Event updatedEvent = service.events().insert("primary", temp).execute();
+                    eventRepo.saveAndFlush(newEvent);
+                    return ResponseEntity.ok(newEvent.getGoogleId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            else{
+                EventObject preEvent = new EventObject();
+                EventObject singleEvent =  new EventObject();
+                EventObject postEvent =  new EventObject();
+                Long maxAngularId = eventRepo.maxAngularId();
 
-                Event updatedEvent = service.events().insert("primary", temp).execute();
-                eventRepo.saveAndFlush(newEvent);
-                return ResponseEntity.ok(newEvent.getGoogleId());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
+                preEvent.setSummary(newEvent.getTitle());
+                preEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
+                preEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
+                preEvent.setStartRecur(newEvent.getStartRecur());
+                preEvent.setEndRecur(obj.getStartDate());
+                preEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
+                preEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
+                preEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
+                preEvent.setAngularId(maxAngularId++);
+                preEvent.setCourse(newEvent.getCourse());
+                preEvent.setWorkingGroup(newEvent.getWorkingGroup());
+                preEvent.setType(newEvent.getType());
+
+                //settaggio dell'intervallo di ricorrenti che succede l'evento nella ricorrenza che si vuole modificare
+                postEvent.setSummary(newEvent.getTitle());
+                postEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
+                postEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
+                postEvent.setStartRecur(obj.getEndDate());
+                postEvent.setEndRecur(newEvent.getEndRecur());
+                postEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
+                postEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
+                postEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
+                postEvent.setAngularId(maxAngularId++);
+                postEvent.setCourse(newEvent.getCourse());
+                postEvent.setWorkingGroup(newEvent.getWorkingGroup());
+                postEvent.setType(newEvent.getType());
+
+                singleEvent.setSummary(newEvent.getTitle());
+                singleEvent.setStartDateTime(new DateTime(obj.getStartDate()));
+                singleEvent.setEndDateTime(new DateTime(obj.getEndDate()));
+                singleEvent.setAngularId(eventRepo.maxAngularId() + 1);
+                singleEvent.setCourse(newEvent.getCourse());
+                singleEvent.setWorkingGroup(newEvent.getWorkingGroup());
+                singleEvent.setType(newEvent.getType());
+                singleEvent.setAngularId(maxAngularId++);
+                Calendar service = null;
+                try {
+                    service = new CalendarFromTokenCreator().getService();
+                    Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+                    service.events().delete("primary", newEvent.getGoogleId()).execute();
+                    eventRepo.deleteById(newEvent.getId());
+
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                this.addEvent(preEvent);
+                this.addEvent(singleEvent);
+                System.out.println(singleEvent.getDaysOfWeek());
+                //this.addEvent(postEvent);
             }
         }
         return ResponseEntity.ok("ok");
@@ -360,11 +422,50 @@ public class CalendarController {
 
                     EventDateTime start = new EventDateTime()
                             .setDateTime(startDateTime);
+                    start.setTimeZone("+01:00");
                     event.setStart(start);
 
                     EventDateTime end = new EventDateTime()
                             .setDateTime(endDateTime);
+                    end.setTimeZone("+01:00");
                     event.setEnd(end);
+
+                    if(paramEvent.getStartRecur() != null){
+                        String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
+                        dateTmp = dateTmp.replaceAll("-", "");
+                        dateTmp = dateTmp.replaceAll(":", "");
+                        dateTmp = dateTmp.substring(0, 15);
+
+                        String daysOfWeek = paramEvent.getDaysOfWeek();
+                        String[] daysArray = daysOfWeek.split("");
+                        String days = "";
+                        for(int i = 0; i < daysArray.length; i++){
+                            switch(daysArray[i]){
+                                case "0":
+                                    days += "SU,";
+                                    break;
+                                case "1":
+                                    days += "MO,";
+                                    break;
+                                case "2":
+                                    days += "TU,";
+                                    break;
+                                case "3":
+                                    days += "WE,";
+                                    break;
+                                case "4":
+                                    days += "TH,";
+                                    break;
+                                case "5":
+                                    days += "FR,";
+                                    break;
+                                case "6":
+                                    days += "SA,";
+                                    break;
+                            }
+                        }
+                        event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
+                    }
 
                     String calendarId = "primary";
                     event = service.events().insert(calendarId, event).execute();

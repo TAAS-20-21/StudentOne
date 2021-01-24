@@ -116,7 +116,6 @@ export class OurCalendarComponent {
 					type:null,
 					angularId: addInfo.event.id
 				}
-				console.log(addInfo.event.endStr);
 			}
 			else {
 				//PER EVENTI RICORRENTI
@@ -176,6 +175,7 @@ export class OurCalendarComponent {
 	}
   
 	handleEventChange(changeInfo: EventChangeArg){
+		console.log("evento da modificare:", changeInfo);
 		this.changeTime(changeInfo);
 	}
 	
