@@ -106,27 +106,7 @@ public class CalendarController {
             startDateTime = paramEvent.getStartDateTime();
             endDateTime = paramEvent.getEndDateTime();
 
-            Calendar service = new CalendarFromTokenCreator().getService();
-
-            Event event = new Event()
-                    .setId(id)
-                    .setSummary(summary)
-                    .setLocation(location)
-                    .setDescription(description);
-
-            EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime);
-            event.setStart(start);
-
-            EventDateTime end = new EventDateTime()
-                    .setDateTime(endDateTime);
-            event.setEnd(end);
-
-            String calendarId = "primary";
-
-            event = service.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
-
+            //setting degli eventi per memorizzazione nel db
             CustomEvent _event = new CustomEvent();
             _event.setGoogleId(id);
             _event.setTitle(summary);
@@ -147,6 +127,69 @@ public class CalendarController {
             else {
                 _event.setWorkingGroup(paramEvent.getWorkingGroup());
             }
+
+            //setting degli eventi per memorizzazione su Google Calendar
+            Calendar service = new CalendarFromTokenCreator().getService();
+
+            Event event = new Event()
+                    .setId(id)
+                    .setSummary(summary)
+                    .setLocation(location)
+                    .setDescription(description);
+
+            EventDateTime start = new EventDateTime()
+                    .setDateTime(startDateTime);
+            start.setTimeZone("+01:00");
+            event.setStart(start);
+
+            EventDateTime end = new EventDateTime()
+                    .setDateTime(endDateTime);
+            end.setTimeZone("+01:00");
+            event.setEnd(end);
+
+            if(paramEvent.getStartRecur() != null){
+                String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
+                dateTmp = dateTmp.replaceAll("-", "");
+                dateTmp = dateTmp.replaceAll(":", "");
+                dateTmp = dateTmp.substring(0, 15);
+
+                String daysOfWeek = paramEvent.getDaysOfWeek();
+                String[] daysArray = daysOfWeek.split("");
+                String days = "";
+                for(int i = 0; i < daysArray.length; i++){
+                    switch(daysArray[i]){
+                        case "0":
+                            days += "SU,";
+                            break;
+                        case "1":
+                            days += "MO,";
+                            break;
+                        case "2":
+                            days += "TU,";
+                            break;
+                        case "3":
+                            days += "WE,";
+                            break;
+                        case "4":
+                            days += "TH,";
+                            break;
+                        case "5":
+                            days += "FR,";
+                            break;
+                        case "6":
+                            days += "SA,";
+                            break;
+                    }
+                }
+                event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
+            }
+
+            String calendarId = "primary";
+
+            event = service.events().insert(calendarId, event).execute();
+            System.out.printf("Event created: %s\n", event.getHtmlLink());
+
+
             eventRepo.saveAndFlush(_event);
 
             return ResponseEntity.ok("ok");

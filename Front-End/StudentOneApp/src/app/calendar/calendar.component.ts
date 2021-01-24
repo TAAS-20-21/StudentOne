@@ -103,7 +103,6 @@ export class OurCalendarComponent {
 		if(queryRes ==null){
 			let _dataToUpload: any;
 			if(addInfo.event.startStr != ""){
-				console.log("OK");
 			//PER EVENTI SINGOLI
 				_dataToUpload = {
 					summary : addInfo.event.title,
