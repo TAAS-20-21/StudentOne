@@ -41,10 +41,10 @@ public class CustomEvent implements Serializable {
     @Column(name = "EVENT_TYPE")
     private eventType type;
 
-    @Column(name = "START_RECUR")
+    @Column(name = "START_RECUR_DATE")
     private Date startRecur;
 
-    @Column(name = "END_RECUR")
+    @Column(name = "END_RECUR_DATE")
     private Date endRecur;
 
     @Column(name = "DAYS_OF_WEEK", length=7)
@@ -63,6 +63,11 @@ public class CustomEvent implements Serializable {
     @Column(name = "ANGULAR_ID")
     private Long angularId;
 
+    @Column(name = "START_TIME_RECURRENT")
+    private Long startTimeRecurrent;
+
+    @Column(name = "END_TIME_RECURRENT")
+    private Long endTimeRecurrent;
 
     public CustomEvent(){}
 
@@ -169,5 +174,21 @@ public class CustomEvent implements Serializable {
 
     public void setDaysOfWeek(String daysOfWeek) {
         this.daysOfWeek = daysOfWeek;
+    }
+
+    public Long getStartTimeRecurrent() {
+        return startTimeRecurrent;
+    }
+
+    public void setStartTimeRecurrent(Long startTimeRecurrent) {
+        this.startTimeRecurrent = startTimeRecurrent;
+    }
+
+    public Long getEndTimeRecurrent() {
+        return endTimeRecurrent;
+    }
+
+    public void setEndTimeRecurrent(Long endTimeRecurrent) {
+        this.endTimeRecurrent = endTimeRecurrent;
     }
 }

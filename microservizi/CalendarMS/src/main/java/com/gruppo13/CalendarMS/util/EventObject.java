@@ -22,6 +22,8 @@ public class EventObject {
     private Date startRecur;
     private Date endRecur;
     private String daysOfWeek;
+    private Long startTimeRecurrent;
+    private Long endTimeRecurrent;
 
     public WorkingGroup getWorkingGroup() {
         return workingGroup;
@@ -113,5 +115,21 @@ public class EventObject {
 
     public void setDaysOfWeek(String daysOfWeek) {
         this.daysOfWeek = daysOfWeek;
+    }
+
+    public Long getStartTimeRecurrent() {
+        return startTimeRecurrent;
+    }
+
+    public void setStartTimeRecurrent(Long startTimeRecurrent) {
+        this.startTimeRecurrent = startTimeRecurrent;
+    }
+
+    public Long getEndTimeRecurrent() {
+        return endTimeRecurrent;
+    }
+
+    public void setEndTimeRecurrent(Long endTimeRecurrent) {
+        this.endTimeRecurrent = endTimeRecurrent;
     }
 }

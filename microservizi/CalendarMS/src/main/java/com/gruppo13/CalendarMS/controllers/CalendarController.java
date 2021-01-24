@@ -106,7 +106,7 @@ public class CalendarController {
             startDateTime = paramEvent.getStartDateTime();
             endDateTime = paramEvent.getEndDateTime();
 
-            /*Calendar service = new CalendarFromTokenCreator().getService();
+            Calendar service = new CalendarFromTokenCreator().getService();
 
             Event event = new Event()
                     .setId(id)
@@ -125,7 +125,7 @@ public class CalendarController {
             String calendarId = "primary";
 
             event = service.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());*/
+            System.out.printf("Event created: %s\n", event.getHtmlLink());
 
             CustomEvent _event = new CustomEvent();
             _event.setGoogleId(id);
@@ -134,10 +134,14 @@ public class CalendarController {
             _event.setEndTime(new Date(endDateTime.getValue()));
             _event.setType(paramEvent.getType());
             _event.setAngularId(paramEvent.getAngularId());
-            _event.setStartRecur(paramEvent.getStartRecur());
-            _event.setEndRecur(paramEvent.getEndRecur());
+            if(paramEvent.getStartRecur() != null) {
+                _event.setStartRecur(paramEvent.getStartRecur());
+                _event.setEndRecur(paramEvent.getEndRecur());
 
-            _event.setDaysOfWeek(paramEvent.getDaysOfWeek());
+                _event.setDaysOfWeek(paramEvent.getDaysOfWeek());
+                _event.setStartTimeRecurrent(paramEvent.getStartTimeRecurrent());
+                _event.setEndTimeRecurrent(paramEvent.getEndTimeRecurrent());
+            }
             if (paramEvent.getCourse() != null)
                 _event.setCourse(paramEvent.getCourse());
             else {
