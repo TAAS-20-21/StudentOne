@@ -8,7 +8,9 @@ export class Event {
 	course_id?: any;
 	working_group_id?: any;
 	angular_id?: number;
-	start_recur?: any;
-	end_recur?: any;
+	start_recur_date?: any;
+	end_recur_date?: any;
 	days_of_week?: string;
+	start_time_recurrent?: number;
+	end_time_recurrent?: number;
 }

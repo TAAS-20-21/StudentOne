@@ -101,14 +101,14 @@ export class OurCalendarComponent {
 	uploadEvent(addInfo, queryRes){
 		//UPLOAD TO DB
 		if(queryRes ==null){
-			let _dataToUpload;
+			let _dataToUpload: any;
 			if(addInfo.event.startStr != ""){
-
+				console.log("OK");
 			//PER EVENTI SINGOLI
 				_dataToUpload = {
 					summary : addInfo.event.title,
-					startDateTime : addInfo.event.startStr,
-					endDateTime : addInfo.event.endStr,
+					startDateTime : addInfo.event.start,
+					endDateTime : addInfo.event.end,
 					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
 					workingGroup: {
 						id: 1
@@ -120,7 +120,6 @@ export class OurCalendarComponent {
 				console.log(addInfo.event.endStr);
 			}
 			else {
-			
 				//PER EVENTI RICORRENTI
 				let _daysOfWeek:string = ""; 
 
@@ -146,8 +145,8 @@ export class OurCalendarComponent {
 				endTimeInMilliseconds = daysTypeData.endTime.milliseconds;	//otteniamo i ms dell'ora di fine dell'evento
 				dataInMillisecondsTmp = dataInMilliseconds + endTimeInMilliseconds - 3600000; //il decremento è stato fatto per far fronte al GMT+1:00 impostato in automatico
 				let endTime = new Date(dataInMillisecondsTmp);
-				console.log(startTime);
-				const _dataToUpload = {
+				
+				_dataToUpload = {
 					summary : addInfo.event.title,
 					startDateTime : startTime,
 					endDateTime : endTime,
@@ -160,7 +159,9 @@ export class OurCalendarComponent {
 					angularId: addInfo.event.id,
 					startRecur: daysTypeData.startRecur,
 					endRecur: daysTypeData.endRecur,
-					daysOfWeek: _daysOfWeek
+					daysOfWeek: _daysOfWeek,
+					startTimeRecurrent: startTimeInMilliseconds,
+					endTimeRecurrent: endTimeInMilliseconds
 				}
 			}
 			
@@ -340,16 +341,17 @@ export class OurCalendarComponent {
 					calendarApi.addEvent({
 						id: entry.angularId,
 						title: entry.title,
-						startTime: entry.startTime + ':00+01:00',
-						endTime: entry.endTime + ':00+01:00',
 						startRecur: entry.startRecur,
 						endRecur: entry.endRecur,
 						daysOfWeek: entry.daysOfWeek.split(""),
-						allDay: false				
+						endTime: entry.endTimeRecurrent,
+						startTime: entry.startTimeRecurrent,
+						allDay: false						
 					});
 				}
 			}
-		}	
+		}
+		console.log(calendarApi.getEvents());
 	}
 	
 	createEventId(){
@@ -359,6 +361,7 @@ export class OurCalendarComponent {
 		for( let entry of events){
 			if(Number(entry._def.publicId) >= max){
 				max = Number(entry._def.publicId);
+				
 			}
 		}
 		max++;
