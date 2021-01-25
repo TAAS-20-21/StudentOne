@@ -199,7 +199,6 @@ public class CalendarController {
 
             eventRepo.saveAndFlush(_event);
 
-            System.out.println(_event.getStartTime());
             return ResponseEntity.ok(_event);
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,7 +243,6 @@ public class CalendarController {
                     temp.setEnd(end);
 
                     Event updatedEvent = service.events().insert("primary", temp).execute();
-                    service.events().delete("primary", newEvent.getGoogleId()).execute();
                     eventRepo.saveAndFlush(newEvent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -262,7 +260,7 @@ public class CalendarController {
                 preEvent.setStartRecur(newEvent.getStartRecur());
 
                 //la ricorrenza del primo sotto-intervallo, termina il giorno prima in cui si TENEVA l'evento nella ricorrenza modificato
-                preEvent.setEndRecur(new Date(obj.getOldStartDate().getTime() - 86400000));
+                preEvent.setEndRecur(new Date(obj.getOldStartDate().getTime() - (86400000)));
                 preEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
                 preEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
                 preEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
@@ -317,11 +315,8 @@ public class CalendarController {
                     e.printStackTrace();
                 }
 
-                System.out.println("1-----------------------------------");
                 newEventsCreated.add(this.addEvent(preEvent).getBody());
-                System.out.println("2-----------------------------------");
                 newEventsCreated.add(this.addEvent(singleEvent).getBody());
-                System.out.println("3-----------------------------------");
                 newEventsCreated.add(this.addEvent(postEvent).getBody());
 
             }

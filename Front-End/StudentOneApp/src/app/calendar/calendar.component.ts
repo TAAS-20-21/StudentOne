@@ -211,8 +211,8 @@ export class OurCalendarComponent {
 		this.calendarService.changeTime(_dataToUpload)
 			.subscribe(
 				response => {
-					this.updateEventsInFrontEnd(response);
-					changeInfo.event.remove();
+					this.updateEventsInFrontEnd(response, changeInfo);
+					//changeInfo.event.remove();
 			},
 			error => {
 				console.log(error);
@@ -362,10 +362,11 @@ export class OurCalendarComponent {
 	}
 	
 	
-	updateEventsInFrontEnd(data){
+	updateEventsInFrontEnd(data, changeInfo){
 		const calendarApi = this.fullcalendar.getApi();
 		for (let entry of data) {
 			if(entry.daysOfWeek == null){
+				console.log("ricorrente");
 				calendarApi.addEvent({
 					id: entry.angularId,
 					title: entry.title,
@@ -374,7 +375,7 @@ export class OurCalendarComponent {
 					allDay: false
 				});
 			}else{
-				console.log("ricorrente");
+				changeInfo.event.remove();
 				calendarApi.addEvent({
 					id: entry.angularId,
 					title: entry.title,
