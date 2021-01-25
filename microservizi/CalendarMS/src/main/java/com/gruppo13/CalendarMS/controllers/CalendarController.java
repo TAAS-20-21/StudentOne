@@ -88,7 +88,7 @@ public class CalendarController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/addEvent", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> addEvent(@RequestBody EventObject paramEvent) {
+    public ResponseEntity<CustomEvent> addEvent(@RequestBody EventObject paramEvent) {
 
         String summary = new String();
         String location = new String();
@@ -110,10 +110,13 @@ public class CalendarController {
             CustomEvent _event = new CustomEvent();
             _event.setGoogleId(id);
             _event.setTitle(summary);
-            _event.setStartTime(new Date(startDateTime.getValue()));
-            _event.setEndTime(new Date(endDateTime.getValue()));
+
             _event.setType(paramEvent.getType());
             _event.setAngularId(paramEvent.getAngularId());
+
+            //parametri necessari anche per gli eventi ricorrenti(per gestire appunto gli eventi ricorrenti su Google Calendar)
+            _event.setStartTime(new Date(startDateTime.getValue()));
+            _event.setEndTime(new Date(endDateTime.getValue()));
             if(paramEvent.getStartRecur() != null) {
                 _event.setStartRecur(paramEvent.getStartRecur());
                 _event.setEndRecur(paramEvent.getEndRecur());
@@ -121,7 +124,9 @@ public class CalendarController {
                 _event.setDaysOfWeek(paramEvent.getDaysOfWeek());
                 _event.setStartTimeRecurrent(paramEvent.getStartTimeRecurrent());
                 _event.setEndTimeRecurrent(paramEvent.getEndTimeRecurrent());
+
             }
+
             if (paramEvent.getCourse() != null)
                 _event.setCourse(paramEvent.getCourse());
             else {
@@ -146,6 +151,7 @@ public class CalendarController {
                     .setDateTime(endDateTime);
             end.setTimeZone("+01:00");
             event.setEnd(end);
+
 
             if(paramEvent.getStartRecur() != null){
                 String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
@@ -184,6 +190,7 @@ public class CalendarController {
                 event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
             }
 
+
             String calendarId = "primary";
 
             event = service.events().insert(calendarId, event).execute();
@@ -192,7 +199,8 @@ public class CalendarController {
 
             eventRepo.saveAndFlush(_event);
 
-            return ResponseEntity.ok("ok");
+            System.out.println(_event.getStartTime());
+            return ResponseEntity.ok(_event);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -201,9 +209,10 @@ public class CalendarController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/modify/time", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> modifyTime(@RequestBody ModifierObject obj){
+    public ResponseEntity<List<CustomEvent>> modifyTime(@RequestBody ModifierObject obj){
         Optional<CustomEvent> event = eventRepo.findById(obj.getId());
         CustomEvent newEvent;
+        List<CustomEvent> newEventsCreated = new ArrayList<CustomEvent>();
         if(event != null){
             newEvent = event.get();
             if(newEvent.getStartRecur() == null) {
@@ -215,7 +224,6 @@ public class CalendarController {
                 try {
                     Calendar service = new CalendarFromTokenCreator().getService();
                     Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
-                    System.out.println(newEvent.getGoogleId());
                     service.events().delete("primary", _event.getId()).execute();
 
 
@@ -236,8 +244,8 @@ public class CalendarController {
                     temp.setEnd(end);
 
                     Event updatedEvent = service.events().insert("primary", temp).execute();
+                    service.events().delete("primary", newEvent.getGoogleId()).execute();
                     eventRepo.saveAndFlush(newEvent);
-                    return ResponseEntity.ok(newEvent.getGoogleId());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -251,36 +259,47 @@ public class CalendarController {
 
                 //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
                 preEvent.setSummary(newEvent.getTitle());
-                preEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
-                preEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
                 preEvent.setStartRecur(newEvent.getStartRecur());
-                preEvent.setEndRecur(obj.getStartDate());
+
+                //la ricorrenza del primo sotto-intervallo, termina il giorno prima in cui si TENEVA l'evento nella ricorrenza modificato
+                preEvent.setEndRecur(new Date(obj.getOldStartDate().getTime() - 86400000));
                 preEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
                 preEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
                 preEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
-                preEvent.setAngularId(maxAngularId++);
+                preEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
+                preEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
+
+                maxAngularId += 1;
+                preEvent.setAngularId(maxAngularId);
                 preEvent.setCourse(newEvent.getCourse());
                 preEvent.setWorkingGroup(newEvent.getWorkingGroup());
                 preEvent.setType(newEvent.getType());
 
-                //settaggio dell'intervallo di ricorrenti che succede l'evento nella ricorrenza che si vuole modificare
+
                 postEvent.setSummary(newEvent.getTitle());
-                postEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
-                postEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
-                postEvent.setStartRecur(obj.getEndDate());
+
+                //la ricorrenza del secondo sotto-intervallo, inizia il giorno dopo in cui si TENEVA l'evento nella ricorrenza modificato
+                postEvent.setStartRecur(new Date(obj.getOldEndDate().getTime() + 86400000));
                 postEvent.setEndRecur(newEvent.getEndRecur());
                 postEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
                 postEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
                 postEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
-                postEvent.setAngularId(maxAngularId++);
+
+                maxAngularId += 1;
+                postEvent.setAngularId(maxAngularId);
                 postEvent.setCourse(newEvent.getCourse());
                 postEvent.setWorkingGroup(newEvent.getWorkingGroup());
                 postEvent.setType(newEvent.getType());
 
+                postEvent.setStartDateTime(new DateTime(obj.getOldStartDate().getTime() + 86400000));
+                postEvent.setEndDateTime(new DateTime(obj.getOldEndDate().getTime() + 86400000));
+
                 singleEvent.setSummary(newEvent.getTitle());
                 singleEvent.setStartDateTime(new DateTime(obj.getStartDate()));
                 singleEvent.setEndDateTime(new DateTime(obj.getEndDate()));
-                singleEvent.setAngularId(eventRepo.maxAngularId() + 1);
+
+                maxAngularId += 1;
+                singleEvent.setAngularId(maxAngularId);
                 singleEvent.setCourse(newEvent.getCourse());
                 singleEvent.setWorkingGroup(newEvent.getWorkingGroup());
                 singleEvent.setType(newEvent.getType());
@@ -298,13 +317,16 @@ public class CalendarController {
                     e.printStackTrace();
                 }
 
-                this.addEvent(preEvent);
-                this.addEvent(singleEvent);
-                System.out.println(singleEvent.getDaysOfWeek());
-                //this.addEvent(postEvent);
+                System.out.println("1-----------------------------------");
+                newEventsCreated.add(this.addEvent(preEvent).getBody());
+                System.out.println("2-----------------------------------");
+                newEventsCreated.add(this.addEvent(singleEvent).getBody());
+                System.out.println("3-----------------------------------");
+                newEventsCreated.add(this.addEvent(postEvent).getBody());
+
             }
         }
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok(newEventsCreated);
     }
 
     @PostMapping(value ="/modify/title", consumes = "application/json", produces = "application/json")

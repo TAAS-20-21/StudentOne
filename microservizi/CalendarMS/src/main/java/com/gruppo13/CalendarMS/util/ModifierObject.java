@@ -8,7 +8,9 @@ public class ModifierObject {
     private Long id;
     private String str;
     private Date startDate;
+    private  Date oldStartDate;
     private Date endDate;
+    private Date oldEndDate;
     private CustomEvent.eventType eventType;
     private Long newId;
 
@@ -50,5 +52,21 @@ public class ModifierObject {
 
     public void setNewId(Long newId) {
         this.newId = newId;
+    }
+
+    public Date getOldStartDate() {
+        return oldStartDate;
+    }
+
+    public void setOldStartDate(Date oldStartDate) {
+        this.oldStartDate = oldStartDate;
+    }
+
+    public Date getOldEndDate() {
+        return oldEndDate;
+    }
+
+    public void setOldEndDate(Date oldEndDate) {
+        this.oldEndDate = oldEndDate;
     }
 }

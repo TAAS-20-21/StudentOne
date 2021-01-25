@@ -144,6 +144,10 @@ export class OurCalendarComponent {
 				dataInMillisecondsTmp = dataInMilliseconds + endTimeInMilliseconds - 3600000; //il decremento è stato fatto per far fronte al GMT+1:00 impostato in automatico
 				let endTime = new Date(dataInMillisecondsTmp);
 				
+
+				startTimeInMilliseconds = daysTypeData.startTime.milliseconds;	//otteniamo i ms dell'ora d'inizio dell'evento
+				endTimeInMilliseconds = daysTypeData.endTime.milliseconds;	//otteniamo i ms dell'ora di fine dell'evento
+				
 				_dataToUpload = {
 					summary : addInfo.event.title,
 					startDateTime : startTime,
@@ -161,7 +165,9 @@ export class OurCalendarComponent {
 					startTimeRecurrent: startTimeInMilliseconds,
 					endTimeRecurrent: endTimeInMilliseconds
 				}
+				console.log("end rec: ",daysTypeData.endRecur);
 			}
+			
 			
 			this.calendarService.create(_dataToUpload)
 				.subscribe(
@@ -194,16 +200,19 @@ export class OurCalendarComponent {
 	}
 	
 	changeTimeEvent(changeInfo, response){
+		const _calendarApi = this.fullcalendar.getApi()
 		const _dataToUpload = {
 			id: response.id,
-			startDate: changeInfo.event.startStr,
-			endDate: changeInfo.event.endStr
+			startDate: changeInfo.event.start,
+			endDate: changeInfo.event.end,
+			oldStartDate: changeInfo.oldEvent.start,
+			oldEndDate: changeInfo.oldEvent.end
 		}
-		console.log(_dataToUpload);
 		this.calendarService.changeTime(_dataToUpload)
 			.subscribe(
 				response => {
-				console.log(response);
+					this.updateEventsInFrontEnd(response);
+					changeInfo.event.remove();
 			},
 			error => {
 				console.log(error);
@@ -265,7 +274,6 @@ export class OurCalendarComponent {
 	addEvent(selectInfo: DateSelectArg, data){		
 		const _calendarApi = this.fullcalendar.getApi()
 		const viewType = _calendarApi.currentData.currentViewType;
-		//console.log(viewType == 'dayGridMonth');
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
 		if(!data[1]){
@@ -351,6 +359,35 @@ export class OurCalendarComponent {
 			}
 		}
 		console.log(calendarApi.getEvents());
+	}
+	
+	
+	updateEventsInFrontEnd(data){
+		const calendarApi = this.fullcalendar.getApi();
+		for (let entry of data) {
+			if(entry.daysOfWeek == null){
+				calendarApi.addEvent({
+					id: entry.angularId,
+					title: entry.title,
+					start: entry.startTime,
+					end: entry.endTime,
+					allDay: false
+				});
+			}else{
+				console.log("ricorrente");
+				calendarApi.addEvent({
+					id: entry.angularId,
+					title: entry.title,
+					startRecur: entry.startRecur,
+					endRecur: entry.endRecur,
+					daysOfWeek: entry.daysOfWeek.split(""),
+					endTime: entry.endTimeRecurrent,
+					startTime: entry.startTimeRecurrent,
+					allDay: false						
+				});
+			}
+		}
+		console.log("aggiornati", data);
 	}
 	
 	createEventId(){
