@@ -65,8 +65,8 @@ public class CalendarController {
                 synchWithGoogle(event);
             }
 
-            /*
-            DA AGGIUNGERE QUANDO CI SARANNO PIU' UTENTI
+
+            //DA AGGIUNGERE QUANDO CI SARANNO PIU' UTENTI
             Calendar service = new CalendarFromTokenCreator().getService();
             Events events = service.events().list("primary").execute();
             List<Event> items = events.getItems();
@@ -75,7 +75,7 @@ public class CalendarController {
                     service.events().delete("primary", el.getId()).execute();
                 }
             }
-            */
+
 
 
             return ResponseEntity.ok(eventList.toArray());
@@ -283,14 +283,28 @@ public class CalendarController {
                 postEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
                 postEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
 
+                List<String> daysOfWeekNames = this.setNewStartRecurrence(newEvent.getDaysOfWeek(),obj.getOldEndDate(), obj.getOldStartDate());
+                //System.out.println(daysOfWeekNames);
+                Date temp = new Date(obj.getOldStartDate().getTime() + (86400000));
+                String tempAsString = temp.toString().substring(0,3);
+                while(true){
+                    System.out.println(tempAsString);
+                    if(daysOfWeekNames.contains(tempAsString)){
+                        postEvent.setStartDateTime(new DateTime(temp));
+                        postEvent.setEndDateTime(new DateTime(temp.getTime() + (newEvent.getEndTimeRecurrent() - newEvent.getStartTimeRecurrent())));
+                        break;
+                    }
+                    if(temp.equals(postEvent.getEndRecur()))
+                        break;
+                    temp = new Date(temp.getTime() + (86400000));
+                    tempAsString = temp.toString().substring(0,3);
+                }
+
                 maxAngularId += 1;
                 postEvent.setAngularId(maxAngularId);
                 postEvent.setCourse(newEvent.getCourse());
                 postEvent.setWorkingGroup(newEvent.getWorkingGroup());
                 postEvent.setType(newEvent.getType());
-
-                postEvent.setStartDateTime(new DateTime(obj.getOldStartDate().getTime() + 86400000));
-                postEvent.setEndDateTime(new DateTime(obj.getOldEndDate().getTime() + 86400000));
 
                 singleEvent.setSummary(newEvent.getTitle());
                 singleEvent.setStartDateTime(new DateTime(obj.getStartDate()));
@@ -322,6 +336,37 @@ public class CalendarController {
             }
         }
         return ResponseEntity.ok(newEventsCreated);
+    }
+
+    private List<String> setNewStartRecurrence(String daysOfWeek, Date oldEndDate, Date oldStartDate) {
+        String[] daysAsArray = daysOfWeek.split("");
+        List<String> daysNames = new ArrayList<String>();
+        for(int i = 0; i < daysAsArray.length; i++){
+            switch(daysAsArray[i]){
+                case "0":
+                    daysNames.add("Sun");
+                    break;
+                case "1":
+                    daysNames.add("Mon");
+                    break;
+                case "2":
+                    daysNames.add("Tue");
+                    break;
+                case "3":
+                    daysNames.add("Wed");
+                    break;
+                case "4":
+                    daysNames.add("Thu");
+                    break;
+                case "5":
+                    daysNames.add("Fri");
+                    break;
+                case "6":
+                    daysNames.add("Sat");
+                    break;
+            }
+        }
+        return daysNames;
     }
 
     @PostMapping(value ="/modify/title", consumes = "application/json", produces = "application/json")
