@@ -10,7 +10,7 @@
 <button class="mat-raised-button" (click)="singleEventSelection()">Evento Singolo</button>&nbsp;&nbsp;
 <button class="mat-raised-button" (click)="recurrentEventSelection()">Evento Ricorrente</button>
 
-<div [hidden] = "isShowSingleEvent">
+<div [hidden] = "hiddenSingleEvent">
 <mat-dialog-content [formGroup]="form" >
 
     <mat-form-field>
@@ -51,7 +51,7 @@
 </mat-dialog-actions>
 </div>
 
-<div [hidden] = "isShowRecurrentEvent">
+<div [hidden] = "hiddenRecurrentEvent">
 <mat-dialog-content [formGroup]="form" >
 
     <mat-form-field>

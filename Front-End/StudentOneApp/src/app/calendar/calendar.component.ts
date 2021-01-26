@@ -17,10 +17,13 @@ export class OurCalendarComponent {
 	//DIALOG  
 	constructor(private dialog: MatDialog, private calendarService: CalendarService) {}
   
+	//Alla creazione del calendario carico gli eventi dal DB per mostrarli.
 	ngOnInit(): void {
+		//Metodo per ottenere tutti gli eventi che coinvolgono l'utente.
 		this.calendarService.getAll()
 		.subscribe(
 			response => {
+			//Metodo per aggiungere in fullcalendar tutti gli eventi trovati.
 			this.addInitialEvents(response);
 			},
 			error => {
@@ -29,12 +32,14 @@ export class OurCalendarComponent {
 	}
 
   
-  
+	//Metodo per gestire l'apertura della dialog per la creazione degli eventi.
 	openDialog(selectInfo: DateSelectArg) {
 
 		const dialogConfig = new MatDialogConfig();
 
+		//Quando si clicka fuori non si chiude la dialog.
 		dialogConfig.disableClose = true;
+		//Evidenzia il primo elemento editabile della dialog.
 		dialogConfig.autoFocus = true;
 		
 		const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
@@ -46,6 +51,8 @@ export class OurCalendarComponent {
 		}
 		console.log(calendarApi);*/
 		
+		
+		//Dopo che salvo invio uso i dati per creare l'evento.
 		dialogRef.afterClosed().subscribe( (data) => {
 			if(data){
 				this.addEvent(selectInfo, data);
@@ -53,6 +60,8 @@ export class OurCalendarComponent {
 		});
 	}
   
+	//Seleziono l'elemento con id 'fullcalendar' dall'html per poterlo utilizzare
+	//nei metodi che non mettono a dispozione un'istanza di fullcalendar.
 	@ViewChild('fullcalendar', { static: false }) fullcalendar: FullCalendarComponent;
 	//DIALOG
 	calendarVisible = true;
@@ -81,12 +90,12 @@ export class OurCalendarComponent {
 	currentEvents: EventApi[] = [];
   
   
-	//SEE @fullcalendar/interaction/main.js row:1444
-	//SEE @fullcalendar/common/main.d.ts row 1790
+	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di creazione di un evento.
 	handleEventAdd(addInfo: EventAddArg){
 		const _dataToUpload = {
 			id: addInfo.event.id
 		}
+		//Controllo che non esista un altro evento con angularId uguale.
 		this.calendarService.findByAngularId(_dataToUpload)
 		.subscribe(
 			response => {
@@ -100,15 +109,16 @@ export class OurCalendarComponent {
 	
 	uploadEvent(addInfo, queryRes){
 		//UPLOAD TO DB
+		//Se non esiste un altro evento con angularId allora creo un evento.
 		if(queryRes ==null){
 			let _dataToUpload: any;
-			if(addInfo.event.startStr != ""){
 			//PER EVENTI SINGOLI
+			if(addInfo.event.startStr != ""){
 				_dataToUpload = {
 					summary : addInfo.event.title,
 					startDateTime : addInfo.event.start,
 					endDateTime : addInfo.event.end,
-					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
 					workingGroup: {
 						id: 1
 					},
@@ -136,7 +146,6 @@ export class OurCalendarComponent {
 				dataInMilliseconds = startData.getTime(); //otteniamo i ms della data d'inizio della ricorrenza
 				startTimeInMilliseconds = daysTypeData.startTime.milliseconds;	//otteniamo i ms dell'ora d'inizio dell'evento
 				dataInMillisecondsTmp = dataInMilliseconds + startTimeInMilliseconds - 3600000; //il decremento è stato fatto per far fronte al GMT+1:00 impostato in automatico
-				
 				let startTime = new Date(dataInMillisecondsTmp);
 				
 				//step necessari per ricavare l'orario di fine dell'evento ricorrente
@@ -180,6 +189,7 @@ export class OurCalendarComponent {
 		}
 	}
   
+	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di cambiamento di un evento.
 	handleEventChange(changeInfo: EventChangeArg){
 		console.log("evento da modificare:", changeInfo);
 		this.changeTime(changeInfo);
@@ -199,6 +209,7 @@ export class OurCalendarComponent {
 			});
 	}
 	
+	//Metodo per effettuare la richiesta a backend per modificare gli orari di un evento.
 	changeTimeEvent(changeInfo, response){
 		const _calendarApi = this.fullcalendar.getApi()
 		const _dataToUpload = {
@@ -219,6 +230,7 @@ export class OurCalendarComponent {
 			});
 	}
 
+	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di rimozione di un evento.
 	handleEventRemove(removeInfo: EventRemoveArg){
 		const _dataToUpload = {
 			id: removeInfo.event.id
@@ -234,6 +246,7 @@ export class OurCalendarComponent {
 	
 	}
   
+	//Metodo per effettuare la richiesta a backend per rimuovere un evento.
 	deleteEvent(response){
 		const _dataToUpload = {
 			id: response.id
@@ -247,20 +260,13 @@ export class OurCalendarComponent {
 					console.log(error);
 				});
 	}
-  
-	handleCalendarToggle() {
-		this.calendarVisible = !this.calendarVisible;
-	}
 
-	handleWeekendsToggle() {
-		const { calendarOptions } = this;
-		calendarOptions.weekends = !calendarOptions.weekends;
-	}
-
+	//Metodo per la gestione dell'evento di selezione di una data.
 	handleDateSelect(selectInfo: DateSelectArg) {
 		this.openDialog(selectInfo);
 	}
 
+	//Metodo per la gestione dell'evento di click su un evento già esistente.
 	handleEventClick(clickInfo: EventClickArg) {
 		if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
 			clickInfo.event.remove();
@@ -276,7 +282,9 @@ export class OurCalendarComponent {
 		const viewType = _calendarApi.currentData.currentViewType;
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
+		//Se isRecurrent è false allora è un evento singolo
 		if(!data[1]){
+			//Se sono in visione mensile aggiungo un evento concatenando l'ora.
 			if(viewType == 'dayGridMonth'){
 				calendarApi.addEvent({
 					id: this.createEventId(),
@@ -287,7 +295,7 @@ export class OurCalendarComponent {
 				});
 				//console.log(calendarApi.getEvents());
 			}else{
-				
+				//Se sono in un'altra visione l'orario è già presente quindi seleziono solo la data e concateno l'orario. 
 				calendarApi.addEvent({
 					id: this.createEventId(),
 					title: data[0].title,
@@ -297,6 +305,7 @@ export class OurCalendarComponent {
 				});
 			}
 		}else{
+			//Se è ricorrente allora creo la lista di giorni in cui l'evento si ripete.
 			var _dayOfTheWeek: Array<string> = [];
 			if(data[0].lun){
 				_dayOfTheWeek.push('1');
@@ -319,6 +328,7 @@ export class OurCalendarComponent {
 			if(data[0].dom){
 				_dayOfTheWeek.push('0');
 			}
+			//Siccome l'evento è ricorrente basta passare solo l'orario senza anno-mese-giorno
 			calendarApi.addEvent({
 				id: this.createEventId(),
 				title: data[0].title,
@@ -332,10 +342,14 @@ export class OurCalendarComponent {
 		}
 	}
 	
+	//Metodo per caricare in fullcalendar gli eventi da DB quando si carica la pagina.
 	addInitialEvents(data){
 		const calendarApi = this.fullcalendar.getApi();
+		//ciclo su tutti gli eventi nel DB.
 		for (let entry of data) {
+			//Se non esiste un evento con lo stesso angularId
 			if(calendarApi.getEventById(entry.angularId) == null){
+				//Se è un evento singolo.
 				if(entry.daysOfWeek == null){
 					calendarApi.addEvent({
 						id: entry.angularId,
@@ -345,6 +359,7 @@ export class OurCalendarComponent {
 						allDay: false
 					});
 				}else{
+					//Se è ricorrente.
 					calendarApi.addEvent({
 						id: entry.angularId,
 						title: entry.title,
@@ -361,7 +376,8 @@ export class OurCalendarComponent {
 		console.log(calendarApi.getEvents());
 	}
 	
-	
+	//Evento per aggiornare gli eventi di fullcalendar in caso di cambiamenti a DB:
+	//Esempio: Modifica di eventi ricorrenti a DB genera 3 eventi.
 	updateEventsInFrontEnd(data, changeInfo){
 		const calendarApi = this.fullcalendar.getApi();
 		for (let entry of data) {
@@ -391,6 +407,7 @@ export class OurCalendarComponent {
 		console.log("aggiornati", data);
 	}
 	
+	//Crea un angularId incrementando il massimo angularId già presente.
 	createEventId(){
 		const calendarApi = this.fullcalendar.getApi();
 		const events = calendarApi.getEvents();

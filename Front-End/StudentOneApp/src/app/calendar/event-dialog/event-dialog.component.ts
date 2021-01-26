@@ -11,8 +11,8 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 })
 export class EventDialogComponent implements OnInit {
 
-	isShowSingleEvent = false;
-	isShowRecurrentEvent = true;
+	hiddenSingleEvent = false;
+	hiddenRecurrentEvent = true;
 
 
     form: FormGroup;
@@ -73,18 +73,20 @@ export class EventDialogComponent implements OnInit {
         this.dialogRef.close();
     }
 	
+	//Cambio da Dialog ricorrente a Dialog evento singolo.
 	singleEventSelection() {
-		if(this.isShowSingleEvent){
-			this.isShowSingleEvent = !this.isShowSingleEvent;
-			this.isShowRecurrentEvent = true;
+		if(this.hiddenSingleEvent){
+			this.hiddenSingleEvent = !this.hiddenSingleEvent;
+			this.hiddenRecurrentEvent = true;
 			this.isRecurrent = false;
 		}
 	}
 	
+	//Cambio da Dialog evento singolo a Dialog ricorrente.
 	recurrentEventSelection() {
-		if(this.isShowRecurrentEvent){
-			this.isShowRecurrentEvent = !this.isShowRecurrentEvent;
-			this.isShowSingleEvent = true;
+		if(this.hiddenRecurrentEvent){
+			this.hiddenRecurrentEvent = !this.hiddenRecurrentEvent;
+			this.hiddenSingleEvent = true;
 			this.isRecurrent = true;
 		}
 	}
