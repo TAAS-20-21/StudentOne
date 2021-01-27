@@ -7,13 +7,10 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.gruppo13.CalendarMS.models.CustomEvent;
-import com.gruppo13.CalendarMS.repositories.CalendarRepository;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
 import com.gruppo13.CalendarMS.util.ModifierObject;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +27,12 @@ import com.gruppo13.CalendarMS.util.EventObject;
 public class CalendarController {
 
     @Autowired
-    CalendarRepository calendarRepository;
-
-    @Autowired
     EventRepository eventRepo;
 
+    //costanti utilizzate per definire il range del GoogleId generato al momento della creazione di un evento
     Integer MIN = 0;
     Integer MAX = 10000000;
+    Integer MILLISECONDS_IN_DAY = 86400000;
 
     @Autowired
     StudentRepository studentRepo;
@@ -53,14 +49,18 @@ public class CalendarController {
             List<Long> courseList = studentRepo.getCourseIdByStudent(1L);
             List<Long> workingGroupList = wkRepo.getGroupIdByStudent(1L);
             List<CustomEvent> eventList = new ArrayList<CustomEvent>();
+
+            //prelievo degli eventi di tipo lesson
             for(Long id_course:courseList){
                 eventList.addAll(eventRepo.findByCourseId(id_course));
             }
 
+            //prelievo degli eventi di tipo lesson
             for(Long id_group:workingGroupList){
                 eventList.addAll(eventRepo.findByWorkingGroupId(id_group));
             }
 
+            //richiamo della sincronizzazione con Google per tutti gli eventi prelevati con i due statement for precedenti
             for(CustomEvent event:eventList){
                 synchWithGoogle(event);
             }
@@ -75,7 +75,6 @@ public class CalendarController {
                     service.events().delete("primary", el.getId()).execute();
                 }
             }
-
 
 
             return ResponseEntity.ok(eventList.toArray());
@@ -100,6 +99,7 @@ public class CalendarController {
         id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
 
         try {
+            //setting dei valori richiesti per la creazione di un evento mediante Google Calendar API
             summary = paramEvent.getSummary();
             location = paramEvent.getLocation();
             description = paramEvent.getDescription();
@@ -110,7 +110,6 @@ public class CalendarController {
             CustomEvent _event = new CustomEvent();
             _event.setGoogleId(id);
             _event.setTitle(summary);
-
             _event.setType(paramEvent.getType());
             _event.setAngularId(paramEvent.getAngularId());
 
@@ -161,41 +160,17 @@ public class CalendarController {
 
                 String daysOfWeek = paramEvent.getDaysOfWeek();
                 String[] daysArray = daysOfWeek.split("");
-                String days = "";
-                for(int i = 0; i < daysArray.length; i++){
-                    switch(daysArray[i]){
-                        case "0":
-                            days += "SU,";
-                            break;
-                        case "1":
-                            days += "MO,";
-                            break;
-                        case "2":
-                            days += "TU,";
-                            break;
-                        case "3":
-                            days += "WE,";
-                            break;
-                        case "4":
-                            days += "TH,";
-                            break;
-                        case "5":
-                            days += "FR,";
-                            break;
-                        case "6":
-                            days += "SA,";
-                            break;
-                    }
-                }
+
+                //questa funzione traduce gli indici dei giorni(usati nella libreria angular di fullcalendar) in sigle dei giorni della settimana
+                // (necessari per la memorizzazione di eventi ricorrenti su Google Calendar
+                String days = translateDaysIndex(daysArray);
                 event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
             }
-
 
             String calendarId = "primary";
 
             event = service.events().insert(calendarId, event).execute();
             System.out.printf("Event created: %s\n", event.getHtmlLink());
-
 
             eventRepo.saveAndFlush(_event);
 
@@ -205,6 +180,7 @@ public class CalendarController {
             return null;
         }
     }
+
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/modify/time", consumes = "application/json", produces = "application/json")
@@ -255,67 +231,17 @@ public class CalendarController {
                 EventObject postEvent =  new EventObject();
                 Long maxAngularId = eventRepo.maxAngularId();
 
-                //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
-                preEvent.setSummary(newEvent.getTitle());
-                preEvent.setStartRecur(newEvent.getStartRecur());
-
-                //la ricorrenza del primo sotto-intervallo, termina il giorno prima in cui si TENEVA l'evento nella ricorrenza modificato
-                preEvent.setEndRecur(new Date(obj.getOldStartDate().getTime() - (86400000)));
-                preEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
-                preEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
-                preEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
-                preEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
-                preEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
+                //incremento necessario affinchè sia garantita l'univocità dell'angular Id per gli eventi ricorrenti che precedono
+                //l'evento che è stato modificato nella vecchia ricorrenza
+                maxAngularId += 1;
+                preEvent = setPreEventRecur(newEvent, obj, maxAngularId);
 
                 maxAngularId += 1;
-                preEvent.setAngularId(maxAngularId);
-                preEvent.setCourse(newEvent.getCourse());
-                preEvent.setWorkingGroup(newEvent.getWorkingGroup());
-                preEvent.setType(newEvent.getType());
-
-
-                postEvent.setSummary(newEvent.getTitle());
-
-                //la ricorrenza del secondo sotto-intervallo, inizia il giorno dopo in cui si TENEVA l'evento nella ricorrenza modificato
-                postEvent.setStartRecur(new Date(obj.getOldEndDate().getTime() + 86400000));
-                postEvent.setEndRecur(newEvent.getEndRecur());
-                postEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
-                postEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
-                postEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
-
-                List<String> daysOfWeekNames = this.setNewStartRecurrence(newEvent.getDaysOfWeek(),obj.getOldEndDate(), obj.getOldStartDate());
-                //System.out.println(daysOfWeekNames);
-                Date temp = new Date(obj.getOldStartDate().getTime() + (86400000));
-                String tempAsString = temp.toString().substring(0,3);
-                while(true){
-                    System.out.println(tempAsString);
-                    if(daysOfWeekNames.contains(tempAsString)){
-                        postEvent.setStartDateTime(new DateTime(temp));
-                        postEvent.setEndDateTime(new DateTime(temp.getTime() + (newEvent.getEndTimeRecurrent() - newEvent.getStartTimeRecurrent())));
-                        break;
-                    }
-                    if(temp.equals(postEvent.getEndRecur()))
-                        break;
-                    temp = new Date(temp.getTime() + (86400000));
-                    tempAsString = temp.toString().substring(0,3);
-                }
+                postEvent = setPostEventRecur(newEvent, obj, maxAngularId);
 
                 maxAngularId += 1;
-                postEvent.setAngularId(maxAngularId);
-                postEvent.setCourse(newEvent.getCourse());
-                postEvent.setWorkingGroup(newEvent.getWorkingGroup());
-                postEvent.setType(newEvent.getType());
+                singleEvent = setSingleEventRecur(newEvent, obj, maxAngularId);
 
-                singleEvent.setSummary(newEvent.getTitle());
-                singleEvent.setStartDateTime(new DateTime(obj.getStartDate()));
-                singleEvent.setEndDateTime(new DateTime(obj.getEndDate()));
-
-                maxAngularId += 1;
-                singleEvent.setAngularId(maxAngularId);
-                singleEvent.setCourse(newEvent.getCourse());
-                singleEvent.setWorkingGroup(newEvent.getWorkingGroup());
-                singleEvent.setType(newEvent.getType());
-                singleEvent.setAngularId(maxAngularId++);
                 Calendar service = null;
                 try {
                     service = new CalendarFromTokenCreator().getService();
@@ -338,36 +264,21 @@ public class CalendarController {
         return ResponseEntity.ok(newEventsCreated);
     }
 
-    private List<String> setNewStartRecurrence(String daysOfWeek, Date oldEndDate, Date oldStartDate) {
-        String[] daysAsArray = daysOfWeek.split("");
-        List<String> daysNames = new ArrayList<String>();
-        for(int i = 0; i < daysAsArray.length; i++){
-            switch(daysAsArray[i]){
-                case "0":
-                    daysNames.add("Sun");
-                    break;
-                case "1":
-                    daysNames.add("Mon");
-                    break;
-                case "2":
-                    daysNames.add("Tue");
-                    break;
-                case "3":
-                    daysNames.add("Wed");
-                    break;
-                case "4":
-                    daysNames.add("Thu");
-                    break;
-                case "5":
-                    daysNames.add("Fri");
-                    break;
-                case "6":
-                    daysNames.add("Sat");
-                    break;
-            }
-        }
-        return daysNames;
+    private EventObject setSingleEventRecur(CustomEvent newEvent, ModifierObject obj, Long angularId) {
+
+        EventObject singleEvent = new EventObject();;
+        singleEvent.setSummary(newEvent.getTitle());
+        singleEvent.setStartDateTime(new DateTime(obj.getStartDate()));
+        singleEvent.setEndDateTime(new DateTime(obj.getEndDate()));
+
+        singleEvent.setAngularId(angularId);
+        singleEvent.setCourse(newEvent.getCourse());
+        singleEvent.setWorkingGroup(newEvent.getWorkingGroup());
+        singleEvent.setType(newEvent.getType());
+
+        return singleEvent;
     }
+
 
     @PostMapping(value ="/modify/title", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> modifyTitle(@RequestBody ModifierObject obj){
@@ -456,6 +367,10 @@ public class CalendarController {
         return ResponseEntity.ok(event);
     }
 
+
+
+
+    //_________________________FUNZIONI DI SUPPORTO______________________________________________
     private void synchWithGoogle(CustomEvent paramEvent) {
         String summary = new String();
         String location = new String();
@@ -469,7 +384,12 @@ public class CalendarController {
         try {
             Calendar service = new CalendarFromTokenCreator().getService();
             Event _event = service.events().get("primary", paramEvent.getGoogleId()).execute();
+
         }catch(GoogleJsonResponseException e){
+
+            //nel caso in cui un evento E non dovesse essere presente in Google Calendar, è necessario gestire
+            // questa mancanza aggiungendo appunto tale evento. La chiamata alla riga 375, nel caso in cui E non viene trovato,
+            // genera un'eccezione che viene gestita quindi dal codice che segue
             if(e.getMessage().startsWith("404 Not Found")){
                 try {
                     Calendar service = new CalendarFromTokenCreator().getService();
@@ -500,32 +420,8 @@ public class CalendarController {
 
                         String daysOfWeek = paramEvent.getDaysOfWeek();
                         String[] daysArray = daysOfWeek.split("");
-                        String days = "";
-                        for(int i = 0; i < daysArray.length; i++){
-                            switch(daysArray[i]){
-                                case "0":
-                                    days += "SU,";
-                                    break;
-                                case "1":
-                                    days += "MO,";
-                                    break;
-                                case "2":
-                                    days += "TU,";
-                                    break;
-                                case "3":
-                                    days += "WE,";
-                                    break;
-                                case "4":
-                                    days += "TH,";
-                                    break;
-                                case "5":
-                                    days += "FR,";
-                                    break;
-                                case "6":
-                                    days += "SA,";
-                                    break;
-                            }
-                        }
+                        String days = translateDaysIndex(daysArray);
+
                         event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
                     }
 
@@ -539,5 +435,131 @@ public class CalendarController {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String translateDaysIndex(String[] daysArray){
+        String days = "";
+        for(int i = 0; i < daysArray.length; i++){
+            switch(daysArray[i]){
+                case "0":
+                    days += "SU,";
+                    break;
+                case "1":
+                    days += "MO,";
+                    break;
+                case "2":
+                    days += "TU,";
+                    break;
+                case "3":
+                    days += "WE,";
+                    break;
+                case "4":
+                    days += "TH,";
+                    break;
+                case "5":
+                    days += "FR,";
+                    break;
+                case "6":
+                    days += "SA,";
+                    break;
+            }
+        }
+        return days;
+    }
+
+    private EventObject setPostEventRecur(CustomEvent newEvent, ModifierObject obj, Long angularId) {
+        EventObject postEvent =  new EventObject();
+
+        postEvent.setSummary(newEvent.getTitle());
+
+        //la ricorrenza del secondo sotto-intervallo, inizia il giorno dopo in cui si TENEVA l'evento nella ricorrenza modificato
+        postEvent.setStartRecur(new Date(obj.getOldEndDate().getTime() + MILLISECONDS_IN_DAY));
+        postEvent.setEndRecur(newEvent.getEndRecur());
+        postEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
+        postEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
+        postEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
+
+        postEvent.setAngularId(angularId);
+        postEvent.setCourse(newEvent.getCourse());
+        postEvent.setWorkingGroup(newEvent.getWorkingGroup());
+        postEvent.setType(newEvent.getType());
+
+        List<String> daysOfWeekNames = this.setNewStartRecurrence(newEvent.getDaysOfWeek(),obj.getOldEndDate(), obj.getOldStartDate());
+
+        //istruzione utile per ricavare la data seguente alla vecchia data in cui si teneva l'evento in corso di modifica
+        Date temp = new Date(obj.getOldStartDate().getTime() + (MILLISECONDS_IN_DAY));
+        String tempAsString = temp.toString().substring(0,3);
+        //postEvent.setStartDateTime(new DateTime(temp));
+        //postEvent.setEndDateTime(new DateTime(temp.getTime() + (newEvent.getEndTimeRecurrent() - newEvent.getStartTimeRecurrent())));
+
+        //il codice che segue è utile per determinare la data a partire dalla quale deve cominciare la ricorrenza di postEvent
+        while(true){
+            if(temp.equals(postEvent.getEndRecur()))
+                break;
+
+            if(daysOfWeekNames.contains(tempAsString)){
+                postEvent.setStartDateTime(new DateTime(temp));
+                postEvent.setEndDateTime(new DateTime(temp.getTime() + (newEvent.getEndTimeRecurrent() - newEvent.getStartTimeRecurrent())));
+                break;
+            }
+            temp = new Date(temp.getTime() + (MILLISECONDS_IN_DAY));
+            tempAsString = temp.toString().substring(0,3);
+        }
+
+        return postEvent;
+    }
+
+    private EventObject setPreEventRecur(CustomEvent newEvent, ModifierObject obj, Long angularId) {
+        EventObject preEvent  = new EventObject();
+
+        //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
+        preEvent.setSummary(newEvent.getTitle());
+        preEvent.setStartRecur(newEvent.getStartRecur());
+
+        //la ricorrenza del primo sotto-intervallo, termina il giorno prima in cui si TENEVA l'evento nella ricorrenza modificato
+        preEvent.setEndRecur(new Date(obj.getOldStartDate().getTime() - (MILLISECONDS_IN_DAY)));
+        preEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
+        preEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
+        preEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
+        preEvent.setStartDateTime(new DateTime(newEvent.getStartTime()));
+        preEvent.setEndDateTime(new DateTime(newEvent.getEndTime()));
+
+        preEvent.setAngularId(angularId);
+        preEvent.setCourse(newEvent.getCourse());
+        preEvent.setWorkingGroup(newEvent.getWorkingGroup());
+        preEvent.setType(newEvent.getType());
+
+        return preEvent;
+    }
+
+    private List<String> setNewStartRecurrence(String daysOfWeek, Date oldEndDate, Date oldStartDate) {
+        String[] daysAsArray = daysOfWeek.split("");
+        List<String> daysNames = new ArrayList<String>();
+        for(int i = 0; i < daysAsArray.length; i++){
+            switch(daysAsArray[i]){
+                case "0":
+                    daysNames.add("Sun");
+                    break;
+                case "1":
+                    daysNames.add("Mon");
+                    break;
+                case "2":
+                    daysNames.add("Tue");
+                    break;
+                case "3":
+                    daysNames.add("Wed");
+                    break;
+                case "4":
+                    daysNames.add("Thu");
+                    break;
+                case "5":
+                    daysNames.add("Fri");
+                    break;
+                case "6":
+                    daysNames.add("Sat");
+                    break;
+            }
+        }
+        return daysNames;
     }
 }
