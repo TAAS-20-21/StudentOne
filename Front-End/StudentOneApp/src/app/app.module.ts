@@ -37,6 +37,7 @@ import { EventDialogComponent } from './calendar/event-dialog/event-dialog.compo
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ChatComponent } from './chat/chat.component';
 //DIALOG
 
 FullCalendarModule.registerPlugins([
@@ -46,8 +47,7 @@ FullCalendarModule.registerPlugins([
   interactionPlugin
 ])
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ChatComponent } from './chat/chat.component';
+
 
 
 @NgModule({
