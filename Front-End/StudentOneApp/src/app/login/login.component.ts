@@ -4,22 +4,21 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { AppConstants } from '../common/app.constants'
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../services/user.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
-
   form: any = {};
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
   currentUser: any;
-  googleURL = AppConstants.GOOGLE_AUTH_URL;
+  googleURL = AppConstants.GOOGLE_AUTH_URL;  
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute, private userService: UserService) {}
+  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit(): void {
     const token: string = this.route.snapshot.queryParamMap.get('token');
@@ -27,6 +26,9 @@ export class LoginComponent implements OnInit {
     if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
       this.currentUser = this.tokenStorage.getUser();
+      this.userService.getAllEvent().subscribe(data =>{
+        console.log(data);
+      })
     }
     else if(token){
         this.tokenStorage.saveToken(token);

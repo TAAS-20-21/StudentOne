@@ -11,12 +11,15 @@ import lombok.Data;
 @PasswordMatches
 public class SignUpRequest {
 
-    private Long userID;
+    private Long id;
 
     private String providerUserId;
 
     @NotEmpty
-    private String displayName;
+    private String name;
+
+    @NotEmpty
+    private String surname;
 
     @NotEmpty
     private String email;
@@ -29,9 +32,10 @@ public class SignUpRequest {
     @NotEmpty
     private String matchingPassword;
 
-    public SignUpRequest(String providerUserId, String displayName, String email, String password, SocialProvider socialProvider) {
+    public SignUpRequest(String providerUserId, String name, String surname, String email, String password, SocialProvider socialProvider) {
         this.providerUserId = providerUserId;
-        this.displayName = displayName;
+        this.name = name;
+        this.surname = surname;
         this.email = email;
         this.password = password;
         this.socialProvider = socialProvider;
@@ -43,7 +47,8 @@ public class SignUpRequest {
 
     public static class Builder {
         private String providerUserID;
-        private String displayName;
+        private String name;
+        private String surname;
         private String email;
         private String password;
         private SocialProvider socialProvider;
@@ -53,8 +58,13 @@ public class SignUpRequest {
             return this;
         }
 
-        public Builder addDisplayName(final String displayName) {
-            this.displayName = displayName;
+        public Builder addName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder addSurname(final String surname) {
+            this.surname = surname;
             return this;
         }
 
@@ -74,7 +84,7 @@ public class SignUpRequest {
         }
 
         public SignUpRequest build() {
-            return new SignUpRequest(providerUserID, displayName, email, password, socialProvider);
+            return new SignUpRequest(providerUserID, name, surname, email, password, socialProvider);
         }
     }
 }
