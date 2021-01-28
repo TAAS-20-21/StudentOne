@@ -62,8 +62,8 @@ import { ChatComponent } from './chat/chat.component';
     RegisterComponent,
     OurCalendarComponent,
 	//DIALOG
-	EventDialogComponent
-	//DIALOG
+	EventDialogComponent,
+
     ChatComponent
   ],
   imports: [
@@ -89,7 +89,7 @@ import { ChatComponent } from './chat/chat.component';
   ],
   //DIALOG
   exports: [
-	MatFormFieldModule
+	MatFormFieldModule,
     NgbModule
   ],
   //DIALOG

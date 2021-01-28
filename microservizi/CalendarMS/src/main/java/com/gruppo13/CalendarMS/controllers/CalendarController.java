@@ -473,8 +473,16 @@ public class CalendarController {
         postEvent.setSummary(newEvent.getTitle());
 
         //la ricorrenza del secondo sotto-intervallo, inizia il giorno dopo in cui si TENEVA l'evento nella ricorrenza modificato
-        postEvent.setStartRecur(new Date(obj.getOldEndDate().getTime() + MILLISECONDS_IN_DAY));
-        postEvent.setEndRecur(newEvent.getEndRecur());
+        Date startRecur = new Date(obj.getOldEndDate().getTime() + MILLISECONDS_IN_DAY);
+        Date endRecur = newEvent.getEndRecur();
+        if(startRecur.before(endRecur)) {
+            postEvent.setStartRecur(startRecur);
+            postEvent.setEndRecur(endRecur);
+        }
+        else {
+            postEvent.setStartRecur(startRecur);
+            postEvent.setEndRecur(startRecur);
+        }
         postEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
         postEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
         postEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
@@ -512,12 +520,23 @@ public class CalendarController {
     private EventObject setPreEventRecur(CustomEvent newEvent, ModifierObject obj, Long angularId) {
         EventObject preEvent  = new EventObject();
 
-        //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
-        preEvent.setSummary(newEvent.getTitle());
-        preEvent.setStartRecur(newEvent.getStartRecur());
 
+        preEvent.setSummary(newEvent.getTitle());
+
+
+        //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
         //la ricorrenza del primo sotto-intervallo, termina il giorno prima in cui si TENEVA l'evento nella ricorrenza modificato
-        preEvent.setEndRecur(new Date(obj.getOldStartDate().getTime() - (MILLISECONDS_IN_DAY)));
+        Date startRecur = newEvent.getStartRecur());
+        Date endRecur = new Date(obj.getOldStartDate().getTime() - (MILLISECONDS_IN_DAY));
+        if(startRecur.before(endRecur)) {
+            preEvent.setStartRecur(startRecur);
+            preEvent.setEndRecur(endRecur);
+        }
+        else {
+            preEvent.setStartRecur(startRecur);
+            preEvent.setEndRecur(startRecur);
+        }
+
         preEvent.setStartTimeRecurrent(newEvent.getStartTimeRecurrent());
         preEvent.setEndTimeRecurrent(newEvent.getEndTimeRecurrent());
         preEvent.setDaysOfWeek(newEvent.getDaysOfWeek());
