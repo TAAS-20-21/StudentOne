@@ -7,6 +7,10 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component'
 //DIALOG
 import { CalendarService } from 'src/app/services/calendar.service';
 
+//LOGIN
+import { User } from "../models/User";
+import { TokenStorageService } from "../services/token-storage.service";
+
 
 @Component({
   selector: 'app-calendar',
@@ -14,11 +18,24 @@ import { CalendarService } from 'src/app/services/calendar.service';
   styleUrls: ['./calendar.component.scss']
 })
 export class OurCalendarComponent {
+	
+	loggedUser: User;
+	isLogin:boolean;
+	  
+	  
 	//DIALOG  
-	constructor(private dialog: MatDialog, private calendarService: CalendarService) {}
+	constructor(private dialog: MatDialog, private calendarService: CalendarService, private token: TokenStorageService) {}
   
 	//Alla creazione del calendario carico gli eventi dal DB per mostrarli.
 	ngOnInit(): void {
+		this.loggedUser = this.token.getUser();
+		let verifyToken = this.token.getToken();
+		if(verifyToken == null){
+			this.isLogin = false;
+		} else {
+			this.isLogin = true;
+		}
+	
 		//Metodo per ottenere tutti gli eventi che coinvolgono l'utente.
 		this.calendarService.getAll()
 		.subscribe(

@@ -31,7 +31,7 @@ public class CalendarController {
 
     //costanti utilizzate per definire il range del GoogleId generato al momento della creazione di un evento
     Integer MIN = 0;
-    Integer MAX = 10000000;
+    Integer MAX = Integer.MAX_VALUE;
     Integer MILLISECONDS_IN_DAY = 86400000;
 
     @Autowired
@@ -42,7 +42,7 @@ public class CalendarController {
 
     // public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject, @RequestHeader("Authorization")String token)
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(){
         try{
