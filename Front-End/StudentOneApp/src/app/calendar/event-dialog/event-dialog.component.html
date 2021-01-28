@@ -1,0 +1,109 @@
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+
+</head>	
+
+<h2 mat-dialog-title>Informazioni Evento:</h2>
+
+<button class="mat-raised-button" (click)="singleEventSelection()">Evento Singolo</button>&nbsp;&nbsp;
+<button class="mat-raised-button" (click)="recurrentEventSelection()">Evento Ricorrente</button>
+
+<div [hidden] = "hiddenSingleEvent">
+<mat-dialog-content [formGroup]="form" >
+
+    <mat-form-field>
+		<label>Nome Evento:&nbsp;&nbsp;</label>
+        <input matInput
+               formControlName="title"
+			   type="text">
+    </mat-form-field>
+
+    <mat-form-field>
+		<label>Orario di inizio:&nbsp;&nbsp;</label>
+		<input matInput
+               formControlName="startTime"
+			   type="time">
+    </mat-form-field>
+
+    <mat-form-field>
+		<label>Orario di fine:&nbsp;&nbsp;</label>
+        <input matInput
+               formControlName="endTime"
+			   type="time">
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+    <button class="mat-raised-button"
+            (click)="close()">
+        Close
+    </button>
+
+    <button class="mat-raised-button mat-primary"
+            (click)="save()">
+        Save
+    </button>
+
+</mat-dialog-actions>
+</div>
+
+<div [hidden] = "hiddenRecurrentEvent">
+<mat-dialog-content [formGroup]="form" >
+
+    <mat-form-field>
+		<label>Nome Evento:&nbsp;&nbsp;</label>
+        <input matInput
+               formControlName="title"
+			   type="text">
+    </mat-form-field>
+
+    <mat-form-field>
+		<label>Orario di inizio:&nbsp;&nbsp;</label>
+		<input matInput
+               formControlName="startTime"
+			   type="time">
+    </mat-form-field>
+
+    <mat-form-field>
+		<label>Orario di fine:&nbsp;&nbsp;</label>
+        <input matInput
+               formControlName="endTime"
+			   type="time">
+    </mat-form-field>
+	
+	<mat-checkbox type="checkbox" formControlName="lun">Lun</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+	<mat-checkbox type="checkbox" formControlName="mar">Mar</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+	<mat-checkbox type="checkbox" formControlName="mer">Mer</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+	<mat-checkbox type="checkbox" formControlName="gio">Gio</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+	<mat-checkbox type="checkbox" formControlName="ven">Ven</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+	<mat-checkbox type="checkbox" formControlName="sab">Sab</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+	<mat-checkbox type="checkbox" formControlName="dom">Dom</mat-checkbox>
+	
+	<mat-form-field>
+		<label>Giorno di fine ricorrenza:&nbsp;&nbsp;</label>
+        <input matInput
+               formControlName="endRecur"
+			   type="date">
+    </mat-form-field>
+
+	
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+    <button class="mat-raised-button"
+            (click)="close()">
+        Close
+    </button>
+
+    <button class="mat-raised-button mat-primary"
+            (click)="save()">
+        Save
+    </button>
+
+</mat-dialog-actions>
+</div>
