@@ -526,7 +526,7 @@ public class CalendarController {
 
         //settaggio dell'intervallo di ricorrenti che precede l'evento nella ricorrenza che si vuole modificare
         //la ricorrenza del primo sotto-intervallo, termina il giorno prima in cui si TENEVA l'evento nella ricorrenza modificato
-        Date startRecur = newEvent.getStartRecur());
+        Date startRecur = newEvent.getStartRecur();
         Date endRecur = new Date(obj.getOldStartDate().getTime() - (MILLISECONDS_IN_DAY));
         if(startRecur.before(endRecur)) {
             preEvent.setStartRecur(startRecur);
