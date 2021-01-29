@@ -18,7 +18,6 @@
     "@angular/core": "~9.1.1",
     "@angular/forms": "~9.1.1",
     "@angular/localize": "~9.1.1",
-    "@angular/material": "^11.0.4",
     "@angular/material": "^11.0.3",
     "@angular/platform-browser": "~9.1.1",
     "@angular/platform-browser-dynamic": "~9.1.1",
@@ -39,10 +38,6 @@
     "angularx-social-login": "^3.5.4",
     "bootstrap": "^4.5.3",
     "date-fns": "^2.16.1",
-
-    "@ng-bootstrap/ng-bootstrap": "^6.2.0",
-    "angularx-social-login": "^3.5.4",
-    "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "net": "^1.0.2",
     "rxjs": "~6.5.4",

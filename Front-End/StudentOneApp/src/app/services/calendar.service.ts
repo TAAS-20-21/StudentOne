@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Event } from '../models/calendar.model';
 
 
-const baseUrl = 'http://localhost:8082/StudentOne/api/calendar';
+const baseUrl = 'http://localhost:8080/StudentOne/calendarservice/api/calendar';
 
 @Injectable({
 	providedIn: 'root'
@@ -22,17 +22,17 @@ export class CalendarService {
 		const url = baseUrl + '/addEvent';
 		return this.http.post(url, data);
 	}
-  
+
 	delete(data: any): Observable<any> {
 		const url = baseUrl + '/deleteEvent';
 		return this.http.post(url, data);
 	}
-  
+
 	changeTime(data:any): Observable<any> {
 		const url = baseUrl + '/modify/time';
 		return this.http.post(url,data);
 	}
-	
+
 	findByAngularId(data: any): Observable<any>{
 		const url = baseUrl + '/findByAngularId';
 		return this.http.post(url, data);

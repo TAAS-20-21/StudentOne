@@ -26,11 +26,11 @@ public class Chat implements Serializable {
     private String nome;
 
     @JsonIgnore
-    @OneToMany(
-            mappedBy = "chat",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @ManyToMany
+    @JoinTable(
+            name = "user_chat",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private List<User> partecipanti = new ArrayList<User>();
 
     @JsonIgnore

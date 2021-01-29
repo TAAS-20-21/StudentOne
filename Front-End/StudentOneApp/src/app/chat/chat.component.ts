@@ -3,6 +3,7 @@ import { User } from "../models/User";
 import { TokenStorageService } from "../services/token-storage.service";
 import * as SockJS from "sockjs-client";
 import * as Stomp from "stompjs";
+import { SocketCostants } from "../common/app.constants";
 
 
 @Component({
@@ -15,6 +16,8 @@ export class ChatComponent implements OnInit {
   loggedUser: User;
   isLogin:boolean;
   stompClient;
+  isLoaded:boolean;
+  isOnline;
 
   constructor(private token: TokenStorageService){}
 
@@ -30,9 +33,25 @@ export class ChatComponent implements OnInit {
   }
 
   initializeWebSocketConnection(){
-    let ws = new SockJS("/socket");
+    let ws = new SockJS(SocketCostants.SOCKET_URL);
     this.stompClient = Stomp.over(ws);
+    let that = this;
+    this.stompClient.connect({}, function (frame) {
+      that.isLoaded = true;
+      that.isOnline = 1;
+      that.openSocket();
+    }, function(message){
+      that.isOnline = 2;
+    });
+  }
 
+  openSocket() {
+    this.stompClient.subscribe(
+      "/socket-publisher/" + this.loggedUser.email,
+      (message) => {
+        //this.handleResult(message);
+      }
+    );
   }
 
 

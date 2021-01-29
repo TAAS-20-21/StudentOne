@@ -6,12 +6,12 @@ export class AppConstants {
   public static AUTH_API = AppConstants.API_URL + "auth/";
   public static GOOGLE_AUTH_URL = AppConstants.OAUTH2_URL + "google" + AppConstants.REDIRECT_URL;
 
-  public static GETALLEVENT = "http://localhost:8080/StudentOne/calendar/api/calendar/getAllEvents"
+  public static GETALLEVENT = "http://localhost:8080/StudentOne/calendarservice/api/calendar/getAllEvents"
 }
 
 export class SocketCostants{
-  private static API_BASE_URL = "http://localhost:8080/StudentOne/";
+  private static API_BASE_URL = "http://localhost:8080/StudentOne/chatservice";
 
-  private static SOCKET_URL = SocketCostants.API_BASE_URL + "/socket"
+  public static SOCKET_URL = SocketCostants.API_BASE_URL + "/socket"
 
 }

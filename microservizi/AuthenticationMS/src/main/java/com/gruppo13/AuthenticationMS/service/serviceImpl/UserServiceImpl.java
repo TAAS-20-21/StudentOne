@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OAuth2AccessToken accessToken, OidcUserInfo userInfo) {
+    public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, attributes);
         if (StringUtils.isEmpty(oAuth2UserInfo.getName())) {
             throw new OAuth2AuthProcessingExc("Name not found from OAuth2 provider");

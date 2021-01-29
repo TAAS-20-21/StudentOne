@@ -80,4 +80,5 @@ public class LocalUser extends User implements OAuth2User, OidcUser {
     public com.gruppo13.AuthenticationMS.model.User getUser() {
         return user;
     }
+
 }

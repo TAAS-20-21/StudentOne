@@ -6,7 +6,9 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.gson.Gson;
 import com.gruppo13.CalendarMS.models.CustomEvent;
+import com.gruppo13.CalendarMS.models.User;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
@@ -40,12 +42,13 @@ public class CalendarController {
     @Autowired
     WorkingGroupRepository wkRepo;
 
-    // public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject, @RequestHeader("Authorization")String token)
+    // public ResponseEntity<?> getAllEvents(, @RequestHeader("Authorization")String token)
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/getAllEvents")
-    public ResponseEntity<?> getAllEvents(){
+    public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject){
         try{
+            Gson gson = new Gson();
+            final User user = gson.fromJson(jsonObject, User.class);
             List<Long> courseList = studentRepo.getCourseIdByStudent(1L);
             List<Long> workingGroupList = wkRepo.getGroupIdByStudent(1L);
             List<CustomEvent> eventList = new ArrayList<CustomEvent>();
@@ -85,7 +88,6 @@ public class CalendarController {
     }
 
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/addEvent", consumes = "application/json", produces = "application/json")
     public ResponseEntity<CustomEvent> addEvent(@RequestBody EventObject paramEvent) {
 
@@ -182,7 +184,6 @@ public class CalendarController {
     }
 
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/modify/time", consumes = "application/json", produces = "application/json")
     public ResponseEntity<List<CustomEvent>> modifyTime(@RequestBody ModifierObject obj){
         Optional<CustomEvent> event = eventRepo.findById(obj.getId());
