@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
+import com.gruppo13.AuthenticationMS.config.AppProperties;
 import com.gruppo13.AuthenticationMS.dto.LocalUser;
 import com.gruppo13.AuthenticationMS.dto.SignUpRequest;
 import com.gruppo13.AuthenticationMS.dto.SocialProvider;
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
+    public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo, OAuth2AccessToken accessToken) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, attributes);
         if (StringUtils.isEmpty(oAuth2UserInfo.getName())) {
             throw new OAuth2AuthProcessingExc("Name not found from OAuth2 provider");
