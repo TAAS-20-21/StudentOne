@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.api.client.auth.oauth2.Credential;
 import com.gruppo13.AuthenticationMS.dto.LocalUser;
 import com.gruppo13.AuthenticationMS.dto.SignUpRequest;
 import com.gruppo13.AuthenticationMS.dto.SocialProvider;
@@ -16,6 +17,7 @@ import com.gruppo13.AuthenticationMS.repository.RoleRepository;
 import com.gruppo13.AuthenticationMS.repository.UserRepository;
 import com.gruppo13.AuthenticationMS.security.oauth2.user.OAuth2UserInfoFactory;
 import com.gruppo13.AuthenticationMS.service.UserService;
+import com.gruppo13.AuthenticationMS.util.ApiCredentialManager;
 import com.gruppo13.AuthenticationMS.util.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,8 +74,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
+    public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo, OAuth2AccessToken accessToken) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, attributes);
+        try{
+
+            ApiCredentialManager.getInstance().saveCredential(oAuth2UserInfo.getEmail(),accessToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (StringUtils.isEmpty(oAuth2UserInfo.getName())) {
             throw new OAuth2AuthProcessingExc("Name not found from OAuth2 provider");
         }else if(StringUtils.isEmpty(oAuth2UserInfo.getSurname())){
@@ -96,6 +104,15 @@ public class UserServiceImpl implements UserService {
         return LocalUser.create(user, attributes, idToken, userInfo);
     }
 
+    @Override
+    public Credential getGoogleCredential(String email) {
+        try {
+            return ApiCredentialManager.getInstance().getCredential(email);
+        } catch(Exception e){
+            return null;
+        }
+    }
+
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setName(oAuth2UserInfo.getName());
         existingUser.setSurname(oAuth2UserInfo.getSurname());
@@ -111,4 +128,6 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
     }
+
+
 }
