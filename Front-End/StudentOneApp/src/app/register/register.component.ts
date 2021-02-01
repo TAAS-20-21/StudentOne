@@ -7,7 +7,6 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-
   form: any = {};
   isSuccessful = false;
   isSignUpFailed = false;
@@ -31,4 +30,5 @@ export class RegisterComponent implements OnInit {
       }
     );
   }
+
 }

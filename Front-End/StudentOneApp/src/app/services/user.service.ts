@@ -15,9 +15,6 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getPublicContent(): Observable<any> {
-    return this.http.get(AppConstants.API_URL + 'all', { responseType: 'text' });
-  }
 
   getUserBoard(): Observable<any> {
     return this.http.get(AppConstants.API_URL + 'user', { responseType: 'text' });
@@ -32,6 +29,10 @@ export class UserService {
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get(AppConstants.API_URL + 'user/me', httpOptions);
+    return this.http.get(AppConstants.API_URL + 'authenticateToken', httpOptions);
+  }
+
+  getAllEvent(): Observable<any> {
+    return this.http.get(AppConstants.GETALLEVENT, httpOptions);
   }
 }

@@ -1,22 +1,32 @@
 package com.gruppo13.AuthenticationMS.controller;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.gruppo13.AuthenticationMS.config.CurrentUser;
+import com.gruppo13.AuthenticationMS.dto.ApiResponse;
 import com.gruppo13.AuthenticationMS.dto.LocalUser;
+import com.gruppo13.AuthenticationMS.service.UserService;
 import com.gruppo13.AuthenticationMS.util.GeneralUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
-    @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getCurrentUser(@CurrentUser LocalUser user) {
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/authenticateToken")
+    public ResponseEntity<?> authenticateToken(@CurrentUser LocalUser user) {
         return ResponseEntity.ok(GeneralUtils.buildUserInfo(user));
+    }
+
+    @GetMapping("/googleCredentials")
+    public String getGoogleCredentials(@CurrentUser LocalUser user){
+        return userService.getGoogleCredential(user.getUsername()).getAccessToken();
     }
 
     @GetMapping("/all")
@@ -41,4 +51,5 @@ public class UserController {
     public ResponseEntity<?> getModeratorContent() {
         return ResponseEntity.ok("Moderator content goes here");
     }
+
 }

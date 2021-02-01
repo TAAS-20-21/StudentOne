@@ -21,7 +21,7 @@ public class CustomOidcUserService extends OidcUserService {
         OidcUser oidcUser = super.loadUser(userRequest);
         try {
             return userService.processUserRegistration(userRequest.getClientRegistration().getRegistrationId(), oidcUser.getAttributes(), oidcUser.getIdToken(),
-                    oidcUser.getUserInfo());
+                    oidcUser.getUserInfo(), userRequest.getAccessToken());
         } catch (AuthenticationException ex) {
             throw ex;
         } catch (Exception ex) {

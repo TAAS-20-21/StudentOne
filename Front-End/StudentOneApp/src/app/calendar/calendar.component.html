@@ -1,0 +1,15 @@
+<div *ngIf="isLogin; else loggedOut">
+	<div class='demo-app'>
+		<div class='demo-app-main' fc fc-media-screen fc-direction-ltr fc-theme-bootstrap>
+			<full-calendar
+				*ngIf='calendarVisible'
+				#fullcalendar
+				[options]='calendarOptions'
+			></full-calendar>
+		</div>
+	</div>
+</div>
+<ng-template #loggedOut>
+    <app-login></app-login>
+</ng-template>
+  

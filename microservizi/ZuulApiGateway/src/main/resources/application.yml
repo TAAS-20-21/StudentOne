@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /StudentOne
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+  eureka:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+zuul:
+  sensitive-headers:
+  routes:
+    authenticationservice:
+      path: /authenticationservice/**
+      url: http://localhost:8081
+
+
