@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { User } from "../models/User";
 import { TokenStorageService } from "../services/token-storage.service";
-import * as SockJS from "sockjs-client";
-import * as Stomp from "stompjs";
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
 import { SocketCostants } from "../common/app.constants";
 
 
