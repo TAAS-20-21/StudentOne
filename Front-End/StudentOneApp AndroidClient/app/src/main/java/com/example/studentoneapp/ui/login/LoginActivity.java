@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.studentoneapp.HomeActivity;
 import com.example.studentoneapp.MainActivity;
 import com.example.studentoneapp.R;
 import com.example.studentoneapp.ui.login.LoginViewModel;
@@ -171,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             // Signed in successfully, show authenticated UI.
         } catch (ApiException e) {
