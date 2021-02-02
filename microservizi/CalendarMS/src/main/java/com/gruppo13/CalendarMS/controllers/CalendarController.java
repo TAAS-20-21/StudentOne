@@ -3,9 +3,7 @@ package com.gruppo13.CalendarMS.controllers;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
-import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.*;
 import com.google.gson.Gson;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.models.User;
@@ -79,7 +77,6 @@ public class CalendarController {
                 }
             }
 
-            //System.out.println(service.calendarList().list());
             return ResponseEntity.ok(eventList.toArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,9 +94,8 @@ public class CalendarController {
         DateTime startDateTime;
         DateTime endDateTime;
         String id = new String("studentone");
-
-        id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
-
+        String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
+        id += number;
         try {
             //setting dei valori richiesti per la creazione di un evento mediante Google Calendar API
             summary = paramEvent.getSummary();
@@ -204,7 +200,8 @@ public class CalendarController {
 
 
                     String id = new String("studentone");
-                    id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+                    String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
+                    id += number;
                     newEvent.setGoogleId(id);
                     Event temp = new Event()
                             .setId(id)
@@ -298,7 +295,8 @@ public class CalendarController {
 
 
                 String id = new String("studentone");
-                id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+                String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
+                id += number;
                 newEvent.setGoogleId(id);
                 Event temp = new Event()
                         .setId(id)
@@ -379,7 +377,8 @@ public class CalendarController {
         DateTime endDateTime;
         String id = new String("studentone");
 
-        id += Integer.toString(MIN + (int) (Math.random() * ((MAX - MIN) + 1)));
+        String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
+        id += number;
 
         try {
             Calendar service = new CalendarFromTokenCreator().getService(token);
