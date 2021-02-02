@@ -18,12 +18,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final long MAX_AGE_SECS = 3600;
 
+    private static String[] ALLOWED_ORIGINS = new String[]{
+            "http://localhost:4200"};
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:4200")
+                .allowedOriginPatterns(ALLOWED_ORIGINS)
                 .allowedMethods("*")
-                .maxAge(3600)
+                .maxAge(MAX_AGE_SECS)
                 .allowCredentials(true);
     }
 

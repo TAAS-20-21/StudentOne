@@ -79,7 +79,7 @@ public class CalendarController {
                 }
             }
 
-
+            //System.out.println(service.calendarList().list());
             return ResponseEntity.ok(eventList.toArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -361,7 +361,6 @@ public class CalendarController {
     }
 
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/findByAngularId", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> findByAngularId(@RequestBody ModifierObject obj) {
         CustomEvent event = eventRepo.findByAngularId(obj.getId());
