@@ -24,11 +24,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.studentoneapp.CalendarActivity;
 import com.example.studentoneapp.HomeActivity;
-import com.example.studentoneapp.MainActivity;
 import com.example.studentoneapp.R;
-import com.example.studentoneapp.ui.login.LoginViewModel;
-import com.example.studentoneapp.ui.login.LoginViewModelFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
