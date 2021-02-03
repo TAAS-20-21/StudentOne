@@ -1,22 +1,34 @@
 <div class="cont">
-    <div class="img">
-        <div class="img__text m--up">
-            <h2>Sei già dei nostri?</h2>
-            <p>Se hai già un account entra! Ci sei mancato!</p>
-        </div>
-        <div class="img__btn">
-            <span class="m--up">Accedi</span>
-        </div>
-    </div>
     <form *ngIf="!isSuccessful" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+        <div class="img">
+            <div class="img__text m--up">
+                <h2>Sei già dei nostri?</h2>
+                <p>Se hai già un account entra! Ci sei mancato!</p>
+            </div>
+            <div class="img__btn">
+                <span class="m--up">Accedi</span>
+            </div>
+        </div>
         <h2>È tempo di sentirsi a casa</h2>
         <div class="form-group">
-            <label for="displayName"><span>Nome</span></label> <input type="text" class="form-control" name="displayName" [(ngModel)]="form.displayName" required minlength="3"
+            <label for="displayName"><span>Display Name</span></label> <input type="text" class="form-control" name="displayName" [(ngModel)]="form.displayName" required minlength="3"
                 maxlength="20" #displayName="ngModel" />
             <div class="alert alert-danger" *ngIf="f.submitted && displayName.invalid">
                 <div class="alert alert-danger" role="alert" *ngIf="displayName.errors.required">*Il campo è obbligatorio!</div>
-                <div *ngIf="displayName.errors.minlength">*Il nome deve essere almeno di 3 caratteri</div>
-                <div *ngIf="displayName.errors.maxlength">*Il nome deve essere al massimo di 20 caratteri</div>
+                <div *ngIf="displayName.errors.minlength">*Il displayname deve essere almeno di 3 caratteri</div>
+                <div *ngIf="displayName.errors.maxlength">*Il displayname deve essere al massimo di 20 caratteri</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name"><span>Nome</span></label> <input type="text" class="form-control" name="name" [(ngModel)]="form.name" #name="ngModel" />
+            <div class="alert alert-danger" *ngIf="f.submitted && name.invalid">
+                <div class="alert alert-danger" role="alert" *ngIf="name.errors.required">*Il campo è obbligatorio!</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="surname"><span>Cognome</span></label> <input type="text" class="form-control" name="surname" [(ngModel)]="form.surname" #surname="ngModel" />
+            <div class="alert alert-danger" *ngIf="f.submitted && surname.invalid">
+                <div class="alert alert-danger" role="alert" *ngIf="surname.errors.required">*Il campo è obbligatorio!</div>
             </div>
         </div>
         <div class="form-group">
