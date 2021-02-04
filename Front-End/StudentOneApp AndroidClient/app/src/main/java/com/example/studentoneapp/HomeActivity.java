@@ -35,6 +35,8 @@ public class HomeActivity extends AppCompatActivity {
         signOut = findViewById(R.id.signOutButton);
         calendarButton = findViewById(R.id.calendarButton);
 
+
+        //google sign in
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -52,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
+        // sign out
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        // calendar activity swap
         calendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
