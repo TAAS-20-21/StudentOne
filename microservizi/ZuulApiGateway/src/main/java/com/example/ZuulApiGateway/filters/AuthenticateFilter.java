@@ -60,37 +60,11 @@ public class AuthenticateFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
         String g = request.getRequestURL().toString();
         String token = request.getHeader("Authorization");
-        if(token != null && !g.toLowerCase().contains("authenticationservice")){
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-            String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080").path("/StudentOne/authenticationservice/api/authenticateToken").build().toUriString();
-            HttpGet r = new HttpGet(url);
-            r.addHeader("Authorization", token);
-            try (CloseableHttpResponse response = httpClient.execute(r)) {
-
-                // Get HttpResponse Status
-                if(response.getStatusLine().getStatusCode()==HttpStatus.SC_OK){
-                    HttpEntity entity = response.getEntity();
-                    if(entity != null){
-                        String user = EntityUtils.toString(entity);
-                        Map<String, List<String>> params = ctx.getRequestQueryParams();
-                        if (params == null) {
-                            params = Maps.newHashMap();
-                        }
-                        params.put("user", Lists.newArrayList(user));
-                        ctx.setRequestQueryParams(params);
-                        ctx.addZuulRequestHeader("Authorization", token.replace("Bearer ",""));
-                    }
-                } else {
-                    ctx.setSendZuulResponse(false);
-                    ctx.setResponseBody("not authorized");
-                    ctx.getResponse().setHeader("Content-Type", "text/plain;charset=UTF-8");
-                    ctx.setResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
-                }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(token == null && !g.toLowerCase().contains("authenticationservice")){
+            ctx.setSendZuulResponse(false);
+            ctx.setResponseBody("not authorized");
+            ctx.getResponse().setHeader("Content-Type", "text/plain;charset=UTF-8");
+            ctx.setResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
 
         }
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
