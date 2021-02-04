@@ -5,6 +5,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.*;
 import com.google.gson.Gson;
+import com.gruppo13.CalendarMS.config.CurrentUser;
+import com.gruppo13.CalendarMS.dto.LocalUser;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.models.User;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
@@ -43,10 +45,8 @@ public class CalendarController {
     // public ResponseEntity<?> getAllEvents(, @RequestHeader("Authorization")String token)
 
     @GetMapping("/getAllEvents")
-    public ResponseEntity<?> getAllEvents(@RequestParam("user") String jsonObject, @RequestHeader("Authorization") String token){
+    public ResponseEntity<?> getAllEvents(@CurrentUser LocalUser user, @RequestHeader("Authorization") String token){
         try{
-            Gson gson = new Gson();
-            final User user = gson.fromJson(jsonObject, User.class);
             List<Long> courseList = studentRepo.getCourseIdByStudent(1L);
             List<Long> workingGroupList = wkRepo.getGroupIdByStudent(1L);
             List<CustomEvent> eventList = new ArrayList<CustomEvent>();

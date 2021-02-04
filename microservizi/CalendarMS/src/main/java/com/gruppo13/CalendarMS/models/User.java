@@ -10,11 +10,16 @@ import java.util.Set;
  * The persistent class for the user database table.
  *
  */
+@Entity
+@Table(name="user", schema = "public")
 public class User implements Serializable {
 
 
     private static final long serialVersionUID = 65981149772133526L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     //private String providerUserId;
@@ -25,13 +30,17 @@ public class User implements Serializable {
 
     private String surname;
 
+    @JsonIgnore
+    private String password;
+
     //private String provider;
 
     //private boolean isProfessor;
 
     //private String student_number_id;
-
-    private Set<TypeRole> roles;
+    @ManyToMany
+    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
+    private Set<Role> roles;
 
     public User() {
     }
@@ -84,12 +93,20 @@ public class User implements Serializable {
         this.provider = provider;
     }
 */
-    public Set<TypeRole> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<TypeRole> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 /*
     public String getStudent_number_id() {
