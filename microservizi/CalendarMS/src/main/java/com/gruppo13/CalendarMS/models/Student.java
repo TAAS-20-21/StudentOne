@@ -13,7 +13,7 @@ public class Student extends Person implements Serializable {
     private static final long serialVersionUID = -4968085150152136222L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany
@@ -26,6 +26,10 @@ public class Student extends Person implements Serializable {
 
     @ManyToMany(mappedBy = "members")
     private Set<WorkingGroup> workingGroups;
+
+    private String providerUserId;
+
+    private String provider;
 
 
     public Student(Student student) {
@@ -54,4 +58,19 @@ public class Student extends Person implements Serializable {
         this.id = id;
     }
 
+    public String getProviderUserId() {
+        return providerUserId;
+    }
+
+    public void setProviderUserId(String providerUserId) {
+        this.providerUserId = providerUserId;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
 }

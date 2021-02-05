@@ -14,7 +14,7 @@ public class Teacher extends Person implements Serializable {
     private static final long serialVersionUID = -7103857371480503611L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany
@@ -23,6 +23,10 @@ public class Teacher extends Person implements Serializable {
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> assignedCourses;
+
+    private String providerUserId;
+
+    private String provider;
 
     public Teacher(){}
 
@@ -48,5 +52,21 @@ public class Teacher extends Person implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public String getProviderUserId() {
+        return providerUserId;
+    }
+
+    public void setProviderUserId(String providerUserId) {
+        this.providerUserId = providerUserId;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 }

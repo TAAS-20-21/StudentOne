@@ -47,8 +47,8 @@ public class CalendarController {
     @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(@CurrentUser LocalUser user, @RequestHeader("Authorization") String token){
         try{
-            List<Long> courseList = studentRepo.getCourseIdByStudent(1L);
-            List<Long> workingGroupList = wkRepo.getGroupIdByStudent(1L);
+            List<Long> courseList = studentRepo.getCourseIdByStudent(user.getUser().getId());
+            List<Long> workingGroupList = wkRepo.getGroupIdByStudent(user.getUser().getId());
             List<CustomEvent> eventList = new ArrayList<CustomEvent>();
 
             //prelievo degli eventi di tipo lesson

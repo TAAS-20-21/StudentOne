@@ -3,7 +3,7 @@ package com.gruppo13.CalendarMS.security;
 import com.gruppo13.CalendarMS.dto.LocalUser;
 import com.gruppo13.CalendarMS.exception.ResourceNotFoundException;
 import com.gruppo13.CalendarMS.models.User;
-import com.gruppo13.CalendarMS.services.UserService;
+import com.gruppo13.CalendarMS.service.UserService;
 import com.gruppo13.CalendarMS.util.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
