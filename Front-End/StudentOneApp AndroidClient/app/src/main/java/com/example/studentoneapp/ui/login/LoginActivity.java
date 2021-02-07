@@ -35,8 +35,15 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class LoginActivity extends AppCompatActivity {
     SignInButton signin;
+    Button prova;
     int RC_SIGN_IN = 0;
     private LoginViewModel loginViewModel;
     GoogleSignInClient mGoogleSignInClient;
@@ -52,6 +59,20 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+
+        prova = findViewById(R.id.button);
+        prova.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                switch (v.getId()) {
+                    case R.id.button:
+                        sendPost();
+                        break;
+                    // ...
+                }
+            }
+        });
 
         //google sign in
         signin = findViewById(R.id.sign_in_button);
@@ -201,5 +222,54 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    public void sendPost() {
+        try {
+            Toast.makeText(getApplicationContext(),
+                    "fra" + " "
+                            + "pippo",
+                    Toast.LENGTH_SHORT).show();
+            URL url = new URL("http://192.168.1.14:8080/StudentOne/authenticationservice/api/auth/signup");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            Toast.makeText(getApplicationContext(),
+                    "1" + " "
+                            + "pippo",
+                    Toast.LENGTH_SHORT).show();
+
+            JSONObject jsonParam = new JSONObject();
+            //jsonParam.put("displayName", "Pippo");
+            jsonParam.put("name", "pippo");
+            jsonParam.put("surname", "pippo");
+            jsonParam.put("email", "pippo@pippo.com");
+            jsonParam.put("password", "123456");
+            jsonParam.put("matchingPassword", "123456");
+            jsonParam.put("socialProvider", "LOCAL");
+
+            //Log.i("JSON", jsonParam.toString());
+            DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+            //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+            os.writeBytes(jsonParam.toString());
+
+            Toast.makeText(getApplicationContext(),
+                    "pippiamo" + " "
+                            + "pippo",
+                    Toast.LENGTH_SHORT).show();
+            os.flush();
+            os.close();
+
+            //Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+            //Log.i("MSG", conn.getResponseMessage());
+
+            conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

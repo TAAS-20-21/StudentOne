@@ -51,7 +51,6 @@ public class HomeActivity extends AppCompatActivity {
 
             name.setText(personName);
             email.setText(personEmail);
-
         }
 
         // sign out
