@@ -61,19 +61,18 @@ public class CalendarController {
                 eventList.addAll(eventRepo.findByWorkingGroupId(id_group));
             }
 
-            //richiamo della sincronizzazione con Google per tutti gli eventi prelevati con i due statement for precedenti
-            for(CustomEvent event:eventList){
-                synchWithGoogle(event, token);
-            }
-
-
-            //DA AGGIUNGERE QUANDO CI SARANNO PIU' UTENTI
-            Calendar service = new CalendarFromTokenCreator().getService(token);
-            Events events = service.events().list("primary").execute();
-            List<Event> items = events.getItems();
-            for(Event el: items){
-                if(!eventRepo.existsByGoogleId(el.getId())){
-                    service.events().delete("primary", el.getId()).execute();
+            if(user.getUser().getProvider().equals("google")) {
+                //richiamo della sincronizzazione con Google per tutti gli eventi prelevati con i due statement for precedenti
+                for (CustomEvent event : eventList) {
+                    synchWithGoogle(event, token);
+                }
+                Calendar service = new CalendarFromTokenCreator().getService(token);
+                Events events = service.events().list("primary").execute();
+                List<Event> items = events.getItems();
+                for (Event el : items) {
+                    if (!eventRepo.existsByGoogleId(el.getId())) {
+                        service.events().delete("primary", el.getId()).execute();
+                    }
                 }
             }
 
