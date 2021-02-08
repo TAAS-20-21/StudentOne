@@ -1,8 +1,10 @@
 package com.gruppo13.AuthenticationMS.eventlistener;
 
 import com.gruppo13.AuthenticationMS.event.UserCreatedEvent;
+import com.gruppo13.AuthenticationMS.model.Role;
 import com.gruppo13.AuthenticationMS.util.Converter;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.Set;
 
 
 @Log4j2
@@ -46,7 +49,19 @@ public class UserEventListener {
         jo.put("isProfessor",event.getUser().isProfessor());
         jo.put("provider",event.getUser().getProvider());
         jo.put("providerUserId",event.getUser().getProviderUserId());
-        //System.out.println(jo.toString());
+        jo.put("password",event.getUser().getPassword());
+
+
+        /*Set<Role> roles = event.getUser().getRoles();
+        JSONArray rolesArray = new JSONArray();
+        for(Role r : roles){
+            rolesArray.put(r.getTypeRole());
+        }
+        jo.put("roles",rolesArray);*/
+
+
+
+        System.out.println(jo.toString());
         rabbitTemplate.convertAndSend(queueOrderCreateName,jo.toString());
 
     }

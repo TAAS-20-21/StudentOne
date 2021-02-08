@@ -56,9 +56,11 @@ public class User implements Serializable {
     public String getProviderUserId() {
         return providerUserId;
     }
+
     public void setProviderUserId(String providerUserId) {
         this.providerUserId = providerUserId;
     }
+
     public String getEmail() {
         return email;
     }
@@ -117,6 +119,7 @@ public class User implements Serializable {
     public boolean isProfessor() {
         return isProfessor;
     }
+
     public void setProfessor(boolean professor) {
         isProfessor = professor;
     }
