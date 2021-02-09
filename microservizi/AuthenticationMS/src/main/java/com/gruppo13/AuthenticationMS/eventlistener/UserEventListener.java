@@ -1,5 +1,6 @@
 package com.gruppo13.AuthenticationMS.eventlistener;
 
+import com.gruppo13.AuthenticationMS.AuthenticationMsApplication;
 import com.gruppo13.AuthenticationMS.event.UserCreatedEvent;
 import com.gruppo13.AuthenticationMS.model.Role;
 import com.gruppo13.AuthenticationMS.util.Converter;
@@ -62,8 +63,8 @@ public class UserEventListener {
 
 
         System.out.println(jo.toString());
-        rabbitTemplate.convertAndSend(queueOrderCreateName,jo.toString());
-
+        //rabbitTemplate.convertAndSend(queueOrderCreateName,jo.toString());
+        rabbitTemplate.convertAndSend(AuthenticationMsApplication.getTopicExchangeName(),"user.create.try",jo.toString());
     }
 
 }
