@@ -10,4 +10,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Teacher findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    //FAI QUERY PER OTTENERE I CORSI ASSEGNATI
 }

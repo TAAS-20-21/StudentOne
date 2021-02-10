@@ -17,5 +17,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "SELECT cl.course_id FROM course_like cl WHERE cl.student_id = ?1", nativeQuery = true)
     List<Long> getCourseIdByStudent(Long studentId);
 
-
 }

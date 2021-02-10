@@ -35,18 +35,7 @@ export class OurCalendarComponent {
 		} else {
 			this.isLogin = true;
 		}
-		console.log(this.loggedUser);
-		const _dataToUpload = {
-			id:this.loggedUser.id
-		}
-		this.calendarService.getIsProfessor(_dataToUpload)
-		.subscribe(
-			response => {
-				console.log(response);
-			},
-			error => {
-				console.log(error)
-			});
+
 		//Metodo per ottenere tutti gli eventi che coinvolgono l'utente.
 		this.calendarService.getAll()
 		.subscribe(
@@ -61,7 +50,10 @@ export class OurCalendarComponent {
 
   
 	//Metodo per gestire l'apertura della dialog per la creazione degli eventi.
-	openDialog(selectInfo: DateSelectArg) {
+	openDialog(selectInfo: DateSelectArg, response: any) {
+		
+		//console.log(this.loggedUser);
+		//console.log(response);
 
 		const dialogConfig = new MatDialogConfig();
 
@@ -69,7 +61,11 @@ export class OurCalendarComponent {
 		dialogConfig.disableClose = true;
 		//Evidenzia il primo elemento editabile della dialog.
 		dialogConfig.autoFocus = true;
-		
+		dialogConfig.data = {
+			isProfessor: response,
+			loggedUser: this.loggedUser,
+			calendarService: this.calendarService
+		}
 		const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
 		
 		/*const calendarApi = this.fullcalendar.getApi(); 
@@ -291,7 +287,18 @@ export class OurCalendarComponent {
 
 	//Metodo per la gestione dell'evento di selezione di una data.
 	handleDateSelect(selectInfo: DateSelectArg) {
-		this.openDialog(selectInfo);
+		const _dataToUpload = {
+			id:this.loggedUser.id
+		}
+		this.calendarService.getIsProfessor(_dataToUpload)
+		.subscribe(
+			response => {
+				this.openDialog(selectInfo, response);
+			},
+			error => {
+				console.log(error)
+		});
+		
 	}
 
 	//Metodo per la gestione dell'evento di click su un evento già esistente.

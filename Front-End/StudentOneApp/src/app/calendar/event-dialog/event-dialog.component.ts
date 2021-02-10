@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
+import { CalendarService } from 'src/app/services/calendar.service';
 
 
 @Component({
@@ -30,9 +31,13 @@ export class EventDialogComponent implements OnInit {
 	endRecur:string;
 	isRecurrent = false;
 	dialogRef: MatDialogRef<EventDialogComponent>;
+	isProfessor:boolean;
+	loggedUser:any;
+	calendarService: CalendarService;
     constructor(
         private fb: FormBuilder,
-        private _dialogRef: MatDialogRef<EventDialogComponent>){
+        private _dialogRef: MatDialogRef<EventDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: any){
 			this.form = new FormGroup({
 				title: new FormControl(),
 				startTime: new FormControl(),
@@ -47,18 +52,34 @@ export class EventDialogComponent implements OnInit {
 				endRecur:new FormControl()
 			});
 			this.dialogRef = _dialogRef;
+			this.isProfessor = data.isProfessor;
+			this.loggedUser = data.loggedUser;
+			this.calendarService = data.calendarService;
+			if(this.isProfessor == false){
+				console.log("Studente", this.loggedUser);
+				const _dataToUpload = {
+					id:this.loggedUser.id
+				}
+				this.calendarService.getCoursesById(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log('CORSI:',response);
+					},
+					error => {
+						console.log(error)
+				});
+				this.calendarService.getWorkingGroupsById(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log('WGs:',response);
+					},
+					error => {
+						console.log(error)
+				});
+			}else{
+				console.log("Docente", this.loggedUser);
+			}
 		}
-        /*@Inject(MAT_DIALOG_DATA) {description} ) {
-
-        this.description = description;
-
-
-        this.form = fb.group({
-            description: [description, Validators.required],
-        });
-		
-
-    }*/
 
     ngOnInit() {
 

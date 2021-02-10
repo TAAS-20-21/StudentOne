@@ -43,6 +43,16 @@ export class CalendarService {
 		const url = "http://localhost:8080/StudentOne/calendarservice/api/user/isProfessor";
 		return this.http.post(url, data);
 	}
+	
+	getCoursesById(data: any){
+		const url = "http://localhost:8080/StudentOne/calendarservice/api/student/courses";
+		return this.http.post(url, data);
+	}
+	
+	getWorkingGroupsById(data: any){
+		const url = "http://localhost:8080/StudentOne/calendarservice/api/student/working_groups";
+		return this.http.post(url, data);
+	}
 	/*
 	update(id: any, data: any): Observable<any> {
 		return this.http.put(`${baseUrl}/${id}`, data);
