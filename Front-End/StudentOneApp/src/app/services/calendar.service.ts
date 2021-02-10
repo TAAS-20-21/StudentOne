@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Event } from '../models/calendar.model';
+import { AppConstants } from '../common/app.constants';
 
 
 const baseUrl = 'http://localhost:8080/StudentOne/calendarservice/api/calendar';
@@ -35,6 +36,11 @@ export class CalendarService {
 
 	findByAngularId(data: any): Observable<any>{
 		const url = baseUrl + '/findByAngularId';
+		return this.http.post(url, data);
+	}
+	
+	getIsProfessor(data: any){
+		const url = "http://localhost:8080/StudentOne/calendarservice/api/user/isProfessor";
 		return this.http.post(url, data);
 	}
 	/*

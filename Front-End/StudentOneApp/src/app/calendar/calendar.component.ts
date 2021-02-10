@@ -35,7 +35,18 @@ export class OurCalendarComponent {
 		} else {
 			this.isLogin = true;
 		}
-	
+		console.log(this.loggedUser);
+		const _dataToUpload = {
+			id:this.loggedUser.id
+		}
+		this.calendarService.getIsProfessor(_dataToUpload)
+		.subscribe(
+			response => {
+				console.log(response);
+			},
+			error => {
+				console.log(error)
+			});
 		//Metodo per ottenere tutti gli eventi che coinvolgono l'utente.
 		this.calendarService.getAll()
 		.subscribe(
