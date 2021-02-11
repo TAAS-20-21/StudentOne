@@ -38,6 +38,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ChatComponent } from './chat/chat.component';
+import { MatSelectModule } from '@angular/material/select';
 //DIALOG
 
 FullCalendarModule.registerPlugins([
@@ -84,7 +85,8 @@ FullCalendarModule.registerPlugins([
 	ReactiveFormsModule,
 	MatInputModule,
 	BrowserModule,
-	MatCheckboxModule
+	MatCheckboxModule,
+	MatSelectModule
 	//DIALOG
   ],
   //DIALOG

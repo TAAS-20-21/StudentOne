@@ -144,7 +144,7 @@ export class OurCalendarComponent {
 					endDateTime : addInfo.event.end,
 					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
 					workingGroup: {
-						id: 1
+						id: 3
 					},
 					course: null,
 					type:null,

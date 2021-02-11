@@ -29,6 +29,10 @@ export class EventDialogComponent implements OnInit {
 	dom:boolean;
 	startRecur:string;
 	endRecur:string;
+	//DROPDOWN
+	dropDown:string;
+	listDropDown:any;
+	//DROPDOWN
 	isRecurrent = false;
 	dialogRef: MatDialogRef<EventDialogComponent>;
 	isProfessor:boolean;
@@ -49,7 +53,8 @@ export class EventDialogComponent implements OnInit {
 				ven:new FormControl(),
 				sab:new FormControl(),
 				dom:new FormControl(),
-				endRecur:new FormControl()
+				endRecur:new FormControl(),
+				dropDown:new FormControl()
 			});
 			this.dialogRef = _dialogRef;
 			this.isProfessor = data.isProfessor;
@@ -60,31 +65,66 @@ export class EventDialogComponent implements OnInit {
 				const _dataToUpload = {
 					id:this.loggedUser.id
 				}
-				this.calendarService.getCoursesById(_dataToUpload)
-				.subscribe(
-					response => {
-						console.log('CORSI:',response);
-					},
-					error => {
-						console.log(error)
-				});
 				this.calendarService.getWorkingGroupsById(_dataToUpload)
 				.subscribe(
 					response => {
-						console.log('WGs:',response);
+						this.initializeListDropDown(response);
 					},
 					error => {
 						console.log(error)
 				});
 			}else{
 				console.log("Docente", this.loggedUser);
+				/*DA MODIFICARE!!!! ORA È UNA CHIAMATA A STUDENTE, NON A DOCENTE
+				this.calendarService.getCoursesById(_dataToUpload)
+				.subscribe(
+					response => {
+						this.initializeListDropDown(response);
+					},
+					error => {
+						console.log(error)
+				});*/
 			}
 		}
 
     ngOnInit() {
 
     }
-
+	initializeListDropDown(response){
+		this.listDropDown = response;
+		for (let i = 0; i < this.listDropDown.length; i++){
+			const _dataToUpload = {
+					id:this.listDropDown[i]
+			}
+			if(this.isProfessor == true){
+				this.calendarService.getCourse(_dataToUpload)
+					.subscribe(
+						response => {
+							console.log("CORSO",response);
+							this.setResponseName(response.name, this.listDropDown[i], i);
+						},
+						error => {
+							console.log(error)
+					});
+				//this.listDropDown[i] = {id: i, value: this.listDropDown[i]};
+			}else{
+				this.calendarService.getWorkingGroup(_dataToUpload)
+					.subscribe(
+						response => {
+							console.log("WG",response);
+							this.setResponseName(response.name, this.listDropDown[i], i);
+						},
+						error => {
+							console.log(error)
+					});
+			}
+		}
+	}
+	
+	setResponseName(response, index, i){
+		this.listDropDown[i] = {id: index, name: response};
+		console.log(this.listDropDown[i]);
+	}
 
     save() {
         this.dialogRef.close([this.form.value, this.isRecurrent]);
