@@ -2,6 +2,7 @@ import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { CalendarService } from 'src/app/services/calendar.service';
+import { WorkingGroup } from "../../models/working-group.model";
 
 
 @Component({
@@ -32,6 +33,7 @@ export class EventDialogComponent implements OnInit {
 	//DROPDOWN
 	dropDown:string;
 	listDropDown:any;
+	listDropDownWG:WorkingGroup[];
 	//DROPDOWN
 	isRecurrent = false;
 	dialogRef: MatDialogRef<EventDialogComponent>;
@@ -90,7 +92,13 @@ export class EventDialogComponent implements OnInit {
     ngOnInit() {
 
     }
+	
+	/*selected(){
+		console.log(this.form.value.dropDown);
+	}*/
+	
 	initializeListDropDown(response){
+		this.listDropDownWG = [];
 		this.listDropDown = response;
 		for (let i = 0; i < this.listDropDown.length; i++){
 			const _dataToUpload = {
@@ -100,19 +108,18 @@ export class EventDialogComponent implements OnInit {
 				this.calendarService.getCourse(_dataToUpload)
 					.subscribe(
 						response => {
-							console.log("CORSO",response);
-							this.setResponseName(response.name, this.listDropDown[i], i);
+							//console.log("CORSO",response);
+							this.setResponseName(response, this.listDropDown[i]);
 						},
 						error => {
 							console.log(error)
 					});
-				//this.listDropDown[i] = {id: i, value: this.listDropDown[i]};
 			}else{
 				this.calendarService.getWorkingGroup(_dataToUpload)
 					.subscribe(
 						response => {
-							console.log("WG",response);
-							this.setResponseName(response.name, this.listDropDown[i], i);
+							//console.log("WG",response);
+							this.setResponseName(response, this.listDropDown[i]);
 						},
 						error => {
 							console.log(error)
@@ -121,9 +128,9 @@ export class EventDialogComponent implements OnInit {
 		}
 	}
 	
-	setResponseName(response, index, i){
-		this.listDropDown[i] = {id: index, name: response};
-		console.log(this.listDropDown[i]);
+	setResponseName(response, index){
+		this.listDropDownWG.push({id: index, name: response.name});
+		//console.log(this.listDropDownWG);
 	}
 
     save() {

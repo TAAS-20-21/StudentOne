@@ -116,6 +116,7 @@ export class OurCalendarComponent {
   
 	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di creazione di un evento.
 	handleEventAdd(addInfo: EventAddArg){
+		console.log("ADDINFO:",addInfo);
 		const _dataToUpload = {
 			id: addInfo.event.id
 		}
@@ -135,6 +136,9 @@ export class OurCalendarComponent {
 		//UPLOAD TO DB
 		//Se non esiste un altro evento con angularId allora creo un evento.
 		if(queryRes ==null){
+			//METTERE CONTROLLO SU PROFESSORE O ALUNNO
+			let wgName = addInfo.event.title.split("@")[1];
+			let wgId = addInfo.event.title.split("@")[2];
 			let _dataToUpload: any;
 			//PER EVENTI SINGOLI
 			if(addInfo.event.startStr != ""){
@@ -144,7 +148,7 @@ export class OurCalendarComponent {
 					endDateTime : addInfo.event.end,
 					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
 					workingGroup: {
-						id: 3
+						id: Number(wgId)
 					},
 					course: null,
 					type:null,
@@ -187,7 +191,7 @@ export class OurCalendarComponent {
 					endDateTime : endTime,
 					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
 					workingGroup: {
-						id: 1
+						id: Number(wgId)
 					},
 					course: null,
 					type:null,
@@ -198,7 +202,7 @@ export class OurCalendarComponent {
 					startTimeRecurrent: startTimeInMilliseconds,
 					endTimeRecurrent: endTimeInMilliseconds
 				}
-				console.log("end rec: ",daysTypeData.endRecur);
+				//console.log("end rec: ",daysTypeData.endRecur);
 			}
 			
 			
@@ -215,7 +219,7 @@ export class OurCalendarComponent {
   
 	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di cambiamento di un evento.
 	handleEventChange(changeInfo: EventChangeArg){
-		console.log("evento da modificare:", changeInfo);
+		//console.log("evento da modificare:", changeInfo);
 		this.changeTime(changeInfo);
 	}
 	
@@ -323,7 +327,7 @@ export class OurCalendarComponent {
 			if(viewType == 'dayGridMonth'){
 				calendarApi.addEvent({
 					id: this.createEventId(),
-					title: data[0].title,
+					title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 					start: selectInfo.startStr + 'T' + data[0].startTime +':00+01:00',
 					end: selectInfo.startStr + 'T' + data[0].endTime +':00+01:00',
 					allDay: false
@@ -333,7 +337,7 @@ export class OurCalendarComponent {
 				//Se sono in un'altra visione l'orario è già presente quindi seleziono solo la data e concateno l'orario. 
 				calendarApi.addEvent({
 					id: this.createEventId(),
-					title: data[0].title,
+					title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 					start: selectInfo.startStr.substr(0,10) + 'T' + data[0].startTime +':00+01:00',
 					end: selectInfo.startStr.substr(0,10) + 'T' + data[0].endTime +':00+01:00',
 					allDay: false
@@ -366,7 +370,7 @@ export class OurCalendarComponent {
 			//Siccome l'evento è ricorrente basta passare solo l'orario senza anno-mese-giorno
 			calendarApi.addEvent({
 				id: this.createEventId(),
-				title: data[0].title,
+				title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 				startTime: data[0].startTime +':00+01:00',
 				endTime: data[0].endTime +':00+01:00',
 				startRecur: selectInfo.startStr,
@@ -408,7 +412,7 @@ export class OurCalendarComponent {
 				}
 			}
 		}
-		console.log(calendarApi.getEvents());
+		//console.log(calendarApi.getEvents());
 	}
 	
 	//Evento per aggiornare gli eventi di fullcalendar in caso di cambiamenti a DB:
@@ -439,7 +443,7 @@ export class OurCalendarComponent {
 				});
 			}
 		}
-		console.log("aggiornati", data);
+		//console.log("aggiornati", data);
 	}
 	
 	//Crea un angularId incrementando il massimo angularId già presente.

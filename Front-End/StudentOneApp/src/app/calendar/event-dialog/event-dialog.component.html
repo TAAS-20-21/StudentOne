@@ -13,38 +13,38 @@
 <div [hidden] = "hiddenSingleEvent">
 <div *ngIf="this.listDropDown != null">
 <mat-dialog-content [formGroup]="form" >
-	
-    <mat-form-field>
-		<label>Nome Evento:&nbsp;&nbsp;</label>
-        <input matInput
-               formControlName="title"
-			   type="text">
-    </mat-form-field>
 
-    <mat-form-field>
-		<label>Orario di inizio:&nbsp;&nbsp;</label>
-		<input matInput
-               formControlName="startTime"
-			   type="time">
-    </mat-form-field>
+		<mat-form-field>
+			<label>Nome Evento(SOLO valori alfanumerici):&nbsp;&nbsp;</label>
+			<input matInput
+				   formControlName="title"
+				   type="text" pattern="([A-z0-9À-ž\s]){2,}" title="Three letter country code" required >
+		</mat-form-field>
 
-    <mat-form-field>
-		<label>Orario di fine:&nbsp;&nbsp;</label>
-        <input matInput
-               formControlName="endTime"
-			   type="time">
-    </mat-form-field>
-	
-	<mat-form-field appearance="fill">
-		<mat-label>Gruppo di lavoro:</mat-label>
-		<mat-select formControlName="dropDown">			
-		<mat-option>--</mat-option>
-			<mat-option *ngFor="let elem of listDropDown" [value]="elem">
-				{{elem.name}}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
+		<mat-form-field>
+			<label>Orario di inizio:&nbsp;&nbsp;</label>
+			<input matInput
+				   formControlName="startTime"
+				   type="time">
+		</mat-form-field>
 
+		<mat-form-field>
+			<label>Orario di fine:&nbsp;&nbsp;</label>
+			<input matInput
+				   formControlName="endTime"
+				   type="time">
+		</mat-form-field>
+		
+		<mat-form-field appearance="fill">
+			<mat-label>Gruppo di lavoro:</mat-label>
+			<!--<mat-select formControlName="dropDown" (ngModelChange)="selected($event)">-->
+			<mat-select formControlName="dropDown">
+			<mat-option>--</mat-option>
+				<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
+					{{elem.name}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
 </mat-dialog-content>
 </div>
 
@@ -55,7 +55,7 @@
         Close
     </button>
 
-    <button class="mat-raised-button mat-primary"
+    <button [disabled]="form.invalid" class="mat-raised-button mat-primary"
             (click)="save()">
         Save
     </button>
@@ -67,10 +67,10 @@
 <mat-dialog-content [formGroup]="form" >
 
     <mat-form-field>
-		<label>Nome Evento:&nbsp;&nbsp;</label>
+		<label>Nome Evento(SOLO valori alfanumerici):&nbsp;&nbsp;</label>
         <input matInput
                formControlName="title"
-			   type="text">
+			   type="text" pattern="([A-z0-9À-ž\s]){2,}" required>
     </mat-form-field>
 
     <mat-form-field>
@@ -102,6 +102,16 @@
 			   type="date">
     </mat-form-field>
 	
+	<mat-form-field appearance="fill">
+		<mat-label>Gruppo di lavoro:</mat-label>
+		<mat-select formControlName="dropDown">			
+		<mat-option>--</mat-option>
+			<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
+				{{elem.name}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	
 </mat-dialog-content>
 
 <mat-dialog-actions>
@@ -111,7 +121,7 @@
         Close
     </button>
 
-    <button class="mat-raised-button mat-primary"
+    <button [disabled]="form.invalid" class="mat-raised-button mat-primary"
             (click)="save()">
         Save
     </button>

@@ -11,6 +11,7 @@ import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.models.User;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
+import com.gruppo13.CalendarMS.repositories.TeacherRepository;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
 import com.gruppo13.CalendarMS.util.ModifierObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class CalendarController {
     StudentRepository studentRepo;
 
     @Autowired
+    TeacherRepository teacherRepo;
+
+    @Autowired
     WorkingGroupRepository wkRepo;
 
     // public ResponseEntity<?> getAllEvents(, @RequestHeader("Authorization")String token)
@@ -47,8 +51,14 @@ public class CalendarController {
     @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(@CurrentUser LocalUser user, @RequestHeader("Authorization") String token){
         try{
-            List<Long> courseList = studentRepo.getCourseIdByStudent(user.getUser().getId());
-            List<Long> workingGroupList = wkRepo.getGroupIdByStudent(user.getUser().getId());
+            List<Long> courseList = null;
+            List<Long> workingGroupList = null;
+            if(user.getUser().isProfessor() == false) {
+                courseList = studentRepo.getCourseIdByStudent(user.getUser().getId());
+                workingGroupList = wkRepo.getGroupIdByStudent(user.getUser().getId());
+            }else{
+                courseList = teacherRepo.getCourseIdByTeacher(user.getUser().getId());
+            }
             List<CustomEvent> eventList = new ArrayList<CustomEvent>();
 
             //prelievo degli eventi di tipo lesson
@@ -57,8 +67,10 @@ public class CalendarController {
             }
 
             //prelievo degli eventi di tipo lesson
-            for(Long id_group:workingGroupList){
-                eventList.addAll(eventRepo.findByWorkingGroupId(id_group));
+            if(user.getUser().isProfessor() == false) {
+                for (Long id_group : workingGroupList) {
+                    eventList.addAll(eventRepo.findByWorkingGroupId(id_group));
+                }
             }
 
             if(user.getUser().getProvider().equals("google")) {
