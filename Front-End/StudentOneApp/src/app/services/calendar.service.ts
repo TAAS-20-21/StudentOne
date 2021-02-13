@@ -45,7 +45,7 @@ export class CalendarService {
 	}
 	
 	getCoursesById(data: any){
-		const url = "http://localhost:8080/StudentOne/calendarservice/api/student/courses";
+		const url = "http://localhost:8080/StudentOne/calendarservice/api/teacher/courses";
 		return this.http.post(url, data);
 	}
 	

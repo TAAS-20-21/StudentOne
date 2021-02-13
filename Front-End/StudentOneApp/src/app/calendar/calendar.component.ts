@@ -21,6 +21,7 @@ export class OurCalendarComponent {
 	
 	loggedUser: User;
 	isLogin:boolean;
+	isProfessor:boolean;
 	  
 	  
 	//DIALOG  
@@ -35,6 +36,18 @@ export class OurCalendarComponent {
 		} else {
 			this.isLogin = true;
 		}
+		
+		const _dataToUpload = {
+			id:this.loggedUser.id
+		}
+		this.calendarService.getIsProfessor(_dataToUpload)
+		.subscribe(
+			response => {
+				this.setIsProfessor(response);
+			},
+			error => {
+				console.log(error)
+		});
 
 		//Metodo per ottenere tutti gli eventi che coinvolgono l'utente.
 		this.calendarService.getAll()
@@ -47,10 +60,14 @@ export class OurCalendarComponent {
 				console.log(error);
 			});
 	}
+	
+	setIsProfessor(response){
+		this.isProfessor = response;
+	}
 
   
 	//Metodo per gestire l'apertura della dialog per la creazione degli eventi.
-	openDialog(selectInfo: DateSelectArg, response: any) {
+	openDialog(selectInfo: DateSelectArg) {
 		
 		//console.log(this.loggedUser);
 		//console.log(response);
@@ -62,7 +79,7 @@ export class OurCalendarComponent {
 		//Evidenzia il primo elemento editabile della dialog.
 		dialogConfig.autoFocus = true;
 		dialogConfig.data = {
-			isProfessor: response,
+			isProfessor: this.isProfessor,
 			loggedUser: this.loggedUser,
 			calendarService: this.calendarService
 		}
@@ -142,17 +159,32 @@ export class OurCalendarComponent {
 			let _dataToUpload: any;
 			//PER EVENTI SINGOLI
 			if(addInfo.event.startStr != ""){
-				_dataToUpload = {
-					summary : addInfo.event.title,
-					startDateTime : addInfo.event.start,
-					endDateTime : addInfo.event.end,
-					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
-					workingGroup: {
-						id: Number(wgId)
-					},
-					course: null,
-					type:null,
-					angularId: addInfo.event.id
+				if(this.isProfessor == false){
+					_dataToUpload = {
+						summary : addInfo.event.title,
+						startDateTime : addInfo.event.start,
+						endDateTime : addInfo.event.end,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
+						workingGroup: {
+							id: Number(wgId)
+						},
+						course: null,
+						type:null,
+						angularId: addInfo.event.id
+					}
+				}else{
+					_dataToUpload = {
+						summary : addInfo.event.title,
+						startDateTime : addInfo.event.start,
+						endDateTime : addInfo.event.end,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
+						workingGroup: null,
+						course: {
+							id: Number(wgId)
+						},
+						type:null,
+						angularId: addInfo.event.id
+					}
 				}
 			}
 			else {
@@ -184,23 +216,43 @@ export class OurCalendarComponent {
 
 				startTimeInMilliseconds = daysTypeData.startTime.milliseconds;	//otteniamo i ms dell'ora d'inizio dell'evento
 				endTimeInMilliseconds = daysTypeData.endTime.milliseconds;	//otteniamo i ms dell'ora di fine dell'evento
-				
-				_dataToUpload = {
-					summary : addInfo.event.title,
-					startDateTime : startTime,
-					endDateTime : endTime,
-					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
-					workingGroup: {
-						id: Number(wgId)
-					},
-					course: null,
-					type:null,
-					angularId: addInfo.event.id,
-					startRecur: daysTypeData.startRecur,
-					endRecur: daysTypeData.endRecur,
-					daysOfWeek: _daysOfWeek,
-					startTimeRecurrent: startTimeInMilliseconds,
-					endTimeRecurrent: endTimeInMilliseconds
+				if(this.isProfessor == false){
+					_dataToUpload = {
+						summary : addInfo.event.title,
+						startDateTime : startTime,
+						endDateTime : endTime,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+						workingGroup: {
+							id: Number(wgId)
+						},
+						course: null,
+						type:null,
+						angularId: addInfo.event.id,
+						startRecur: daysTypeData.startRecur,
+						endRecur: daysTypeData.endRecur,
+						daysOfWeek: _daysOfWeek,
+						startTimeRecurrent: startTimeInMilliseconds,
+						endTimeRecurrent: endTimeInMilliseconds
+					}
+				}else{
+					_dataToUpload = {
+						summary : addInfo.event.title,
+						startDateTime : startTime,
+						endDateTime : endTime,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+						workingGroup:null,
+						course:  {
+							id: Number(wgId)
+						},
+						type:null,
+						angularId: addInfo.event.id,
+						startRecur: daysTypeData.startRecur,
+						endRecur: daysTypeData.endRecur,
+						daysOfWeek: _daysOfWeek,
+						startTimeRecurrent: startTimeInMilliseconds,
+						endTimeRecurrent: endTimeInMilliseconds
+					}
+
 				}
 				//console.log("end rec: ",daysTypeData.endRecur);
 			}
@@ -294,14 +346,15 @@ export class OurCalendarComponent {
 		const _dataToUpload = {
 			id:this.loggedUser.id
 		}
-		this.calendarService.getIsProfessor(_dataToUpload)
+		this.openDialog(selectInfo);
+		/*this.calendarService.getIsProfessor(_dataToUpload)
 		.subscribe(
 			response => {
 				this.openDialog(selectInfo, response);
 			},
 			error => {
 				console.log(error)
-		});
+		});*/
 		
 	}
 

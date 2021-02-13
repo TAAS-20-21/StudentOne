@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { CalendarService } from 'src/app/services/calendar.service';
 import { WorkingGroup } from "../../models/working-group.model";
+import { Course } from "../../models/course.model";
 
 
 @Component({
@@ -34,6 +35,7 @@ export class EventDialogComponent implements OnInit {
 	dropDown:string;
 	listDropDown:any;
 	listDropDownWG:WorkingGroup[];
+	listDropDownCourses: Course[];
 	//DROPDOWN
 	isRecurrent = false;
 	dialogRef: MatDialogRef<EventDialogComponent>;
@@ -62,11 +64,11 @@ export class EventDialogComponent implements OnInit {
 			this.isProfessor = data.isProfessor;
 			this.loggedUser = data.loggedUser;
 			this.calendarService = data.calendarService;
+			const _dataToUpload = {
+					id:this.loggedUser.id
+			}
 			if(this.isProfessor == false){
 				console.log("Studente", this.loggedUser);
-				const _dataToUpload = {
-					id:this.loggedUser.id
-				}
 				this.calendarService.getWorkingGroupsById(_dataToUpload)
 				.subscribe(
 					response => {
@@ -77,7 +79,7 @@ export class EventDialogComponent implements OnInit {
 				});
 			}else{
 				console.log("Docente", this.loggedUser);
-				/*DA MODIFICARE!!!! ORA È UNA CHIAMATA A STUDENTE, NON A DOCENTE
+				//DA MODIFICARE!!!! ORA È UNA CHIAMATA A STUDENTE, NON A DOCENTE
 				this.calendarService.getCoursesById(_dataToUpload)
 				.subscribe(
 					response => {
@@ -85,7 +87,7 @@ export class EventDialogComponent implements OnInit {
 					},
 					error => {
 						console.log(error)
-				});*/
+				});
 			}
 		}
 
@@ -99,7 +101,9 @@ export class EventDialogComponent implements OnInit {
 	
 	initializeListDropDown(response){
 		this.listDropDownWG = [];
+		this.listDropDownCourses = [];
 		this.listDropDown = response;
+		console.log(this.listDropDown);
 		for (let i = 0; i < this.listDropDown.length; i++){
 			const _dataToUpload = {
 					id:this.listDropDown[i]
@@ -129,8 +133,13 @@ export class EventDialogComponent implements OnInit {
 	}
 	
 	setResponseName(response, index){
-		this.listDropDownWG.push({id: index, name: response.name});
-		//console.log(this.listDropDownWG);
+		if(this.isProfessor == false){
+			this.listDropDownWG.push({id: index, name: response.name});
+		}else{
+			this.listDropDownCourses.push({id: index, name: response.name});
+		}
+		console.log("WG",this.listDropDownWG);
+		console.log("CORSI",this.listDropDownCourses);
 	}
 
     save() {

@@ -35,9 +35,20 @@
 				   type="time">
 		</mat-form-field>
 		
-		<mat-form-field appearance="fill">
+		<div *ngIf="isProfessor; else elseBlock">
+			<mat-form-field appearance="fill">
+				<mat-label>Corso:</mat-label>
+				<mat-select formControlName="dropDown">
+				<mat-option>--</mat-option>
+					<mat-option *ngFor="let elem of listDropDownCourses" [value]="elem">
+						{{elem.name}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<ng-template #elseBlock>
+			<mat-form-field appearance="fill">
 			<mat-label>Gruppo di lavoro:</mat-label>
-			<!--<mat-select formControlName="dropDown" (ngModelChange)="selected($event)">-->
 			<mat-select formControlName="dropDown">
 			<mat-option>--</mat-option>
 				<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
@@ -45,6 +56,7 @@
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
+		</ng-template>
 </mat-dialog-content>
 </div>
 
@@ -102,15 +114,28 @@
 			   type="date">
     </mat-form-field>
 	
-	<mat-form-field appearance="fill">
+	<div *ngIf="isProfessor; else elseBlock">
+		<mat-form-field appearance="fill">
+			<mat-label>Corso:</mat-label>
+			<mat-select formControlName="dropDown">
+			<mat-option>--</mat-option>
+				<mat-option *ngFor="let elem of listDropDownCourses" [value]="elem">
+					{{elem.name}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<ng-template #elseBlock>
+		<mat-form-field appearance="fill">
 		<mat-label>Gruppo di lavoro:</mat-label>
-		<mat-select formControlName="dropDown">			
+		<mat-select formControlName="dropDown">
 		<mat-option>--</mat-option>
 			<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
 				{{elem.name}}
 			</mat-option>
 		</mat-select>
 	</mat-form-field>
+	</ng-template>
 	
 </mat-dialog-content>
 
