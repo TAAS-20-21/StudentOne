@@ -10,6 +10,7 @@ import { CalendarService } from 'src/app/services/calendar.service';
 //LOGIN
 import { User } from "../models/User";
 import { TokenStorageService } from "../services/token-storage.service";
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class OurCalendarComponent {
 	loggedUser: User;
 	isLogin:boolean;
 	isProfessor:boolean;
-	  
+	max = this.calendarService.getMaxAngularId().toPromise();
 	  
 	//DIALOG  
 	constructor(private dialog: MatDialog, private calendarService: CalendarService, private token: TokenStorageService) {}
@@ -126,14 +127,13 @@ export class OurCalendarComponent {
 		eventAdd: this.handleEventAdd.bind(this),
 		eventChange: this.handleEventChange.bind(this),
 		eventRemove: this.handleEventRemove.bind(this),
-		locale: 'en'
+		locale: 'it'
 		};
 	currentEvents: EventApi[] = [];
   
   
 	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di creazione di un evento.
 	handleEventAdd(addInfo: EventAddArg){
-		console.log("ADDINFO:",addInfo);
 		const _dataToUpload = {
 			id: addInfo.event.id
 		}
@@ -157,11 +157,13 @@ export class OurCalendarComponent {
 			let wgName = addInfo.event.title.split("@")[1];
 			let wgId = addInfo.event.title.split("@")[2];
 			let _dataToUpload: any;
+			
+			let name = addInfo.event.title.split("@")[0] + "@" + addInfo.event.title.split("@")[1];
 			//PER EVENTI SINGOLI
 			if(addInfo.event.startStr != ""){
 				if(this.isProfessor == false){
 					_dataToUpload = {
-						summary : addInfo.event.title,
+						summary : name,
 						startDateTime : addInfo.event.start,
 						endDateTime : addInfo.event.end,
 						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
@@ -174,7 +176,7 @@ export class OurCalendarComponent {
 					}
 				}else{
 					_dataToUpload = {
-						summary : addInfo.event.title,
+						summary : name,
 						startDateTime : addInfo.event.start,
 						endDateTime : addInfo.event.end,
 						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
@@ -218,7 +220,7 @@ export class OurCalendarComponent {
 				endTimeInMilliseconds = daysTypeData.endTime.milliseconds;	//otteniamo i ms dell'ora di fine dell'evento
 				if(this.isProfessor == false){
 					_dataToUpload = {
-						summary : addInfo.event.title,
+						summary : name,
 						startDateTime : startTime,
 						endDateTime : endTime,
 						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
@@ -236,7 +238,7 @@ export class OurCalendarComponent {
 					}
 				}else{
 					_dataToUpload = {
-						summary : addInfo.event.title,
+						summary : name,
 						startDateTime : startTime,
 						endDateTime : endTime,
 						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
@@ -256,8 +258,6 @@ export class OurCalendarComponent {
 				}
 				//console.log("end rec: ",daysTypeData.endRecur);
 			}
-			
-			
 			this.calendarService.create(_dataToUpload)
 				.subscribe(
 					response => {
@@ -360,8 +360,26 @@ export class OurCalendarComponent {
 
 	//Metodo per la gestione dell'evento di click su un evento già esistente.
 	handleEventClick(clickInfo: EventClickArg) {
-		if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
-			clickInfo.event.remove();
+		const _dataToUpload = {
+			id: clickInfo.event.id
+		}
+		this.calendarService.findByAngularId(_dataToUpload)			
+			.subscribe(
+				response => {
+					this.checkEventDelete(response, clickInfo);
+				},
+				error => {
+					console.log(error);
+				});
+		//clickInfo.event.remove();
+	}
+	
+	checkEventDelete(response, clickInfo){
+		console.log(response);
+		if(!(this.isProfessor == false && response.course != null)){
+			if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
+				clickInfo.event.remove();
+			}
 		}
 	}
 
@@ -369,17 +387,25 @@ export class OurCalendarComponent {
 		this.currentEvents = events;
 	}
   
-	addEvent(selectInfo: DateSelectArg, data){		
+	async addEvent(selectInfo: DateSelectArg, data){		
 		const _calendarApi = this.fullcalendar.getApi()
 		const viewType = _calendarApi.currentData.currentViewType;
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
+		let max: any;
+		max = await this.max;
+		if(max == null){
+			max = String(1);
+		}else{
+			max++;
+			max = String(max);
+		}
 		//Se isRecurrent è false allora è un evento singolo
 		if(!data[1]){
 			//Se sono in visione mensile aggiungo un evento concatenando l'ora.
 			if(viewType == 'dayGridMonth'){
 				calendarApi.addEvent({
-					id: this.createEventId(),
+					id: max,
 					title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 					start: selectInfo.startStr + 'T' + data[0].startTime +':00+01:00',
 					end: selectInfo.startStr + 'T' + data[0].endTime +':00+01:00',
@@ -387,9 +413,9 @@ export class OurCalendarComponent {
 				});
 				//console.log(calendarApi.getEvents());
 			}else{
-				//Se sono in un'altra visione l'orario è già presente quindi seleziono solo la data e concateno l'orario. 
+				//Se sono in un'altra visione l'orario è già presente quindi seleziono solo la data e concateno l'orario.  this.createEventId(),
 				calendarApi.addEvent({
-					id: this.createEventId(),
+					id: max,
 					title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 					start: selectInfo.startStr.substr(0,10) + 'T' + data[0].startTime +':00+01:00',
 					end: selectInfo.startStr.substr(0,10) + 'T' + data[0].endTime +':00+01:00',
@@ -422,7 +448,7 @@ export class OurCalendarComponent {
 			}
 			//Siccome l'evento è ricorrente basta passare solo l'orario senza anno-mese-giorno
 			calendarApi.addEvent({
-				id: this.createEventId(),
+				id: max,
 				title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 				startTime: data[0].startTime +':00+01:00',
 				endTime: data[0].endTime +':00+01:00',
@@ -500,17 +526,5 @@ export class OurCalendarComponent {
 	}
 	
 	//Crea un angularId incrementando il massimo angularId già presente.
-	createEventId(){
-		const calendarApi = this.fullcalendar.getApi();
-		const events = calendarApi.getEvents();
-		var max: number = 0;
-		for( let entry of events){
-			if(Number(entry._def.publicId) >= max){
-				max = Number(entry._def.publicId);
-				
-			}
-		}
-		max++;
-		return String(max);
-	}
+
 }

@@ -63,6 +63,11 @@ export class CalendarService {
 		const url = "http://localhost:8080/StudentOne/calendarservice/api/working_group/workingGroupById";
 		return this.http.post(url, data);
 	}
+	
+	getMaxAngularId(){
+		const url = "http://localhost:8080/StudentOne/calendarservice/api/event/maxAngularId";
+		return this.http.get(url);
+	}
 	/*
 	update(id: any, data: any): Observable<any> {
 		return this.http.put(`${baseUrl}/${id}`, data);

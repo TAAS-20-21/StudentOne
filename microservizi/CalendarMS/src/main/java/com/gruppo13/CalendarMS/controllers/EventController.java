@@ -3,6 +3,7 @@ package com.gruppo13.CalendarMS.controllers;
 import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,5 +29,11 @@ public class EventController {
         CustomEvent _Custom_event = eventRepo.saveAndFlush(new CustomEvent(customEvent));
 
         return _Custom_event;
+    }
+
+    @GetMapping(value = "/event/maxAngularId")
+    public ResponseEntity<Long> getMaxAngularId() {
+        System.out.println("PROVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+ eventRepo.maxAngularId());
+        return ResponseEntity.ok(eventRepo.maxAngularId());
     }
 }

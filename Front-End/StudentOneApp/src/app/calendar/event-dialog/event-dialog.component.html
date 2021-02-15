@@ -25,20 +25,20 @@
 			<label>Orario di inizio:&nbsp;&nbsp;</label>
 			<input matInput
 				   formControlName="startTime"
-				   type="time">
+				   type="time" required>
 		</mat-form-field>
 
 		<mat-form-field>
 			<label>Orario di fine:&nbsp;&nbsp;</label>
 			<input matInput
 				   formControlName="endTime"
-				   type="time">
+				   type="time" required>
 		</mat-form-field>
 		
 		<div *ngIf="isProfessor; else elseBlock">
 			<mat-form-field appearance="fill">
 				<mat-label>Corso:</mat-label>
-				<mat-select formControlName="dropDown">
+				<mat-select formControlName="dropDown" required>
 				<mat-option>--</mat-option>
 					<mat-option *ngFor="let elem of listDropDownCourses" [value]="elem">
 						{{elem.name}}
@@ -49,7 +49,7 @@
 		<ng-template #elseBlock>
 			<mat-form-field appearance="fill">
 			<mat-label>Gruppo di lavoro:</mat-label>
-			<mat-select formControlName="dropDown">
+			<mat-select formControlName="dropDown" required>
 			<mat-option>--</mat-option>
 				<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
 					{{elem.name}}
@@ -67,7 +67,7 @@
         Close
     </button>
 
-    <button [disabled]="form.invalid" class="mat-raised-button mat-primary"
+    <button class="mat-raised-button mat-primary"
             (click)="save()">
         Save
     </button>
@@ -89,14 +89,14 @@
 		<label>Orario di inizio:&nbsp;&nbsp;</label>
 		<input matInput
                formControlName="startTime"
-			   type="time">
+			   type="time" required>
     </mat-form-field>
 
     <mat-form-field>
 		<label>Orario di fine:&nbsp;&nbsp;</label>
         <input matInput
                formControlName="endTime"
-			   type="time">
+			   type="time" required>
     </mat-form-field>
 	
 	<mat-checkbox type="checkbox" formControlName="lun">Lun</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -111,13 +111,13 @@
 		<label>Giorno di fine ricorrenza:&nbsp;&nbsp;</label>
         <input matInput
                formControlName="endRecur"
-			   type="date">
+			   type="date" required>
     </mat-form-field>
 	
 	<div *ngIf="isProfessor; else elseBlock">
 		<mat-form-field appearance="fill">
 			<mat-label>Corso:</mat-label>
-			<mat-select formControlName="dropDown">
+			<mat-select formControlName="dropDown" required>
 			<mat-option>--</mat-option>
 				<mat-option *ngFor="let elem of listDropDownCourses" [value]="elem">
 					{{elem.name}}
@@ -128,7 +128,7 @@
 	<ng-template #elseBlock>
 		<mat-form-field appearance="fill">
 		<mat-label>Gruppo di lavoro:</mat-label>
-		<mat-select formControlName="dropDown">
+		<mat-select formControlName="dropDown" required>
 		<mat-option>--</mat-option>
 			<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
 				{{elem.name}}
