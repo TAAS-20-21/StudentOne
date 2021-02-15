@@ -33,7 +33,6 @@ public class EventController {
 
     @GetMapping(value = "/event/maxAngularId")
     public ResponseEntity<Long> getMaxAngularId() {
-        System.out.println("PROVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+ eventRepo.maxAngularId());
         return ResponseEntity.ok(eventRepo.maxAngularId());
     }
 }

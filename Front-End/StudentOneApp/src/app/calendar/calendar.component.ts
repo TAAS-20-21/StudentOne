@@ -11,6 +11,7 @@ import { CalendarService } from 'src/app/services/calendar.service';
 import { User } from "../models/User";
 import { TokenStorageService } from "../services/token-storage.service";
 import { map } from 'rxjs/operators';
+import itLocale from '@fullcalendar/core/locales/it';
 
 
 @Component({
@@ -127,7 +128,13 @@ export class OurCalendarComponent {
 		eventAdd: this.handleEventAdd.bind(this),
 		eventChange: this.handleEventChange.bind(this),
 		eventRemove: this.handleEventRemove.bind(this),
-		locale: 'it'
+		
+		
+		
+		buttonIcons: false,
+		weekNumbers: true,
+		navLinks: true,
+		locale: itLocale
 		};
 	currentEvents: EventApi[] = [];
   
