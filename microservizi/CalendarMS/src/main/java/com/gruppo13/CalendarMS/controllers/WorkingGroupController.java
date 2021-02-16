@@ -4,6 +4,7 @@ import com.gruppo13.CalendarMS.models.Course;
 import com.gruppo13.CalendarMS.models.WorkingGroup;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,5 +36,10 @@ public class WorkingGroupController {
         WorkingGroup _workingGroup = new WorkingGroup();
         _workingGroup = workingGroupRepo.findByName(name);
         return _workingGroup;
+    }
+
+    @PostMapping("/working_group/workingGroupById")
+    public ResponseEntity<WorkingGroup> getWorkingGroup(@RequestBody WorkingGroup wg){
+        return ResponseEntity.ok(workingGroupRepo.findById(wg.getId()).get());
     }
 }

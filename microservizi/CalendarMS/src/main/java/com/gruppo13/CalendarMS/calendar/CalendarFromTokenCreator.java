@@ -31,7 +31,7 @@ public class CalendarFromTokenCreator {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8081").path("api/googleCredentials").build().toUriString();
         HttpGet r = new HttpGet(url);
-        r.addHeader("Authorization", "Bearer "+token);
+        r.addHeader("Authorization", token);
         try {
             accessToken = httpClient.execute(r, new BasicResponseHandler());
         } catch (ClientProtocolException e) {

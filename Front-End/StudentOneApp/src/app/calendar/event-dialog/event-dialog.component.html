@@ -11,30 +11,54 @@
 <button class="mat-raised-button" (click)="recurrentEventSelection()">Evento Ricorrente</button>
 
 <div [hidden] = "hiddenSingleEvent">
+<div *ngIf="this.listDropDown != null">
 <mat-dialog-content [formGroup]="form" >
 
-    <mat-form-field>
-		<label>Nome Evento:&nbsp;&nbsp;</label>
-        <input matInput
-               formControlName="title"
-			   type="text">
-    </mat-form-field>
+		<mat-form-field>
+			<label>Nome Evento(SOLO valori alfanumerici):&nbsp;&nbsp;</label>
+			<input matInput
+				   formControlName="title"
+				   type="text" pattern="([A-z0-9À-ž\s]){2,}" title="Three letter country code" required >
+		</mat-form-field>
 
-    <mat-form-field>
-		<label>Orario di inizio:&nbsp;&nbsp;</label>
-		<input matInput
-               formControlName="startTime"
-			   type="time">
-    </mat-form-field>
+		<mat-form-field>
+			<label>Orario di inizio:&nbsp;&nbsp;</label>
+			<input matInput
+				   formControlName="startTime"
+				   type="time" required>
+		</mat-form-field>
 
-    <mat-form-field>
-		<label>Orario di fine:&nbsp;&nbsp;</label>
-        <input matInput
-               formControlName="endTime"
-			   type="time">
-    </mat-form-field>
-
+		<mat-form-field>
+			<label>Orario di fine:&nbsp;&nbsp;</label>
+			<input matInput
+				   formControlName="endTime"
+				   type="time" required>
+		</mat-form-field>
+		
+		<div *ngIf="isProfessor; else elseBlock">
+			<mat-form-field appearance="fill">
+				<mat-label>Corso:</mat-label>
+				<mat-select formControlName="dropDown" required>
+				<mat-option>--</mat-option>
+					<mat-option *ngFor="let elem of listDropDownCourses" [value]="elem">
+						{{elem.name}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<ng-template #elseBlock>
+			<mat-form-field appearance="fill">
+			<mat-label>Gruppo di lavoro:</mat-label>
+			<mat-select formControlName="dropDown" required>
+			<mat-option>--</mat-option>
+				<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
+					{{elem.name}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		</ng-template>
 </mat-dialog-content>
+</div>
 
 <mat-dialog-actions>
 
@@ -55,41 +79,69 @@
 <mat-dialog-content [formGroup]="form" >
 
     <mat-form-field>
-		<label>Nome Evento:&nbsp;&nbsp;</label>
+		<label>Nome Evento(SOLO valori alfanumerici):&nbsp;&nbsp;</label>
         <input matInput
                formControlName="title"
-			   type="text">
+			   type="text" pattern="([A-z0-9À-ž\s]){2,}" required>
     </mat-form-field>
 
     <mat-form-field>
 		<label>Orario di inizio:&nbsp;&nbsp;</label>
 		<input matInput
                formControlName="startTime"
-			   type="time">
+			   type="time" required>
     </mat-form-field>
 
     <mat-form-field>
 		<label>Orario di fine:&nbsp;&nbsp;</label>
         <input matInput
                formControlName="endTime"
-			   type="time">
+			   type="time" required>
     </mat-form-field>
 	
-	<mat-checkbox type="checkbox" formControlName="lun">Lun</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="mar">Mar</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="mer">Mer</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="gio">Gio</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="ven">Ven</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="sab">Sab</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="dom">Dom</mat-checkbox>
+	<mat-checkbox type="checkbox" formControlName="lun" [checked]="monBool" [disabled]="monBool">Lun</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="mar" [checked]="tueBool" [disabled]="tueBool">Mar</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="mer" [checked]="wedBool" [disabled]="wedBool">Mer</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="gio" [checked]="thuBool" [disabled]="thuBool">Gio</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="ven" [checked]="friBool" [disabled]="friBool">Ven</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="sab" [checked]="satBool" [disabled]="satBool">Sab</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="dom" [checked]="sunBool" [disabled]="sunBool">Dom</mat-checkbox>
 	
 	<mat-form-field>
 		<label>Giorno di fine ricorrenza:&nbsp;&nbsp;</label>
         <input matInput
                formControlName="endRecur"
-			   type="date">
+			   type="date" required>
     </mat-form-field>
-
+	
+	<div *ngIf="isProfessor; else elseBlock">
+		<mat-form-field appearance="fill">
+			<mat-label>Corso:</mat-label>
+			<mat-select formControlName="dropDown" required>
+			<mat-option>--</mat-option>
+				<mat-option *ngFor="let elem of listDropDownCourses" [value]="elem">
+					{{elem.name}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<ng-template #elseBlock>
+		<mat-form-field appearance="fill">
+		<mat-label>Gruppo di lavoro:</mat-label>
+		<mat-select formControlName="dropDown" required>
+		<mat-option>--</mat-option>
+			<mat-option *ngFor="let elem of listDropDownWG" [value]="elem">
+				{{elem.name}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	</ng-template>
 	
 </mat-dialog-content>
 
@@ -100,7 +152,7 @@
         Close
     </button>
 
-    <button class="mat-raised-button mat-primary"
+    <button [disabled]="form.invalid" class="mat-raised-button mat-primary"
             (click)="save()">
         Save
     </button>

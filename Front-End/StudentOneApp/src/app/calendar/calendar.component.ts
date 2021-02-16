@@ -10,7 +10,8 @@ import { CalendarService } from 'src/app/services/calendar.service';
 //LOGIN
 import { User } from "../models/User";
 import { TokenStorageService } from "../services/token-storage.service";
-
+import { map } from 'rxjs/operators';
+import itLocale from '@fullcalendar/core/locales/it';
 
 @Component({
   selector: 'app-calendar',
@@ -21,7 +22,8 @@ export class OurCalendarComponent {
 	
 	loggedUser: User;
 	isLogin:boolean;
-	  
+	isProfessor:boolean;
+	max = this.calendarService.getMaxAngularId().toPromise();
 	  
 	//DIALOG  
 	constructor(private dialog: MatDialog, private calendarService: CalendarService, private token: TokenStorageService) {}
@@ -35,7 +37,19 @@ export class OurCalendarComponent {
 		} else {
 			this.isLogin = true;
 		}
-	
+		
+		const _dataToUpload = {
+			id:this.loggedUser.id
+		}
+		this.calendarService.getIsProfessor(_dataToUpload)
+		.subscribe(
+			response => {
+				this.setIsProfessor(response);
+			},
+			error => {
+				console.log(error)
+		});
+
 		//Metodo per ottenere tutti gli eventi che coinvolgono l'utente.
 		this.calendarService.getAll()
 		.subscribe(
@@ -47,10 +61,17 @@ export class OurCalendarComponent {
 				console.log(error);
 			});
 	}
+	
+	setIsProfessor(response){
+		this.isProfessor = response;
+	}
 
   
 	//Metodo per gestire l'apertura della dialog per la creazione degli eventi.
 	openDialog(selectInfo: DateSelectArg) {
+		
+		//console.log(this.loggedUser);
+		//console.log(response);
 
 		const dialogConfig = new MatDialogConfig();
 
@@ -58,7 +79,12 @@ export class OurCalendarComponent {
 		dialogConfig.disableClose = true;
 		//Evidenzia il primo elemento editabile della dialog.
 		dialogConfig.autoFocus = true;
-		
+		dialogConfig.data = {
+			isProfessor: this.isProfessor,
+			loggedUser: this.loggedUser,
+			calendarService: this.calendarService,
+			selectInfo: selectInfo
+		}
 		const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
 		
 		/*const calendarApi = this.fullcalendar.getApi(); 
@@ -102,8 +128,14 @@ export class OurCalendarComponent {
 		eventAdd: this.handleEventAdd.bind(this),
 		eventChange: this.handleEventChange.bind(this),
 		eventRemove: this.handleEventRemove.bind(this),
-		locale: 'en'
-		};
+		
+		
+		
+		buttonIcons: false,
+		weekNumbers: true,
+		navLinks: true,
+		locale: itLocale
+	};
 	currentEvents: EventApi[] = [];
   
   
@@ -128,20 +160,40 @@ export class OurCalendarComponent {
 		//UPLOAD TO DB
 		//Se non esiste un altro evento con angularId allora creo un evento.
 		if(queryRes ==null){
+			//METTERE CONTROLLO SU PROFESSORE O ALUNNO
+			let wgName = addInfo.event.title.split("@")[1];
+			let wgId = addInfo.event.title.split("@")[2];
 			let _dataToUpload: any;
+			
+			let name = addInfo.event.title.split("@")[0] + "@" + addInfo.event.title.split("@")[1];
 			//PER EVENTI SINGOLI
 			if(addInfo.event.startStr != ""){
-				_dataToUpload = {
-					summary : addInfo.event.title,
-					startDateTime : addInfo.event.start,
-					endDateTime : addInfo.event.end,
-					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
-					workingGroup: {
-						id: 1
-					},
-					course: null,
-					type:null,
-					angularId: addInfo.event.id
+				if(this.isProfessor == false){
+					_dataToUpload = {
+						summary : name,
+						startDateTime : addInfo.event.start,
+						endDateTime : addInfo.event.end,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
+						workingGroup: {
+							id: Number(wgId)
+						},
+						course: null,
+						type:null,
+						angularId: addInfo.event.id
+					}
+				}else{
+					_dataToUpload = {
+						summary : name,
+						startDateTime : addInfo.event.start,
+						endDateTime : addInfo.event.end,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTI
+						workingGroup: null,
+						course: {
+							id: Number(wgId)
+						},
+						type:null,
+						angularId: addInfo.event.id
+					}
 				}
 			}
 			else {
@@ -173,28 +225,46 @@ export class OurCalendarComponent {
 
 				startTimeInMilliseconds = daysTypeData.startTime.milliseconds;	//otteniamo i ms dell'ora d'inizio dell'evento
 				endTimeInMilliseconds = daysTypeData.endTime.milliseconds;	//otteniamo i ms dell'ora di fine dell'evento
-				
-				_dataToUpload = {
-					summary : addInfo.event.title,
-					startDateTime : startTime,
-					endDateTime : endTime,
-					//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
-					workingGroup: {
-						id: 1
-					},
-					course: null,
-					type:null,
-					angularId: addInfo.event.id,
-					startRecur: daysTypeData.startRecur,
-					endRecur: daysTypeData.endRecur,
-					daysOfWeek: _daysOfWeek,
-					startTimeRecurrent: startTimeInMilliseconds,
-					endTimeRecurrent: endTimeInMilliseconds
+				if(this.isProfessor == false){
+					_dataToUpload = {
+						summary : name,
+						startDateTime : startTime,
+						endDateTime : endTime,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+						workingGroup: {
+							id: Number(wgId)
+						},
+						course: null,
+						type:null,
+						angularId: addInfo.event.id,
+						startRecur: daysTypeData.startRecur,
+						endRecur: daysTypeData.endRecur,
+						daysOfWeek: _daysOfWeek,
+						startTimeRecurrent: startTimeInMilliseconds,
+						endTimeRecurrent: endTimeInMilliseconds
+					}
+				}else{
+					_dataToUpload = {
+						summary : name,
+						startDateTime : startTime,
+						endDateTime : endTime,
+						//DA MODIFICARE QUANDO SI AVRANNO PIU' UTENTi
+						workingGroup:null,
+						course:  {
+							id: Number(wgId)
+						},
+						type:null,
+						angularId: addInfo.event.id,
+						startRecur: daysTypeData.startRecur,
+						endRecur: daysTypeData.endRecur,
+						daysOfWeek: _daysOfWeek,
+						startTimeRecurrent: startTimeInMilliseconds,
+						endTimeRecurrent: endTimeInMilliseconds
+					}
+
 				}
-				console.log("end rec: ",daysTypeData.endRecur);
+				//console.log("end rec: ",daysTypeData.endRecur);
 			}
-			
-			
 			this.calendarService.create(_dataToUpload)
 				.subscribe(
 					response => {
@@ -208,7 +278,7 @@ export class OurCalendarComponent {
   
 	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di cambiamento di un evento.
 	handleEventChange(changeInfo: EventChangeArg){
-		console.log("evento da modificare:", changeInfo);
+		//console.log("evento da modificare:", changeInfo);
 		this.changeTime(changeInfo);
 	}
 	
@@ -280,13 +350,43 @@ export class OurCalendarComponent {
 
 	//Metodo per la gestione dell'evento di selezione di una data.
 	handleDateSelect(selectInfo: DateSelectArg) {
+		const _dataToUpload = {
+			id:this.loggedUser.id
+		}
 		this.openDialog(selectInfo);
+		/*this.calendarService.getIsProfessor(_dataToUpload)
+		.subscribe(
+			response => {
+				this.openDialog(selectInfo, response);
+			},
+			error => {
+				console.log(error)
+		});*/
+		
 	}
 
 	//Metodo per la gestione dell'evento di click su un evento già esistente.
 	handleEventClick(clickInfo: EventClickArg) {
-		if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
-			clickInfo.event.remove();
+		const _dataToUpload = {
+			id: clickInfo.event.id
+		}
+		this.calendarService.findByAngularId(_dataToUpload)			
+			.subscribe(
+				response => {
+					this.checkEventDelete(response, clickInfo);
+				},
+				error => {
+					console.log(error);
+				});
+		//clickInfo.event.remove();
+	}
+	
+	checkEventDelete(response, clickInfo){
+		console.log(response);
+		if(!(this.isProfessor == false && response.course != null)){
+			if (confirm(`Sei sicuro di voler rimuovere l'evento '${clickInfo.event.title}'?`)) {
+				clickInfo.event.remove();
+			}
 		}
 	}
 
@@ -294,28 +394,36 @@ export class OurCalendarComponent {
 		this.currentEvents = events;
 	}
   
-	addEvent(selectInfo: DateSelectArg, data){		
+	async addEvent(selectInfo: DateSelectArg, data){		
 		const _calendarApi = this.fullcalendar.getApi()
 		const viewType = _calendarApi.currentData.currentViewType;
 		const calendarApi = selectInfo.view.calendar;
 		calendarApi.unselect();
+		let max: any;
+		max = await this.max;
+		if(max == null){
+			max = String(1);
+		}else{
+			max++;
+			max = String(max);
+		}
 		//Se isRecurrent è false allora è un evento singolo
 		if(!data[1]){
 			//Se sono in visione mensile aggiungo un evento concatenando l'ora.
 			if(viewType == 'dayGridMonth'){
 				calendarApi.addEvent({
-					id: this.createEventId(),
-					title: data[0].title,
+					id: max,
+					title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 					start: selectInfo.startStr + 'T' + data[0].startTime +':00+01:00',
 					end: selectInfo.startStr + 'T' + data[0].endTime +':00+01:00',
 					allDay: false
 				});
 				//console.log(calendarApi.getEvents());
 			}else{
-				//Se sono in un'altra visione l'orario è già presente quindi seleziono solo la data e concateno l'orario. 
+				//Se sono in un'altra visione l'orario è già presente quindi seleziono solo la data e concateno l'orario.  this.createEventId(),
 				calendarApi.addEvent({
-					id: this.createEventId(),
-					title: data[0].title,
+					id: max,
+					title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 					start: selectInfo.startStr.substr(0,10) + 'T' + data[0].startTime +':00+01:00',
 					end: selectInfo.startStr.substr(0,10) + 'T' + data[0].endTime +':00+01:00',
 					allDay: false
@@ -347,8 +455,8 @@ export class OurCalendarComponent {
 			}
 			//Siccome l'evento è ricorrente basta passare solo l'orario senza anno-mese-giorno
 			calendarApi.addEvent({
-				id: this.createEventId(),
-				title: data[0].title,
+				id: max,
+				title: data[0].title + "@" +data[0].dropDown.name + "@" + data[0].dropDown.id,
 				startTime: data[0].startTime +':00+01:00',
 				endTime: data[0].endTime +':00+01:00',
 				startRecur: selectInfo.startStr,
@@ -390,7 +498,7 @@ export class OurCalendarComponent {
 				}
 			}
 		}
-		console.log(calendarApi.getEvents());
+		//console.log(calendarApi.getEvents());
 	}
 	
 	//Evento per aggiornare gli eventi di fullcalendar in caso di cambiamenti a DB:
@@ -421,21 +529,9 @@ export class OurCalendarComponent {
 				});
 			}
 		}
-		console.log("aggiornati", data);
+		//console.log("aggiornati", data);
 	}
 	
 	//Crea un angularId incrementando il massimo angularId già presente.
-	createEventId(){
-		const calendarApi = this.fullcalendar.getApi();
-		const events = calendarApi.getEvents();
-		var max: number = 0;
-		for( let entry of events){
-			if(Number(entry._def.publicId) >= max){
-				max = Number(entry._def.publicId);
-				
-			}
-		}
-		max++;
-		return String(max);
-	}
+
 }

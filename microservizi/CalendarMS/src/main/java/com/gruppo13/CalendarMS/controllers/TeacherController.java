@@ -3,6 +3,7 @@ package com.gruppo13.CalendarMS.controllers;
 import com.gruppo13.CalendarMS.models.Teacher;
 import com.gruppo13.CalendarMS.repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,5 +29,10 @@ public class TeacherController {
         Teacher _teacher = teacherRepo.saveAndFlush(new Teacher(teacher));
 
         return _teacher;
+    }
+
+    @PostMapping(value = "/teacher/courses")
+    public ResponseEntity<List<Long>> getCoursesByTeacher(@RequestBody Teacher teacher) {
+        return ResponseEntity.ok(teacherRepo.getCourseIdByTeacher(teacher.getId()));
     }
 }

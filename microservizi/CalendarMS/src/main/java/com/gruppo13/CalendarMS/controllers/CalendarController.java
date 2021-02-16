@@ -11,6 +11,7 @@ import com.gruppo13.CalendarMS.models.CustomEvent;
 import com.gruppo13.CalendarMS.models.User;
 import com.gruppo13.CalendarMS.repositories.EventRepository;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
+import com.gruppo13.CalendarMS.repositories.TeacherRepository;
 import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
 import com.gruppo13.CalendarMS.util.ModifierObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class CalendarController {
     StudentRepository studentRepo;
 
     @Autowired
+    TeacherRepository teacherRepo;
+
+    @Autowired
     WorkingGroupRepository wkRepo;
 
     // public ResponseEntity<?> getAllEvents(, @RequestHeader("Authorization")String token)
@@ -47,8 +51,14 @@ public class CalendarController {
     @GetMapping("/getAllEvents")
     public ResponseEntity<?> getAllEvents(@CurrentUser LocalUser user, @RequestHeader("Authorization") String token){
         try{
-            List<Long> courseList = studentRepo.getCourseIdByStudent(1L);
-            List<Long> workingGroupList = wkRepo.getGroupIdByStudent(1L);
+            List<Long> courseList = null;
+            List<Long> workingGroupList = null;
+            if(user.getUser().isProfessor() == false) {
+                courseList = studentRepo.getCourseIdByStudent(user.getUser().getId());
+                workingGroupList = wkRepo.getGroupIdByStudent(user.getUser().getId());
+            }else{
+                courseList = teacherRepo.getCourseIdByTeacher(user.getUser().getId());
+            }
             List<CustomEvent> eventList = new ArrayList<CustomEvent>();
 
             //prelievo degli eventi di tipo lesson
@@ -57,23 +67,24 @@ public class CalendarController {
             }
 
             //prelievo degli eventi di tipo lesson
-            for(Long id_group:workingGroupList){
-                eventList.addAll(eventRepo.findByWorkingGroupId(id_group));
+            if(user.getUser().isProfessor() == false) {
+                for (Long id_group : workingGroupList) {
+                    eventList.addAll(eventRepo.findByWorkingGroupId(id_group));
+                }
             }
 
-            //richiamo della sincronizzazione con Google per tutti gli eventi prelevati con i due statement for precedenti
-            for(CustomEvent event:eventList){
-                synchWithGoogle(event, token);
-            }
-
-
-            //DA AGGIUNGERE QUANDO CI SARANNO PIU' UTENTI
-            Calendar service = new CalendarFromTokenCreator().getService(token);
-            Events events = service.events().list("primary").execute();
-            List<Event> items = events.getItems();
-            for(Event el: items){
-                if(!eventRepo.existsByGoogleId(el.getId())){
-                    service.events().delete("primary", el.getId()).execute();
+            if(user.getUser().getProvider().equals("google")) {
+                //richiamo della sincronizzazione con Google per tutti gli eventi prelevati con i due statement for precedenti
+                for (CustomEvent event : eventList) {
+                    synchWithGoogle(user, event, token);
+                }
+                Calendar service = new CalendarFromTokenCreator().getService(token);
+                Events events = service.events().list("primary").execute();
+                List<Event> items = events.getItems();
+                for (Event el : items) {
+                    if (!eventRepo.existsByGoogleId(el.getId())) {
+                        service.events().delete("primary", el.getId()).execute();
+                    }
                 }
             }
 
@@ -86,7 +97,7 @@ public class CalendarController {
 
 
     @PostMapping(value = "/addEvent", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<CustomEvent> addEvent(@RequestBody EventObject paramEvent, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<CustomEvent> addEvent(@CurrentUser LocalUser user, @RequestBody EventObject paramEvent, @RequestHeader("Authorization") String token) {
 
         String summary = new String();
         String location = new String();
@@ -130,45 +141,47 @@ public class CalendarController {
                 _event.setWorkingGroup(paramEvent.getWorkingGroup());
             }
 
-            //setting degli eventi per memorizzazione su Google Calendar
-            Calendar service = new CalendarFromTokenCreator().getService(token);
+            if(user.getUser().getProvider().equals("google")) {
+                //setting degli eventi per memorizzazione su Google Calendar
+                Calendar service = new CalendarFromTokenCreator().getService(token);
 
-            Event event = new Event()
-                    .setId(id)
-                    .setSummary(summary)
-                    .setLocation(location)
-                    .setDescription(description);
+                Event event = new Event()
+                        .setId(id)
+                        .setSummary(summary)
+                        .setLocation(location)
+                        .setDescription(description);
 
-            EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime);
-            start.setTimeZone("+01:00");
-            event.setStart(start);
+                EventDateTime start = new EventDateTime()
+                        .setDateTime(startDateTime);
+                start.setTimeZone("+01:00");
+                event.setStart(start);
 
-            EventDateTime end = new EventDateTime()
-                    .setDateTime(endDateTime);
-            end.setTimeZone("+01:00");
-            event.setEnd(end);
+                EventDateTime end = new EventDateTime()
+                        .setDateTime(endDateTime);
+                end.setTimeZone("+01:00");
+                event.setEnd(end);
 
 
-            if(paramEvent.getStartRecur() != null){
-                String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
-                dateTmp = dateTmp.replaceAll("-", "");
-                dateTmp = dateTmp.replaceAll(":", "");
-                dateTmp = dateTmp.substring(0, 15);
+                if (paramEvent.getStartRecur() != null) {
+                    String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
+                    dateTmp = dateTmp.replaceAll("-", "");
+                    dateTmp = dateTmp.replaceAll(":", "");
+                    dateTmp = dateTmp.substring(0, 15);
 
-                String daysOfWeek = paramEvent.getDaysOfWeek();
-                String[] daysArray = daysOfWeek.split("");
+                    String daysOfWeek = paramEvent.getDaysOfWeek();
+                    String[] daysArray = daysOfWeek.split("");
 
-                //questa funzione traduce gli indici dei giorni(usati nella libreria angular di fullcalendar) in sigle dei giorni della settimana
-                // (necessari per la memorizzazione di eventi ricorrenti su Google Calendar
-                String days = translateDaysIndex(daysArray);
-                event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
+                    //questa funzione traduce gli indici dei giorni(usati nella libreria angular di fullcalendar) in sigle dei giorni della settimana
+                    // (necessari per la memorizzazione di eventi ricorrenti su Google Calendar
+                    String days = translateDaysIndex(daysArray);
+                    event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
+                }
+
+                String calendarId = "primary";
+
+                event = service.events().insert(calendarId, event).execute();
+                System.out.printf("Event created: %s\n", event.getHtmlLink());
             }
-
-            String calendarId = "primary";
-
-            event = service.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
 
             eventRepo.saveAndFlush(_event);
 
@@ -181,7 +194,7 @@ public class CalendarController {
 
 
     @PostMapping(value = "/modify/time", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<List<CustomEvent>> modifyTime(@RequestBody ModifierObject obj,@RequestHeader("Authorization") String token){
+    public ResponseEntity<List<CustomEvent>> modifyTime(@CurrentUser LocalUser user, @RequestBody ModifierObject obj,@RequestHeader("Authorization") String token){
         Optional<CustomEvent> event = eventRepo.findById(obj.getId());
         CustomEvent newEvent;
         List<CustomEvent> newEventsCreated = new ArrayList<CustomEvent>();
@@ -253,9 +266,9 @@ public class CalendarController {
                     e.printStackTrace();
                 }
 
-                newEventsCreated.add(this.addEvent(preEvent, token).getBody());
-                newEventsCreated.add(this.addEvent(singleEvent, token).getBody());
-                newEventsCreated.add(this.addEvent(postEvent, token).getBody());
+                newEventsCreated.add(this.addEvent(user, preEvent, token).getBody());
+                newEventsCreated.add(this.addEvent(user, singleEvent, token).getBody());
+                newEventsCreated.add(this.addEvent(user, postEvent, token).getBody());
 
             }
         }
@@ -338,7 +351,7 @@ public class CalendarController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/deleteEvent", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> deleteEvent(@RequestBody ModifierObject obj, @RequestHeader("Authorization") String token){
+    public ResponseEntity<String> deleteEvent( @CurrentUser LocalUser user, @RequestBody ModifierObject obj, @RequestHeader("Authorization") String token){
         Optional<CustomEvent> event = eventRepo.findById(obj.getId());
         CustomEvent newEvent;
         if(event != null) {
@@ -346,8 +359,10 @@ public class CalendarController {
 
 
             try {
-                Calendar service = new CalendarFromTokenCreator().getService(token);
-                service.events().delete("primary", newEvent.getGoogleId()).execute();
+                if(user.getUser().getProvider().equals("google")) {
+                    Calendar service = new CalendarFromTokenCreator().getService(token);
+                    service.events().delete("primary", newEvent.getGoogleId()).execute();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -369,7 +384,7 @@ public class CalendarController {
 
 
     //_________________________FUNZIONI DI SUPPORTO______________________________________________
-    private void synchWithGoogle(CustomEvent paramEvent, String token) {
+    private void synchWithGoogle(LocalUser user,CustomEvent paramEvent, String token) {
         String summary = new String();
         String location = new String();
         String description = new String();
@@ -379,60 +394,62 @@ public class CalendarController {
 
         String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
         id += number;
+        if(user.getUser().getProvider().equals("google")) {
+            try {
+                Calendar service = new CalendarFromTokenCreator().getService(token);
+                Event _event = service.events().get("primary", paramEvent.getGoogleId()).execute();
 
-        try {
-            Calendar service = new CalendarFromTokenCreator().getService(token);
-            Event _event = service.events().get("primary", paramEvent.getGoogleId()).execute();
+            } catch (GoogleJsonResponseException e) {
 
-        }catch(GoogleJsonResponseException e){
+                //nel caso in cui un evento E non dovesse essere presente in Google Calendar, è necessario gestire
+                // questa mancanza aggiungendo appunto tale evento. La chiamata alla riga 375, nel caso in cui E non viene trovato,
+                // genera un'eccezione che viene gestita quindi dal codice che segue
+                if (e.getMessage().startsWith("404 Not Found")) {
+                    try {
+                        Calendar service = new CalendarFromTokenCreator().getService(token);
+                        summary = paramEvent.getTitle();
+                        startDateTime = new DateTime(paramEvent.getStartTime());
+                        endDateTime = new DateTime(paramEvent.getEndTime());
+                        Event event = new Event()
+                                .setId(paramEvent.getGoogleId())
+                                .setSummary(summary)
+                                .setLocation(location)
+                                .setDescription(description);
 
-            //nel caso in cui un evento E non dovesse essere presente in Google Calendar, è necessario gestire
-            // questa mancanza aggiungendo appunto tale evento. La chiamata alla riga 375, nel caso in cui E non viene trovato,
-            // genera un'eccezione che viene gestita quindi dal codice che segue
-            if(e.getMessage().startsWith("404 Not Found")){
-                try {
-                    Calendar service = new CalendarFromTokenCreator().getService(token);
-                    summary = paramEvent.getTitle();
-                    startDateTime = new DateTime(paramEvent.getStartTime());
-                    endDateTime = new DateTime(paramEvent.getEndTime());
-                    Event event = new Event()
-                            .setId(paramEvent.getGoogleId())
-                            .setSummary(summary)
-                            .setLocation(location)
-                            .setDescription(description);
+                        EventDateTime start = new EventDateTime()
+                                .setDateTime(startDateTime);
+                        start.setTimeZone("+01:00");
+                        event.setStart(start);
 
-                    EventDateTime start = new EventDateTime()
-                            .setDateTime(startDateTime);
-                    start.setTimeZone("+01:00");
-                    event.setStart(start);
+                        EventDateTime end = new EventDateTime()
+                                .setDateTime(endDateTime);
+                        end.setTimeZone("+01:00");
+                        event.setEnd(end);
 
-                    EventDateTime end = new EventDateTime()
-                            .setDateTime(endDateTime);
-                    end.setTimeZone("+01:00");
-                    event.setEnd(end);
+                        if (paramEvent.getStartRecur() != null) {
+                            String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
+                            dateTmp = dateTmp.replaceAll("-", "");
+                            dateTmp = dateTmp.replaceAll(":", "");
+                            dateTmp = dateTmp.substring(0, 15);
 
-                    if(paramEvent.getStartRecur() != null){
-                        String dateTmp = new DateTime(paramEvent.getEndRecur()).toString();
-                        dateTmp = dateTmp.replaceAll("-", "");
-                        dateTmp = dateTmp.replaceAll(":", "");
-                        dateTmp = dateTmp.substring(0, 15);
+                            String daysOfWeek = paramEvent.getDaysOfWeek();
+                            String[] daysArray = daysOfWeek.split("");
+                            String days = translateDaysIndex(daysArray);
 
-                        String daysOfWeek = paramEvent.getDaysOfWeek();
-                        String[] daysArray = daysOfWeek.split("");
-                        String days = translateDaysIndex(daysArray);
+                            event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
+                        }
 
-                        event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=" + dateTmp + "Z;BYDAY=" + days.substring(0, days.length() - 1)));
+                        String calendarId = "primary";
+                        event = service.events().insert(calendarId, event).execute();
+                        System.out.printf("Event created: %s\n", event.getHtmlLink());
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
                     }
 
-                    String calendarId = "primary";
-                    event = service.events().insert(calendarId, event).execute();
-                    System.out.printf("Event created: %s\n", event.getHtmlLink());
-                } catch (Exception exception) {
-                    exception.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

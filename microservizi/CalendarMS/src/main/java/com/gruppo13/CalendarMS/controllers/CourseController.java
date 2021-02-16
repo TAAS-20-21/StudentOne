@@ -3,6 +3,7 @@ package com.gruppo13.CalendarMS.controllers;
 import com.gruppo13.CalendarMS.models.Course;
 import com.gruppo13.CalendarMS.repositories.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,5 +34,10 @@ public class CourseController {
         Course _course = new Course();
         _course = courseRepo.findByName(name);
         return _course;
+    }
+
+    @PostMapping("/course/courseById")
+    public ResponseEntity<Course> getCourse(@RequestBody Course course){
+        return ResponseEntity.ok(courseRepo.findById(course.getId()).get());
     }
 }

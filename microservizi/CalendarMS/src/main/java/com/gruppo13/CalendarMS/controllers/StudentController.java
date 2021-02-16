@@ -2,7 +2,9 @@ package com.gruppo13.CalendarMS.controllers;
 
 import com.gruppo13.CalendarMS.models.Student;
 import com.gruppo13.CalendarMS.repositories.StudentRepository;
+import com.gruppo13.CalendarMS.repositories.WorkingGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,6 +16,9 @@ public class StudentController {
 
     @Autowired
     StudentRepository studentRepo;
+
+    @Autowired
+    WorkingGroupRepository wkRepo;
 
     @GetMapping("/student")
     public List<Student> getAllStudent() {
@@ -27,5 +32,15 @@ public class StudentController {
     public Student postPerson(@RequestBody Student student) {
         Student _students = studentRepo.saveAndFlush(new Student(student));
         return _students;
+    }
+
+    @PostMapping(value = "/student/courses")
+    public ResponseEntity<List<Long>> getCoursesById(@RequestBody Student student){
+        return ResponseEntity.ok(studentRepo.getCourseIdByStudent(student.getId()));
+    }
+
+    @PostMapping(value = "/student/working_groups")
+    public ResponseEntity<List<Long>> getWorkingGroupsById(@RequestBody Student student){
+        return ResponseEntity.ok(wkRepo.getGroupIdByStudent(student.getId()));
     }
 }

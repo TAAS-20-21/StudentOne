@@ -1,19 +1,12 @@
-package com.gruppo13.CalendarMS.services.serviceImpl;
-
-import com.google.api.client.auth.oauth2.Credential;
+package com.gruppo13.CalendarMS.service.serviceImpl;
 
 import com.gruppo13.CalendarMS.models.User;
 import com.gruppo13.CalendarMS.repositories.UserRepository;
-import com.gruppo13.CalendarMS.services.UserService;
+import com.gruppo13.CalendarMS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 
 @Service

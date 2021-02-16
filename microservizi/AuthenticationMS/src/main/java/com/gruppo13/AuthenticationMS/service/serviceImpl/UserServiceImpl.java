@@ -17,6 +17,7 @@ import com.gruppo13.AuthenticationMS.repository.RoleRepository;
 import com.gruppo13.AuthenticationMS.repository.UserRepository;
 import com.gruppo13.AuthenticationMS.security.oauth2.user.OAuth2UserInfoFactory;
 import com.gruppo13.AuthenticationMS.service.UserService;
+import com.gruppo13.AuthenticationMS.service.UserServiceSAGA;
 import com.gruppo13.AuthenticationMS.util.ApiCredentialManager;
 import com.gruppo13.AuthenticationMS.util.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserServiceSAGA service;
+
     @Override
     @Transactional(value = "transactionManager")
     public User registerNewUser(final SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException {
@@ -50,6 +54,7 @@ public class UserServiceImpl implements UserService {
         User user = buildUser(signUpRequest);
         user = userRepository.save(user);
         userRepository.flush();
+        service.createUser(user);
         return user;
     }
 
