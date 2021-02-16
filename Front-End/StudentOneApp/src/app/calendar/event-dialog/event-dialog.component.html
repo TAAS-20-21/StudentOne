@@ -99,13 +99,19 @@
 			   type="time" required>
     </mat-form-field>
 	
-	<mat-checkbox type="checkbox" formControlName="lun">Lun</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="mar">Mar</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="mer">Mer</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="gio">Gio</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="ven">Ven</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="sab">Sab</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
-	<mat-checkbox type="checkbox" formControlName="dom">Dom</mat-checkbox>
+	<mat-checkbox type="checkbox" formControlName="lun" [checked]="monBool" [disabled]="monBool">Lun</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="mar" [checked]="tueBool" [disabled]="tueBool">Mar</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="mer" [checked]="wedBool" [disabled]="wedBool">Mer</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="gio" [checked]="thuBool" [disabled]="thuBool">Gio</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="ven" [checked]="friBool" [disabled]="friBool">Ven</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="sab" [checked]="satBool" [disabled]="satBool">Sab</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<mat-checkbox type="checkbox" formControlName="dom" [checked]="sunBool" [disabled]="sunBool">Dom</mat-checkbox>
 	
 	<mat-form-field>
 		<label>Giorno di fine ricorrenza:&nbsp;&nbsp;</label>

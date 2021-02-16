@@ -42,6 +42,15 @@ export class EventDialogComponent implements OnInit {
 	isProfessor:boolean;
 	loggedUser:any;
 	calendarService: CalendarService;
+	selectInfo: any;
+	day: any;
+	monBool: boolean;
+	tueBool: boolean;
+	wedBool: boolean;
+	thuBool: boolean;
+	friBool: boolean;
+	satBool: boolean;
+	sunBool: boolean;
     constructor(
         private fb: FormBuilder,
         private _dialogRef: MatDialogRef<EventDialogComponent>,
@@ -64,6 +73,7 @@ export class EventDialogComponent implements OnInit {
 			this.isProfessor = data.isProfessor;
 			this.loggedUser = data.loggedUser;
 			this.calendarService = data.calendarService;
+			this.selectInfo = data.selectInfo;
 			const _dataToUpload = {
 					id:this.loggedUser.id
 			}
@@ -143,6 +153,7 @@ export class EventDialogComponent implements OnInit {
 	}
 
     save() {
+		console.log(this.form.value);
         this.dialogRef.close([this.form.value, this.isRecurrent]);
     }
 
@@ -162,6 +173,38 @@ export class EventDialogComponent implements OnInit {
 	//Cambio da Dialog evento singolo a Dialog ricorrente.
 	recurrentEventSelection() {
 		if(this.hiddenRecurrentEvent){
+			this.day = this.selectInfo.start.toDateString().substr(0,3);
+			
+			this.monBool = false;
+			this.tueBool = false;
+			this.wedBool = false;
+			this.thuBool = false;
+			this.friBool = false;
+			this.satBool = false;
+			this.sunBool = false;
+			
+			if(this.day == 'Mon'){
+				this.monBool = true;
+				this.form.controls['lun'].setValue(true);
+			} else if(this.day == 'Tue'){
+				this.tueBool = true;
+				this.form.controls['mar'].setValue(true);
+			}else if(this.day == 'Wed'){
+				this.wedBool = true;
+				this.form.controls['mer'].setValue(true);
+			}else if(this.day == 'Thu'){
+				this.thuBool = true;
+				this.form.controls['gio'].setValue(true);
+			}else if(this.day == 'Fri'){
+				this.friBool = true;
+				this.form.controls['ven'].setValue(true);
+			}else if(this.day == 'Sat'){
+				this.satBool = true;
+				this.form.controls['sab'].setValue(true);
+			}else if(this.day == 'Sun'){
+				this.sunBool = true;
+				this.form.controls['dom'].setValue(true);
+			}
 			this.hiddenRecurrentEvent = !this.hiddenRecurrentEvent;
 			this.hiddenSingleEvent = true;
 			this.isRecurrent = true;

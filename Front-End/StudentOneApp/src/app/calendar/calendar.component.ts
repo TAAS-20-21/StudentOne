@@ -13,7 +13,6 @@ import { TokenStorageService } from "../services/token-storage.service";
 import { map } from 'rxjs/operators';
 import itLocale from '@fullcalendar/core/locales/it';
 
-
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -83,7 +82,8 @@ export class OurCalendarComponent {
 		dialogConfig.data = {
 			isProfessor: this.isProfessor,
 			loggedUser: this.loggedUser,
-			calendarService: this.calendarService
+			calendarService: this.calendarService,
+			selectInfo: selectInfo
 		}
 		const dialogRef = this.dialog.open(EventDialogComponent, dialogConfig);
 		
@@ -135,7 +135,7 @@ export class OurCalendarComponent {
 		weekNumbers: true,
 		navLinks: true,
 		locale: itLocale
-		};
+	};
 	currentEvents: EventApi[] = [];
   
   
