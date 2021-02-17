@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { OurCalendarComponent } from './calendar//calendar.component';
+import { CoursesComponent } from './courses/courses.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'admin', component: BoardAdminComponent },
   { path: 'calendar', component: OurCalendarComponent },
   { path: 'chat', component: ChatComponent },
+  { path: 'courses', component: CoursesComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

@@ -1,0 +1,20 @@
+package com.gruppo13.CoursesMS.repository;
+
+import com.gruppo13.CoursesMS.model.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface StudentRepository extends JpaRepository<Student, Long> {
+
+    Student findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    @Query(value = "SELECT cl.course_id FROM course_like cl WHERE cl.student_id = ?1", nativeQuery = true)
+    List<Long> getCourseIdByStudent(Long studentId);
+
+}

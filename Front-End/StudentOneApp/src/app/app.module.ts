@@ -41,6 +41,9 @@ import { ChatComponent } from './chat/chat.component';
 import { MatSelectModule } from '@angular/material/select';
 //DIALOG
 
+import { CoursesComponent } from './courses/courses.component';
+import { MatListModule } from '@angular/material/list';
+
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
   timeGridPlugin,
@@ -64,6 +67,7 @@ FullCalendarModule.registerPlugins([
     OurCalendarComponent,
 	//DIALOG
 	EventDialogComponent,
+	CoursesComponent,
 
     ChatComponent
   ],
@@ -86,7 +90,8 @@ FullCalendarModule.registerPlugins([
 	MatInputModule,
 	BrowserModule,
 	MatCheckboxModule,
-	MatSelectModule
+	MatSelectModule,
+	MatListModule
 	//DIALOG
   ],
   //DIALOG

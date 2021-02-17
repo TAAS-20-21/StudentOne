@@ -18,16 +18,16 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @AllArgsConstructor
-public class UserCreatedEventHandler {
+public class CourseCreatedEventHandler {
 
     private UserRepository userRepo;
     private TeacherRepository teacherRepo;
     private StudentRepository studentRepo;
 
-    @RabbitListener(queues = {"{queue.user-create}"})
+    @RabbitListener(queues = {"{queue.course-create}"})
     public void onUserCreated(@Payload String payload) {
         System.out.println("EVENTO: "+payload);
-        JSONObject json = new JSONObject(payload);
+        /*JSONObject json = new JSONObject(payload);
         User toLoad = new User();
         toLoad.setId(Long.parseLong(json.get("id").toString()));
         toLoad.setName(json.getString("name"));
@@ -37,12 +37,6 @@ public class UserCreatedEventHandler {
         toLoad.setProvider(json.getString("provider"));
         toLoad.setPassword(json.getString("password"));
 
-        /*JSONArray rolesArray = json.getJSONArray("roles");
-        Set<Role> roles = new HashSet<>();
-        for(Object o : rolesArray){
-            System.out.println(((String) o));
-        }
-        toLoad.setRoles(roles);*/
         if(!json.isNull("providerUserId"))
             toLoad.setProviderUserId(json.getString("providerUserId"));
 
@@ -71,6 +65,6 @@ public class UserCreatedEventHandler {
             if(!json.isNull("providerUserId"))
                 student.setProviderUserId(toLoad.getProviderUserId());
             studentRepo.saveAndFlush(student);
-        }
+        }*/
     }
 }

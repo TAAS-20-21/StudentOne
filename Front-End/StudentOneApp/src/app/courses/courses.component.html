@@ -1,0 +1,9 @@
+<div>
+  <h6 class="text-muted py-5">CORSI</h6>
+  <mat-list>
+	  <mat-list-item *ngFor="let course of courseList">
+		<div mat-line>{{course.name}}{{course.cfu}}</div>
+	  </mat-list-item>
+	  <mat-divider></mat-divider>
+	</mat-list>
+</div>
