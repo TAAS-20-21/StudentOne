@@ -16,7 +16,7 @@ public class Course implements Serializable{
     private static final long serialVersionUID = -3614185391977163873L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "NAME")

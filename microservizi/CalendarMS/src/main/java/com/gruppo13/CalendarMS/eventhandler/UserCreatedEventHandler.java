@@ -1,5 +1,6 @@
 package com.gruppo13.CalendarMS.eventhandler;
 
+import com.gruppo13.CalendarMS.CalendarMsApplication;
 import com.gruppo13.CalendarMS.models.Student;
 import com.gruppo13.CalendarMS.models.Teacher;
 import com.gruppo13.CalendarMS.models.User;
@@ -7,11 +8,14 @@ import com.gruppo13.CalendarMS.repositories.StudentRepository;
 import com.gruppo13.CalendarMS.repositories.TeacherRepository;
 import com.gruppo13.CalendarMS.repositories.UserRepository;
 
+import com.gruppo13.CalendarMS.service.UserServiceSAGA;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +27,9 @@ public class UserCreatedEventHandler {
     private UserRepository userRepo;
     private TeacherRepository teacherRepo;
     private StudentRepository studentRepo;
+
+    @Autowired
+    private UserServiceSAGA service;
 
     @RabbitListener(queues = {"{queue.user-create}"})
     public void onUserCreated(@Payload String payload) {
@@ -37,40 +44,37 @@ public class UserCreatedEventHandler {
         toLoad.setProvider(json.getString("provider"));
         toLoad.setPassword(json.getString("password"));
 
-        /*JSONArray rolesArray = json.getJSONArray("roles");
-        Set<Role> roles = new HashSet<>();
-        for(Object o : rolesArray){
-            System.out.println(((String) o));
-        }
-        toLoad.setRoles(roles);*/
         if(!json.isNull("providerUserId"))
             toLoad.setProviderUserId(json.getString("providerUserId"));
+        if(!userRepo.existsById(toLoad.getId())) {
+            userRepo.saveAndFlush(toLoad);
+            if (toLoad.isProfessor()) {
+                System.out.println("PROFESSORE");
+                Teacher teacher = new Teacher();
+                teacher.setId(toLoad.getId());
+                teacher.setName(toLoad.getName());
+                teacher.setSurname(toLoad.getSurname());
+                teacher.setEmail(toLoad.getEmail());
+                teacher.setProvider(toLoad.getProvider());
+                teacher.setPassword(toLoad.getPassword());
+                if (!json.isNull("providerUserId"))
+                    teacher.setProviderUserId(toLoad.getProviderUserId());
+                teacherRepo.saveAndFlush(teacher);
+            } else {
+                System.out.println("STUDENTE");
+                Student student = new Student();
+                student.setId(toLoad.getId());
+                student.setName(toLoad.getName());
+                student.setSurname(toLoad.getSurname());
+                student.setEmail(toLoad.getEmail());
+                student.setProvider(toLoad.getProvider());
+                student.setPassword(toLoad.getPassword());
+                if (!json.isNull("providerUserId"))
+                    student.setProviderUserId(toLoad.getProviderUserId());
+                studentRepo.saveAndFlush(student);
+            }
 
-        userRepo.saveAndFlush(toLoad);
-        if(toLoad.isProfessor()){
-            System.out.println("PROFESSORE");
-            Teacher teacher = new Teacher();
-            teacher.setId(toLoad.getId());
-            teacher.setName(toLoad.getName());
-            teacher.setSurname(toLoad.getSurname());
-            teacher.setEmail(toLoad.getEmail());
-            teacher.setProvider(toLoad.getProvider());
-            teacher.setPassword(toLoad.getPassword());
-            if(!json.isNull("providerUserId"))
-                teacher.setProviderUserId(toLoad.getProviderUserId());
-            teacherRepo.saveAndFlush(teacher);
-        }else{
-            System.out.println("STUDENTE");
-            Student student = new Student();
-            student.setId(toLoad.getId());
-            student.setName(toLoad.getName());
-            student.setSurname(toLoad.getSurname());
-            student.setEmail(toLoad.getEmail());
-            student.setProvider(toLoad.getProvider());
-            student.setPassword(toLoad.getPassword());
-            if(!json.isNull("providerUserId"))
-                student.setProviderUserId(toLoad.getProviderUserId());
-            studentRepo.saveAndFlush(student);
+            service.createUser(toLoad);
         }
     }
 }

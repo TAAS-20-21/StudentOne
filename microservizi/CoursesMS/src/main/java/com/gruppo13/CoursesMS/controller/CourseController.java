@@ -29,7 +29,7 @@ public class CourseController {
 
     @PostMapping(value = "/course/create")
     public Course postCourse(@RequestBody Course course) {
-        Course _course = courseRepo.saveAndFlush(new Course(course.getName()));
+        Course _course = courseRepo.saveAndFlush(course);
         service.createCourse(_course);
         return _course;
     }
@@ -43,6 +43,7 @@ public class CourseController {
 
     @PostMapping("/course/courseById")
     public ResponseEntity<Course> getCourse(@RequestBody Course course){
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + courseRepo.findById(course.getId()).get());
         return ResponseEntity.ok(courseRepo.findById(course.getId()).get());
     }
 }

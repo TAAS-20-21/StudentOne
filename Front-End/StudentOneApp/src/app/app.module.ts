@@ -42,7 +42,8 @@ import { MatSelectModule } from '@angular/material/select';
 //DIALOG
 
 import { CoursesComponent } from './courses/courses.component';
-import { MatListModule } from '@angular/material/list';
+//import { MatListModule } from '@angular/material/list';
+import {MatTableModule} from '@angular/material/table';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -91,7 +92,7 @@ FullCalendarModule.registerPlugins([
 	BrowserModule,
 	MatCheckboxModule,
 	MatSelectModule,
-	MatListModule
+	MatTableModule
 	//DIALOG
   ],
   //DIALOG

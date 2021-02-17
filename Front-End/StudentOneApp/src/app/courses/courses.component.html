@@ -1,9 +1,33 @@
-<div>
-  <h6 class="text-muted py-5">CORSI</h6>
-  <mat-list>
-	  <mat-list-item *ngFor="let course of courseList">
-		<div mat-line>{{course.name}}{{course.cfu}}</div>
-	  </mat-list-item>
-	  <mat-divider></mat-divider>
-	</mat-list>
-</div>
+<mat-table #table [dataSource]="courseList" matSortDisableClear>
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+        <mat-cell *matCellDef="let product">{{product.name}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="cfu">
+        <mat-header-cell *matHeaderCellDef>CFU</mat-header-cell>
+        <mat-cell *matCellDef="let product">{{product.cfu}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="lesson_hours">
+        <mat-header-cell *matHeaderCellDef>Ore di lezione</mat-header-cell>
+        <mat-cell *matCellDef="let product">{{product.lesson_hours}}</mat-cell>
+    </ng-container>
+	<ng-container matColumnDef="actions">
+		<mat-header-cell  *matHeaderCellDef > Azioni </mat-header-cell>
+		<mat-cell *matCellDef="let row" >
+			<div *ngIf="isProfessor; else elseBlock">
+				<button class="mat-raised-button mat-primary"
+				(click)="save(row.id)">
+					Insegna
+				</button>
+			</div>
+			<ng-template #elseBlock>
+				<button class="mat-raised-button mat-primary"
+				(click)="save(row.id)">
+					Iscrivimi
+				</button>
+			</ng-template>
+		</mat-cell>
+	</ng-container>
+    <mat-header-row *matHeaderRowDef="columndefs"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columndefs"></mat-row>
+</mat-table>

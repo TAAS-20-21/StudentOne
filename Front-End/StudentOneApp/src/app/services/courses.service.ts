@@ -18,4 +18,9 @@ export class CourseService {
 		return this.http.get<Course[]>(url);
 	}
 	
+	getCourseById(data: any){
+		const url = "http://localhost:8080/StudentOne/courseservice/api/course/courseById";
+		return this.http.post(url, data);
+	}
+	
 }

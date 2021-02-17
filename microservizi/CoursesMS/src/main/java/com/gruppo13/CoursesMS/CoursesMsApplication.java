@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class CoursesMsApplication extends SpringBootServletInitializer {
 
-	static final String topicExchangeName = "{exchange.course-create}";
+	static final String topicExchangeNameCourse = "{exchange.course-create}";
+	static final String topicExchangeNameUser = "{exchange.user-create}";
 
-	static final String queueName = "{queue.course-create}";
+	static final String queueNameCourse = "{queue.course-create}";
+	static final String queueNameUser = "{queue.user-create}";
 
 	public static void main(String[] args) {
 		SpringApplicationBuilder app = new SpringApplicationBuilder(CoursesMsApplication.class);
@@ -34,12 +36,12 @@ public class CoursesMsApplication extends SpringBootServletInitializer {
 
 	@Bean
 	public Queue myQueue() {
-		return new Queue(queueName, false);
+		return new Queue(queueNameCourse, false);
 	}
 
 	@Bean
 	TopicExchange exchange() {
-		return new TopicExchange(topicExchangeName);
+		return new TopicExchange(topicExchangeNameCourse);
 	}
 
 	@Bean
@@ -51,16 +53,23 @@ public class CoursesMsApplication extends SpringBootServletInitializer {
 	SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
-		container.setQueueNames(queueName);
+		container.setQueueNames(queueNameCourse);
 		return container;
 	}
 
-	public static String getTopicExchangeName() {
-		return topicExchangeName;
+	public static String getTopicExchangeNameCourse() {
+		return topicExchangeNameCourse;
 	}
 
-	public static String getQueueName() {
-		return queueName;
+	public static String getTopicExchangeNameUser() {
+		return topicExchangeNameUser;
 	}
 
+	public static String getQueueNameCourse() {
+		return queueNameCourse;
+	}
+
+	public static String getQueueNameUser() {
+		return queueNameUser;
+	}
 }

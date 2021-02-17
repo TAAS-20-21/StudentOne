@@ -33,21 +33,15 @@ public class CourseEventListener {
 
         System.out.println("Sending order created event to {}, event: {}" + queueOrderCreateName + " , " + event);
         JSONObject jo = new JSONObject();
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + jo.toString());
         jo.put("transactionId",event.getTransactionId().toString());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + event.getCourse().getId().toString());
         jo.put("id",event.getCourse().getId().toString());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + jo.toString());
         jo.put("cfu",event.getCourse().getCFU());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + jo.toString());
         jo.put("name",event.getCourse().getName());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + jo.toString());
-        jo.put("info",event.getCourse().getInfo());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + jo.toString());
+        if(event.getCourse().getInfo() != null)
+            jo.put("info",event.getCourse().getInfo());
         jo.put("lessonHours",event.getCourse().getLesson_hours());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + jo.toString());
         //rabbitTemplate.convertAndSend(queueOrderCreateName,jo.toString());
-        rabbitTemplate.convertAndSend(CoursesMsApplication.getTopicExchangeName(),"course.create.try",jo.toString());
+        rabbitTemplate.convertAndSend(CoursesMsApplication.getTopicExchangeNameCourse(),"course.create.course",jo.toString());
     }
 
 }
