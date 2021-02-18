@@ -14,18 +14,41 @@
 	<ng-container matColumnDef="actions">
 		<mat-header-cell  *matHeaderCellDef > Azioni </mat-header-cell>
 		<mat-cell *matCellDef="let row" >
-			<div *ngIf="isProfessor; else elseBlock">
-				<button class="mat-raised-button mat-primary"
-				(click)="save(row.id)">
-					Insegna
-				</button>
+		
+			<div *ngIf="isProfessor; else elseBlockStudent">
+				<div *ngIf="isAssignedOrLiked(row.id); else elseBlockTeach">
+					<button class="mat-raised-button mat-primary"
+					(click)="delete(row.id)">
+						Non insegnare
+					</button>
+				</div>
+				<ng-template #elseBlockTeach>
+					<button class="mat-raised-button mat-primary"
+					(click)="save(row.id)">
+						Insegna
+					</button>
+				</ng-template>
 			</div>
-			<ng-template #elseBlock>
-				<button class="mat-raised-button mat-primary"
-				(click)="save(row.id)">
-					Iscrivimi
-				</button>
+			
+			
+			
+			<ng-template #elseBlockStudent>
+				<div *ngIf="isAssignedOrLiked(row.id); else elseBlockSubscribe">
+					<button class="mat-raised-button mat-primary"
+					(click)="delete(row.id)">
+						Disiscrivi
+					</button>
+				</div>
+				<ng-template #elseBlockSubscribe>
+					<button class="mat-raised-button mat-primary"
+					(click)="save(row.id)">
+						Iscrivimi
+					</button>
+				</ng-template>
 			</ng-template>
+			
+			
+			
 		</mat-cell>
 	</ng-container>
     <mat-header-row *matHeaderRowDef="columndefs"></mat-header-row>

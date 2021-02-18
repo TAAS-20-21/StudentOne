@@ -3,6 +3,7 @@ package com.gruppo13.CoursesMS.controller;
 import com.gruppo13.CoursesMS.model.Student;
 import com.gruppo13.CoursesMS.repository.StudentRepository;
 import com.gruppo13.CoursesMS.repository.WorkingGroupRepository;
+import com.gruppo13.CoursesMS.util.CourseUserRelObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +43,15 @@ public class StudentController {
     @PostMapping(value = "/student/working_groups")
     public ResponseEntity<List<Long>> getWorkingGroupsById(@RequestBody Student student){
         return ResponseEntity.ok(wkRepo.getGroupIdByStudent(student.getId()));
+    }
+
+    @PostMapping(value = "/student/addLikedCourse")
+    public ResponseEntity<Object> addAssignedCourse(@RequestBody CourseUserRelObject req) {
+        return ResponseEntity.ok(studentRepo.addLikedCourse(req.getCourseId(),req.getPersonId()));
+    }
+
+    @PostMapping(value = "/student/deleteLikedCourse")
+    public ResponseEntity<Object> deleteAssignedCourse(@RequestBody CourseUserRelObject req) {
+        return ResponseEntity.ok(studentRepo.deleteLikedCourse(req.getCourseId(),req.getPersonId()));
     }
 }

@@ -22,6 +22,7 @@ export class CoursesComponent implements OnInit{
 	isProfessor:boolean;
 	courseList:Course[];
 	columndefs : any[] = ['name','cfu', 'lesson_hours', 'actions'];
+	courses:Course[];
 	@ViewChild('table', { static: false }) table: any;
 	
 	constructor(private calendarService: CalendarService, private courseService: CourseService, private token: TokenStorageService) {}
@@ -35,7 +36,7 @@ export class CoursesComponent implements OnInit{
 			this.isLogin = true;
 		}
 		
-		const _dataToUpload = {
+		let _dataToUpload = {
 			id:this.loggedUser.id
 		}
 		this.calendarService.getIsProfessor(_dataToUpload)
@@ -56,6 +57,33 @@ export class CoursesComponent implements OnInit{
 			error => {
 				console.log(error);
 			});
+			
+			
+			
+		_dataToUpload = {
+			id:this.loggedUser.id
+		}
+		if(this.isProfessor){
+			console.log("Professore", this.isProfessor);
+			this.courseService.getCoursesByIdTeacher(_dataToUpload)
+			.subscribe(
+				response => {
+					this.setCourses(response);
+				},
+				error => {
+					console.log(error)
+			});
+		}else{
+			console.log("Studente", this.isProfessor);
+			this.courseService.getCoursesByIdStudent(_dataToUpload)
+			.subscribe(
+				response => {
+					this.setCourses(response);
+				},
+				error => {
+					console.log(error)
+			});
+		}
 	}
 	
 	initializeCourses(response){
@@ -68,18 +96,79 @@ export class CoursesComponent implements OnInit{
 	}
 
 	save(id) {
-		const _dataToUpload = {
-			id:id
+		if(!this.isAssignedOrLiked(id)){
+			const _dataToUpload = {
+				courseId:id,
+				personId:this.loggedUser.id
+			}
+			console.log("Insegno CORSO CON ID: ", _dataToUpload);
+			if(this.isProfessor){
+				this.courseService.addAssignedCourse(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log("RISPOSTA: ");
+					},
+					error => {
+						console.log(error)
+				});
+			}else{
+				this.courseService.addLikedCourse(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log("RISPOSTA: ");
+					},
+					error => {
+						console.log(error)
+				});
+			}
+			this.courses.push(id);
+			console.log(this.courses);
 		}
-		console.log("CLICKATO CORSO CON ID: ", _dataToUpload);
-		this.courseService.getCourseById(_dataToUpload)
-		.subscribe(
-			response => {
-				console.log("RISPOSTA: ", response);
-			},
-			error => {
-				console.log(error)
-		});
-        //this.dialogRef.close([this.form.value, this.isRecurrent]);
     }
+	
+	delete(id) {
+		if(this.isAssignedOrLiked(id)){
+			const _dataToUpload = {
+				courseId:id,
+				personId:this.loggedUser.id
+			}
+			console.log("Cancello CORSO CON ID: ", _dataToUpload);
+			if(this.isProfessor){
+				this.courseService.deleteAssignedCourse(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log("RISPOSTA: ");
+					},
+					error => {
+						console.log(error)
+				});
+			}else{
+				this.courseService.deleteLikedCourse(_dataToUpload)
+				.subscribe(
+					response => {
+						console.log("RISPOSTA: ");
+					},
+					error => {
+						console.log(error)
+				});
+			}
+			this.courses.splice(this.courses.indexOf(id),1);
+			//myFish.splice(3, 1)
+			console.log(this.courses);
+		}else{
+			console.log("FALSO");
+		}
+	}
+	
+	
+	//PER DOCENTE E STUDENTE
+	isAssignedOrLiked(id){
+		return this.courses.indexOf(id) > -1;
+	}
+	
+	setCourses(response){
+		this.courses = response;
+	}
+	
+
 }
