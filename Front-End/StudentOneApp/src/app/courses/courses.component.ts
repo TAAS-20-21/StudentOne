@@ -19,7 +19,7 @@ export class CoursesComponent implements OnInit{
 	
 	loggedUser: User;
 	isLogin:boolean;
-	isProfessor:boolean;
+	isProfessor:Object;
 	courseList:Course[];
 	columndefs : any[] = ['name','cfu', 'lesson_hours', 'actions'];
 	courses:Course[];
@@ -27,7 +27,7 @@ export class CoursesComponent implements OnInit{
 	
 	constructor(private calendarService: CalendarService, private courseService: CourseService, private token: TokenStorageService) {}
 	
-	async ngOnInit(): void {
+	async ngOnInit(){
 		this.loggedUser = this.token.getUser();
 		let verifyToken = this.token.getToken();
 		if(verifyToken == null){
