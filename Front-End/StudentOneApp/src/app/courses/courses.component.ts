@@ -27,7 +27,7 @@ export class CoursesComponent implements OnInit{
 	
 	constructor(private calendarService: CalendarService, private courseService: CourseService, private token: TokenStorageService) {}
 	
-	ngOnInit(): void {
+	async ngOnInit(): void {
 		this.loggedUser = this.token.getUser();
 		let verifyToken = this.token.getToken();
 		if(verifyToken == null){
@@ -39,14 +39,7 @@ export class CoursesComponent implements OnInit{
 		let _dataToUpload = {
 			id:this.loggedUser.id
 		}
-		this.calendarService.getIsProfessor(_dataToUpload)
-		.subscribe(
-			response => {
-				this.setIsProfessor(response);
-			},
-			error => {
-				console.log(error)
-		});
+		this.isProfessor = await this.calendarService.getIsProfessor(_dataToUpload).toPromise();
 		
 		this.courseService.getAll()
 		.subscribe(

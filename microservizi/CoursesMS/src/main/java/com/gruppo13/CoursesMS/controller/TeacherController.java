@@ -2,6 +2,7 @@ package com.gruppo13.CoursesMS.controller;
 
 import com.gruppo13.CoursesMS.model.Teacher;
 import com.gruppo13.CoursesMS.repository.TeacherRepository;
+import com.gruppo13.CoursesMS.service.CourseUserServiceSAGA;
 import com.gruppo13.CoursesMS.util.CourseUserRelObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ public class TeacherController {
 
     @Autowired
     TeacherRepository teacherRepo;
+
+    @Autowired
+    CourseUserServiceSAGA courseUserService;
 
     @GetMapping("/teacher")
     public List<Teacher> getAllTeacher() {
@@ -39,11 +43,13 @@ public class TeacherController {
 
     @PostMapping(value = "/teacher/addAssignedCourse")
     public ResponseEntity<Object> addAssignedCourse(@RequestBody CourseUserRelObject req) {
+        courseUserService.createCourseUser(req);
         return ResponseEntity.ok(teacherRepo.addAssignedCourse(req.getCourseId(),req.getPersonId()));
     }
 
     @PostMapping(value = "/teacher/deleteAssignedCourse")
     public ResponseEntity<Object> deleteAssignedCourse(@RequestBody CourseUserRelObject req) {
+        courseUserService.deleteCourseUser(req);
         return ResponseEntity.ok(teacherRepo.deleteAssignedCourse(req.getCourseId(),req.getPersonId()));
     }
 }

@@ -17,4 +17,10 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     //FAI QUERY PER OTTENERE I CORSI ASSEGNATI
     @Query(value = "SELECT ac.course_id FROM assigned_courses ac WHERE ac.teacher_id = ?1", nativeQuery = true)
     List<Long> getCourseIdByTeacher(Long studentId);
+
+    @Query(value = "INSERT INTO assigned_courses(teacher_id, course_id) VALUES (?2, ?1) RETURNING *", nativeQuery = true)
+    Object addAssignedCourse(Long courseId, Long teacherId);
+
+    @Query(value = "DELETE FROM assigned_courses WHERE course_id = ?1 AND teacher_id = ?2 RETURNING *", nativeQuery = true)
+    Object deleteAssignedCourse(Long courseId, Long teacherId);
 }
