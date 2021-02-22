@@ -6,9 +6,7 @@ import com.gruppo13.ChatMS.util.DateUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "chat")
@@ -25,15 +23,13 @@ public class Chat implements Serializable {
 
     private String nome;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_chat",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "chat_id"))
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> partecipanti = new ArrayList<User>();
 
-    @JsonIgnore
     @OneToMany(
             mappedBy = "chat",
             cascade = CascadeType.ALL,
@@ -71,5 +67,29 @@ public class Chat implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public List<User> getPartecipanti() {
+        return partecipanti;
+    }
+
+    public void setPartecipanti(List<User> partecipanti) {
+        this.partecipanti = partecipanti;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public void addPartecipante(User user){
+        this.partecipanti.add(user);
+    }
+
+    public void removePartecipante(User user){
+        this.partecipanti.remove(user);
     }
 }

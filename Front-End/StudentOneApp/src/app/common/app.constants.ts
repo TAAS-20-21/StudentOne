@@ -10,8 +10,18 @@ export class AppConstants {
 }
 
 export class SocketCostants{
-  private static API_BASE_URL = "http://localhost:8080/StudentOne/chatservice";
+  private static API_BASE_URL = "http://localhost:8083";
+
+  private static API_CHAT = SocketCostants.API_BASE_URL + "/api/chat"
+
+  private static API_USER = SocketCostants.API_BASE_URL + "/api/user"
 
   public static SOCKET_URL = SocketCostants.API_BASE_URL + "/socket"
+
+  public static GETTUSERS = SocketCostants.API_USER + "/getAllUsers"
+
+  public static GETCHATS = SocketCostants. API_CHAT + "/getAllChats"
+
+  public static GETCHATBYID = SocketCostants. API_CHAT + "/getChat"
 
 }

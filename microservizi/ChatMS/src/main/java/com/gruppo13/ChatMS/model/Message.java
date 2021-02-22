@@ -1,6 +1,7 @@
 package com.gruppo13.ChatMS.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gruppo13.ChatMS.util.DateUtils;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class Message implements Serializable {
 
     private String text;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional=true)
     @JoinColumn(name = "chat_id")
     private Chat chat;
@@ -27,7 +29,7 @@ public class Message implements Serializable {
     private Date date;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional=true)
-    @JoinColumn(name = "chat_association_id")
+    @JoinColumn(name = "sender")
     private User sender;
 
     public Long getId() {
