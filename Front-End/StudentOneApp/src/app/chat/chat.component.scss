@@ -1,4 +1,4 @@
-.container{max-width:1170px; margin:auto;}
+.container{max-width:1170px; margin:auto; padding-top: 30px;}
 img{ max-width:100%;}
 .inbox_people {
   background: #f8f8f8 none repeat scroll 0 0;
@@ -74,6 +74,7 @@ img{ max-width:100%;}
   padding: 0 0 0 10px;
   vertical-align: top;
   width: 92%;
+  margin-bottom: 26px;
  }
  .received_withd_msg p {
   background: #ebebeb none repeat scroll 0 0;
@@ -105,7 +106,7 @@ img{ max-width:100%;}
   padding: 5px 10px 5px 12px;
   width:100%;
 }
-.outgoing_msg{ overflow:hidden; margin:26px 0 26px;}
+.outgoing_msg{ overflow:hidden; margin-bottom: 26px}
 .sent_msg {
   float: right;
   width: 46%;

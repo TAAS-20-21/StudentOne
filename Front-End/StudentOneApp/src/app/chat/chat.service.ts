@@ -20,7 +20,7 @@ export class ChatService {
   getUsers(): Observable<User[]> {
 		return this.http.get<User[]>(SocketCostants.GETTUSERS, httpOptions);
   }
-  geChats():Observable<ChatInfo[]>{
+  getChats():Observable<ChatInfo[]>{
     return this.http.get<ChatInfo[]>(SocketCostants.GETCHATS, httpOptions);
   }
 

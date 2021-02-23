@@ -41,7 +41,7 @@ export class ChatComponent implements OnInit {
       this.isLogin = true;
     }
     this.initializeWebSocketConnection();
-    this.chatService.geChats().subscribe( (response) =>{
+    this.chatService.getChats().subscribe( (response) =>{
       this.chats = response;
       this.sortChats();
       this.setContentChat(this.chats[0]);
@@ -115,11 +115,31 @@ export class ChatComponent implements OnInit {
       this.chatService.getChatById(chat.id).subscribe( (response) =>{
         console.log(response);
         this.contentChat = response;
+        for(let message of this.contentChat.messages){
+
+          message.date = this.calculatedDate(message.date);
+        }
         this.listContentChatLoaded.push(this.contentChat);
       },
       (error) => console.log(error)
       );
     }
+  }
+
+  calculatedDate(date){
+    let dateConvert :String = new String(date);
+    let giorno:number = +dateConvert.substring(0,2);
+    let mese:number = +dateConvert.substring(3,5);
+    let anno:number = +dateConvert.substring(6,10);
+    let ora:number = +dateConvert.substring(11,13);
+    let minuti:number = +dateConvert.substring(14,16);
+    let newDate:Date = new Date();
+    newDate.setDate(giorno);
+    newDate.setMonth(mese-1);
+    newDate.setFullYear(anno);
+    newDate.setHours(ora);
+    newDate.setMinutes(minuti);
+    return newDate;
   }
 
   checkChatsLoaded(idChat:number){
