@@ -1,23 +1,23 @@
-package com.gruppo13.CalendarMS.eventhandler;
+package com.gruppo13.CoursesMS.eventhandler;
 
-import com.gruppo13.CalendarMS.CalendarMsApplication;
-import com.gruppo13.CalendarMS.models.Student;
-import com.gruppo13.CalendarMS.models.Teacher;
-import com.gruppo13.CalendarMS.models.User;
-import com.gruppo13.CalendarMS.repositories.StudentRepository;
-import com.gruppo13.CalendarMS.repositories.TeacherRepository;
-import com.gruppo13.CalendarMS.repositories.UserRepository;
 
-import com.gruppo13.CalendarMS.service.UserServiceSAGA;
+import com.gruppo13.CoursesMS.CoursesMsApplication;
+import com.gruppo13.CoursesMS.model.Student;
+import com.gruppo13.CoursesMS.model.Teacher;
+import com.gruppo13.CoursesMS.model.User;
+import com.gruppo13.CoursesMS.repository.StudentRepository;
+import com.gruppo13.CoursesMS.repository.TeacherRepository;
+import com.gruppo13.CoursesMS.repository.UserRepository;
+import com.gruppo13.CoursesMS.service.UserServiceSAGA;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
 
 @Log4j2
 @Component

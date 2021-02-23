@@ -1,9 +1,4 @@
-package com.gruppo13.CalendarMS.models;
-
-import javax.persistence.*;
-import com.google.common.primitives.UnsignedInteger;
-import jdk.jfr.Unsigned;
-import org.w3c.dom.Text;
+package com.gruppo13.CoursesMS.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +11,7 @@ public class Course implements Serializable{
     private static final long serialVersionUID = -3614185391977163873L;
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "NAME")

@@ -1,6 +1,6 @@
-package com.gruppo13.CalendarMS.repositories;
+package com.gruppo13.CoursesMS.repository;
 
-import com.gruppo13.CalendarMS.models.Student;
+import com.gruppo13.CoursesMS.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
