@@ -3,7 +3,9 @@ package com.example.studentoneapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,8 +23,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        SharedPreferences preferences= com.example.studentoneapp.HomeActivity.this.getSharedPreferences("studentone", Context.MODE_PRIVATE);
+        String accessToken  = preferences.getString("token",null);//second parameter default value.
         // sign out
-        signOut.setOnClickListener(new View.OnClickListener() {
+        /*signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -43,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(intent);
                 }
             }
-        });
+        });*/
 
 
     }
