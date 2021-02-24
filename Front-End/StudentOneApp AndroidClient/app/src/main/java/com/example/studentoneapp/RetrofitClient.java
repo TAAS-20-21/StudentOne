@@ -13,9 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private String AUTH ="";
-    public static  final String BASE_URL = "http://192.168.1.126:8080/StudentOne/";
+    public static  final String BASE_URL = "http://192.168.1.14:8080/StudentOne/";
     public static final String AUTH_URL = BASE_URL + "authenticationservice/api/";
-    public static  final String COURSE_URL = "http://192.168.1.126:8084/courses/";
+    public static  final String COURSE_URL = "http://192.168.1.14:8084/courses/";
     private static com.example.studentoneapp.RetrofitClient mInstance;
     private Retrofit retrofit;
 

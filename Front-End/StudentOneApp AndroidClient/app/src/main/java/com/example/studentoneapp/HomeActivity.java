@@ -24,9 +24,18 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         SharedPreferences preferences= com.example.studentoneapp.HomeActivity.this.getSharedPreferences("studentone", Context.MODE_PRIVATE);
+        String name = preferences.getString("name", null);
         String accessToken  = preferences.getString("token",null);//second parameter default value.
+
+        signOut = findViewById(R.id.signOutButton);
+        calendarButton = findViewById(R.id.calendarButton);
+
+        TextView nome = findViewById(R.id.PersonName);
+        nome.setText(name);
+
+
         // sign out
-        /*signOut.setOnClickListener(new View.OnClickListener() {
+        signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -47,9 +56,7 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(intent);
                 }
             }
-        });*/
-
-
+        });
     }
 
     //da sistemare

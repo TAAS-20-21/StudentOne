@@ -20,17 +20,18 @@ import static com.example.studentoneapp.R.id.etRPassword;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText etUsername, etEmail, etPassword, etRepeatPassword;
+    private EditText etName,etSurname, etEmail, etPassword, etRepeatPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        etUsername = findViewById(R.id.etRUserName);
+        etName = findViewById(R.id.etRname);
+        etSurname = findViewById(R.id.etRsurname);
         etEmail =  findViewById(R.id.etEmail);
         etPassword = findViewById(etRPassword);
-        etRepeatPassword = findViewById(R.id.etRepeatPassword);
+
         findViewById(R.id.btnRegister).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,29 +48,38 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        String userName = etUsername.getText().toString().trim();
+        String name = etName.getText().toString().trim();
+        String surname = etSurname.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        String repeatPassword = etRepeatPassword.getText().toString().trim();
 
-        if (userName.isEmpty()) {
-            etUsername.setError("Inserisci l'Username");
-            etUsername.requestFocus();
+        if (name.isEmpty()) {
+            etName.setError("Inserisci il nome");
+            etName.requestFocus();
             return;
         } else if (password.isEmpty()) {
-            etPassword.setError("Inserisci la Password");
+            etPassword.setError("Inserisci la password");
             etPassword.requestFocus();
             return;
+        } else if (surname.isEmpty()) {
+            etSurname.setError("Inserisci il cognome");
+            etSurname.requestFocus();
+            return;
+        } else if (email.isEmpty()){
+            etEmail.setError("Inserisci la mail");
+            etSurname.requestFocus();
         }
 
         Call<ResponseBody> call = com.example.studentoneapp.RetrofitClient
-                .getInstance(RetrofitClient.COURSE_URL, null)
+                .getInstance(RetrofitClient.BASE_URL, null)
                 .getAPI()
-                .createUser(new com.example.studentoneapp.User(userName, password));
+                .createUser(new RegisterRequest(email, password, name, surname));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(com.example.studentoneapp.RegisterActivity.this, "aa", Toast.LENGTH_LONG).show();
+                /*
                 String s = "";
                 try {
                     s = response.body().string();
@@ -82,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(new Intent(com.example.studentoneapp.RegisterActivity.this, com.example.studentoneapp.LoginActivity.class));
                 } else {
                     Toast.makeText(com.example.studentoneapp.RegisterActivity.this, "User already exists!", Toast.LENGTH_LONG).show();
-                }
+                }*/
             }
 
             @Override
@@ -90,6 +100,5 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(com.example.studentoneapp.RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
     }
 }
