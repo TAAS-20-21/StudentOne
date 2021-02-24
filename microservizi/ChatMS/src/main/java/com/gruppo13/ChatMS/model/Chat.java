@@ -23,12 +23,12 @@ public class Chat implements Serializable {
 
     private String nome;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_chat",
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> partecipanti = new ArrayList<User>();
+    private Set<User> partecipanti;
 
     @OneToMany(
             mappedBy = "chat",
@@ -36,6 +36,8 @@ public class Chat implements Serializable {
             orphanRemoval = true
     )
     private List<Message> messages = new ArrayList<>();
+
+    private Long courseId;
 
     public Chat() {
     }
@@ -69,11 +71,11 @@ public class Chat implements Serializable {
         this.nome = nome;
     }
 
-    public List<User> getPartecipanti() {
+    public Set<User> getPartecipanti() {
         return partecipanti;
     }
 
-    public void setPartecipanti(List<User> partecipanti) {
+    public void setPartecipanti(Set<User> partecipanti) {
         this.partecipanti = partecipanti;
     }
 
@@ -91,5 +93,13 @@ public class Chat implements Serializable {
 
     public void removePartecipante(User user){
         this.partecipanti.remove(user);
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 }

@@ -1,11 +1,11 @@
-package com.gruppo13.CalendarMS.eventhandler;
+package com.gruppo13.ChatMS.eventhandler;
 
-import com.gruppo13.CalendarMS.models.Course;
-import com.gruppo13.CalendarMS.repositories.StudentRepository;
-import com.gruppo13.CalendarMS.repositories.TeacherRepository;
-import com.gruppo13.CalendarMS.repositories.UserRepository;
-import com.gruppo13.CalendarMS.service.CourseUserServiceSAGA;
-import com.gruppo13.CalendarMS.util.CourseUserRelObject;
+import com.gruppo13.ChatMS.model.Chat;
+import com.gruppo13.ChatMS.model.User;
+import com.gruppo13.ChatMS.repositories.ChatRepository;
+import com.gruppo13.ChatMS.repositories.UserRepository;
+import com.gruppo13.ChatMS.service.CourseUserServiceSAGA;
+import com.gruppo13.ChatMS.util.CourseUserRelObject;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 public class CourseUserCreatedEventHandler {
 
     @Autowired
-    private StudentRepository studentRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    private TeacherRepository teacherRepo;
+    private ChatRepository chatRepo;
 
     @Autowired
     private CourseUserServiceSAGA service;
@@ -35,14 +35,11 @@ public class CourseUserCreatedEventHandler {
         CourseUserRelObject toLoad = new CourseUserRelObject();
         toLoad.setCourseId(Long.parseLong(json.get("courseId").toString()));
         toLoad.setPersonId(Long.parseLong(json.get("userId").toString()));
-        if(teacherRepo.existsById(toLoad.getPersonId())){
-            if(!teacherRepo.getCourseIdByTeacher(toLoad.getPersonId()).contains(toLoad.getCourseId())) {
-                teacherRepo.addAssignedCourse(toLoad.getCourseId(), toLoad.getPersonId());
-                service.createCourseUser(toLoad);
-            }
-        }else{
-            if(!studentRepo.getCourseIdByStudent(toLoad.getPersonId()).contains(toLoad.getCourseId())) {
-                studentRepo.addLikedCourse(toLoad.getCourseId(), toLoad.getPersonId());
+        Chat chat = chatRepo.findByCourseId(toLoad.getCourseId()).orElse(null);
+        if(userRepo.existsById(toLoad.getPersonId()) && chat != null){
+            User user = userRepo.findById(toLoad.getPersonId()).get();
+            if(!chat.getPartecipanti().contains(user)) {
+                chatRepo.addChatUser(chat.getId(),user.getId());
                 service.createCourseUser(toLoad);
             }
         }
@@ -55,14 +52,11 @@ public class CourseUserCreatedEventHandler {
         CourseUserRelObject toLoad = new CourseUserRelObject();
         toLoad.setCourseId(Long.parseLong(json.get("courseId").toString()));
         toLoad.setPersonId(Long.parseLong(json.get("userId").toString()));
-        if(teacherRepo.existsById(toLoad.getPersonId())){
-            if(teacherRepo.getCourseIdByTeacher(toLoad.getPersonId()).contains(toLoad.getCourseId())) {
-                teacherRepo.deleteAssignedCourse(toLoad.getCourseId(), toLoad.getPersonId());
-                service.deleteCourseUser(toLoad);
-            }
-        }else{
-            if(studentRepo.getCourseIdByStudent(toLoad.getPersonId()).contains(toLoad.getCourseId())) {
-                studentRepo.deleteLikedCourse(toLoad.getCourseId(), toLoad.getPersonId());
+        Chat chat = chatRepo.findByCourseId(toLoad.getCourseId()).orElse(null);
+        if(userRepo.existsById(toLoad.getPersonId()) && chat != null){
+            User user = userRepo.findById(toLoad.getPersonId()).get();
+            if(!chat.getPartecipanti().contains(user)) {
+                chatRepo.deleteChatUser(chat.getId(),user.getId());
                 service.deleteCourseUser(toLoad);
             }
         }
