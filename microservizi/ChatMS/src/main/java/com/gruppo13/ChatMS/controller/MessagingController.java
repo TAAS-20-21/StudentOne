@@ -58,7 +58,7 @@ public class MessagingController {
             if (messageConverted.containsKey("idChat") && messageConverted.get("idChat") != null) {
                 Chat chat = chatRepo.findById(Long.parseLong(messageConverted.get("idChat"))).orElse(null);
                 if (chat != null) {
-                    List<User> partecipanti = chat.getPartecipanti();
+                    Set<User> partecipanti = chat.getPartecipanti();
                     for (User partecipante : partecipanti) {
                         if (partecipante != null && !(partecipante.getEmail().equalsIgnoreCase(messageConverted.get("emailFromUser")))) {
                             this.simpMessagingTemplate.convertAndSend(

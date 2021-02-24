@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,7 +19,6 @@ public class User implements Serializable {
     private static final long serialVersionUID = 65981149772133526L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -45,7 +45,7 @@ public class User implements Serializable {
     private boolean isOnline;
 
     @ManyToMany(mappedBy = "partecipanti")
-    Set<Chat> chat;
+    List<Chat> chat;
 
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
