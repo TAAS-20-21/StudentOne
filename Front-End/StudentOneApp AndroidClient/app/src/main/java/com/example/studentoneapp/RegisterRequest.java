@@ -6,12 +6,14 @@ public class RegisterRequest {
         private String name;
         private String surname;
         private String socialProvider;
+        private String matchingPassword;
 
-        public RegisterRequest(String email,String password, String name, String surname){
+        public RegisterRequest(String email,String password, String matchingPassword,  String name, String surname){
             this.name = name;
             this.surname = surname;
             this.email = email;
             this.password = password;
+            this.matchingPassword = matchingPassword;
             this.socialProvider = "LOCAL";
         }
 
@@ -45,5 +47,21 @@ public class RegisterRequest {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getSocialProvider() {
+        return socialProvider;
+    }
+
+    public void setSocialProvider(String socialProvider) {
+        this.socialProvider = socialProvider;
+    }
+
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
     }
 }

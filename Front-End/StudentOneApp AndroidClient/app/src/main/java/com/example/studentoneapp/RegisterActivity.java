@@ -15,12 +15,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.studentoneapp.R.id.etRMatchingPassword;
 import static com.example.studentoneapp.R.id.etRPassword;
 
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText etName,etSurname, etEmail, etPassword, etRepeatPassword;
+    private EditText etName,etSurname, etEmail, etPassword, etMatchingPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
         etSurname = findViewById(R.id.etRsurname);
         etEmail =  findViewById(R.id.etEmail);
         etPassword = findViewById(etRPassword);
+        etMatchingPassword = findViewById(etRMatchingPassword);
 
         findViewById(R.id.btnRegister).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,47 +54,52 @@ public class RegisterActivity extends AppCompatActivity {
         String surname = etSurname.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String matchingPassword = etMatchingPassword.getText().toString().trim();
+
 
         if (name.isEmpty()) {
-            etName.setError("Inserisci il nome");
+            etName.setError("Inserisci il nome!");
             etName.requestFocus();
             return;
         } else if (password.isEmpty()) {
-            etPassword.setError("Inserisci la password");
+            etPassword.setError("Inserisci la password!");
             etPassword.requestFocus();
             return;
         } else if (surname.isEmpty()) {
-            etSurname.setError("Inserisci il cognome");
+            etSurname.setError("Inserisci il cognome!");
             etSurname.requestFocus();
             return;
         } else if (email.isEmpty()){
-            etEmail.setError("Inserisci la mail");
-            etSurname.requestFocus();
+            etEmail.setError("Inserisci la mail!");
+            etEmail.requestFocus();
+        } else if(matchingPassword.isEmpty()){
+            etMatchingPassword.setError("Conferma la password!");
+            etMatchingPassword.requestFocus();
+        } else if(!matchingPassword.equals(password)){
+            etMatchingPassword.setError("Le password non corrispondono!");
+            etMatchingPassword.requestFocus();
         }
 
         Call<ResponseBody> call = com.example.studentoneapp.RetrofitClient
                 .getInstance(RetrofitClient.BASE_URL, null)
                 .getAPI()
-                .createUser(new RegisterRequest(email, password, name, surname));
+                .createUser(new RegisterRequest(email, password, matchingPassword, name, surname));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Toast.makeText(com.example.studentoneapp.RegisterActivity.this, "aa", Toast.LENGTH_LONG).show();
-                /*
                 String s = "";
                 try {
                     s = response.body().string();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                if (s.equals("SUCCESS")) {
+                if (s.contains("true")) {
                     Toast.makeText(com.example.studentoneapp.RegisterActivity.this, "Successfully registered. Please login", Toast.LENGTH_LONG).show();
                     startActivity(new Intent(com.example.studentoneapp.RegisterActivity.this, com.example.studentoneapp.LoginActivity.class));
                 } else {
                     Toast.makeText(com.example.studentoneapp.RegisterActivity.this, "User already exists!", Toast.LENGTH_LONG).show();
-                }*/
+                }
             }
 
             @Override
