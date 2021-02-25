@@ -64,13 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
                 try{
-                    String token = response.body().getAccessToken();
-                    String name = response.body().getUser().getName();
-                    com.example.studentoneapp.UserTwo user = response.body().getUser();
-                    SharedPreferences preferences = com.example.studentoneapp.LoginActivity.this.getSharedPreferences("studentone", Context.MODE_PRIVATE);
-                    preferences.edit().putString("token",token).apply();
-                    preferences.edit().putString("name",name).apply();
-                    Intent intent = new Intent(context, HomeActivity.class);
+                    Intent intent = new Intent(context, HomeActivity.class).putExtra("user", response.body().getUser()).putExtra("access-token", response.body().getAccessToken());
                     startActivity(intent);
                 } catch(Exception e) {
                     Toast.makeText(com.example.studentoneapp.LoginActivity.this, "Errore nel login!", Toast.LENGTH_LONG).show();
