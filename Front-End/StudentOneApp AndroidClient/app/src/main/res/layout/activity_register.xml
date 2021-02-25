@@ -8,44 +8,71 @@
     android:padding="20dp"
     tools:context=".RegisterActivity">
 
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Student One"
-        android:textColor="#676666"
-        android:textSize="20sp"
-        android:textStyle="bold"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="341dp"
+        android:layout_height="132dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06"
+        app:srcCompat="@mipmap/ic_logo_studentapp" />
+
+    <EditText
+        android:id="@+id/editTextInfo"
+        android:layout_width="343dp"
+        android:layout_height="30dp"
+        android:background="@null"
+        android:clickable="false"
+        android:editable="false"
+        android:focusable="false"
+        android:hint="Inserisci qui le tue credenziali"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+
+        android:textColor="#000000"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.544"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.021" />
 
     <EditText
         android:id="@+id/etRname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="316dp"
         android:ems="10"
-        android:hint="Name"
+        android:hint="Nome"
         android:inputType="text"
-        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColorHighlight="#000000"
+        android:textColorLink="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/btnRegister"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextInfo"
+        app:layout_constraintVertical_bias="0.784" />
 
     <EditText
         android:id="@+id/etRsurname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Surname"
+        android:hint="Cognome"
         android:inputType="text"
-        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColorHighlight="#000000"
+        android:textColorLink="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etRname" />
 
@@ -56,7 +83,10 @@
         android:ems="10"
         android:hint="Email"
         android:inputType="text"
-        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColorHighlight="#000000"
+        android:textColorLink="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
@@ -71,7 +101,10 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColorHighlight="#000000"
+        android:textColorLink="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,30 +113,32 @@
 
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="156dp"
-        android:text="REGISTER"
-        android:textColor="@android:color/background_dark"
+        android:layout_width="296dp"
+        android:layout_height="56dp"
+        android:background="#000000"
+        android:backgroundTint="#80000000"
+        android:text="Registrati"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etRPassword"
-        app:layout_constraintVertical_bias="0.278" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.934" />
 
     <TextView
         android:id="@+id/tvLoginLink"
-        android:layout_width="102dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="179dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="Already a user?\nClick here to login"
+        android:text="Hai già un account?\nClicca qui per accedere"
         android:textColor="#6A6969"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/etRPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
