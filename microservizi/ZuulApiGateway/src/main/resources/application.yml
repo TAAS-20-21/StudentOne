@@ -5,14 +5,20 @@ server:
 eureka:
   instance:
     preferIpAddress: true
+    metadata-map:
+      zone: zone1
+    hostname: zuulhostname
   client:
     registerWithEureka: true
     fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://eurekahostname:8761/eureka/
+    service-url:
+      zone1: http://eurekahostname:8761/eureka/
+    prefer-same-zone-eureka: true
+    region: region1
+    availability-zones:
+      region1: zone1
 
-
-  eureka:
+ eureka:
     enabled: true
 
 management:
@@ -26,7 +32,11 @@ zuul:
   routes:
     authenticationservice:
       path: /authenticationservice/**
-      url: http://localhost:8081
+      url: http://authenticationhostname:8081
+
+spring:
+    application:
+      name: ZUULSERVICE
 
 ribbon:
   ReadTimeout: 100000
