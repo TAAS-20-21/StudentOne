@@ -31,7 +31,9 @@ public class HomeActivity extends AppCompatActivity {
     private Button signOut, calendarButton;
     private TableLayout mTableLayout;
     private static List<Course> courses;
-    private Boolean isProfessor;
+    private static List<Long> listTeacher;
+    private static List<Long> listStudent;
+    private static String[] buttonTexts = new String[2];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,28 +51,53 @@ public class HomeActivity extends AppCompatActivity {
         signOut = findViewById(R.id.signOutButton);
         calendarButton = findViewById(R.id.calendarButton);
 
-        /*
+
         System.out.println(user);
-        Call<Boolean> callIsProfessor = com.example.studentoneapp.RetrofitClient
+        //PROVA
+        Call<List<Long>> callTeacher = com.example.studentoneapp.RetrofitClient
                 .getInstance(RetrofitClient.COURSE_URL, token)
                 .getAPI()
-                .getIsProfessor(user);
+                .getCoursesByTeacher(user);
 
-        callIsProfessor.enqueue(new Callback<Boolean>() {
+        callTeacher.enqueue(new Callback<List<Long>>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            public void onResponse(Call<List<Long>> call, Response<List<Long>> response) {
                 try{
-                    System.out.println(response);
+                    listTeacher = response.body();
+                    System.out.println("Docente: " + listTeacher);
                 } catch(Exception e) {
                     Toast.makeText(com.example.studentoneapp.HomeActivity.this, "Errore nella richiesta!", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
+            public void onFailure(Call<List<Long>> call, Throwable t) {
                 Toast.makeText(com.example.studentoneapp.HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
-        });*/
+        });
+
+        Call<List<Long>> callStudent = com.example.studentoneapp.RetrofitClient
+                .getInstance(RetrofitClient.COURSE_URL, token)
+                .getAPI()
+                .getCoursesByStudent(user);
+
+        callStudent.enqueue(new Callback<List<Long>>() {
+            @Override
+            public void onResponse(Call<List<Long>> call, Response<List<Long>> response) {
+                try{
+                    listStudent = response.body();
+                    System.out.println("Studenti: " + listStudent);
+                } catch(Exception e) {
+                    Toast.makeText(com.example.studentoneapp.HomeActivity.this, "Errore nella richiesta!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Long>> call, Throwable t) {
+                Toast.makeText(com.example.studentoneapp.HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        //PROVA
 
         Call<List<Course>> call = com.example.studentoneapp.RetrofitClient
                 .getInstance(RetrofitClient.COURSE_URL, token)
@@ -111,10 +138,24 @@ public class HomeActivity extends AppCompatActivity {
                         firstColumnValue.setTextSize(16);
                         secondColumnValue.setText(course.getLesson_hours().toString());
                         secondColumnValue.setTextSize(16);
-                        if(isProfessor.booleanValue())
-                            thirdColumnValue.setText("Insegnante");
+                        if(listStudent.isEmpty()) {
+                            buttonTexts[0] = "insegna";
+                            buttonTexts[1] = "non insegnare";
+                            if(!listTeacher.contains(course.getId()))
+                                thirdColumnValue.setText(buttonTexts[0]);
+                            else
+                                thirdColumnValue.setText(buttonTexts[1]);
+                        }
+                        else if(listTeacher.isEmpty()) {
+                            buttonTexts[0] = "iscrivimi";
+                            buttonTexts[1] = "disiscrivimi";
+                            if(!listStudent.contains(course.getId()))
+                                thirdColumnValue.setText(buttonTexts[0]);
+                            else
+                                thirdColumnValue.setText(buttonTexts[1]);
+                        }
                         else
-                            thirdColumnValue.setText("Studente");
+                            thirdColumnValue.setText("ERRORE");
 
 
                         row.addView(firstColumnValue);
