@@ -31,8 +31,6 @@ import java.util.Random;
 
 public class CalendarActivity extends AppCompatActivity {
     Button homeButton;
-    GoogleSignInClient mGoogleSignInClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,25 +42,25 @@ public class CalendarActivity extends AppCompatActivity {
         List<EventDay> events = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
-        events.add(new EventDay(calendar, DrawableUtils.getCircleDrawableWithText(this, "1")));
+        events.add(new EventDay(calendar, DrawableUtils.getCircleDrawableWithText(this, "IA")));
 
         Calendar calendar1 = Calendar.getInstance();
         calendar1.add(Calendar.DAY_OF_MONTH, 10);
-        events.add(new EventDay(calendar1, R.drawable.sample_icon_2));
+        events.add(new EventDay(calendar1, DrawableUtils.getCircleDrawableWithText(this, "IA")));
 
         Calendar calendar2 = Calendar.getInstance();
 
         calendar2.add(Calendar.DAY_OF_MONTH, 10);
         calendar2.add(Calendar.DAY_OF_MONTH, 10);
-        events.add(new EventDay(calendar2, R.drawable.sample_icon_3, Color.parseColor("#228B22")));
+        events.add(new EventDay(calendar2, DrawableUtils.getCircleDrawableWithText(this, "TS")));
 
         Calendar calendar3 = Calendar.getInstance();
         calendar3.add(Calendar.DAY_OF_MONTH, 7);
-        events.add(new EventDay(calendar3, R.drawable.sample_four_icons));
+        events.add(new EventDay(calendar3, DrawableUtils.getCircleDrawableWithText(this, "Aint")));
 
         Calendar calendar4 = Calendar.getInstance();
         calendar4.add(Calendar.DAY_OF_MONTH, 13);
-        events.add(new EventDay(calendar4, DrawableUtils.getThreeDots(this)));
+        events.add(new EventDay(calendar4, DrawableUtils.getCircleDrawableWithText(this, "TS")));
 
         CalendarView calendarView = (CalendarView) findViewById(R.id.calendarView);
 
@@ -84,22 +82,6 @@ public class CalendarActivity extends AppCompatActivity {
                         eventDay.getCalendar().getTime().toString() + " "
                                 + eventDay.isEnabled(),
                         Toast.LENGTH_SHORT).show());
-
-        Button setDateButton = (Button) findViewById(R.id.setDateButton);
-        setDateButton.setOnClickListener(v -> {
-            try {
-                Calendar randomCalendar = getRandomCalendar();
-                String text = randomCalendar.getTime().toString();
-                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
-                calendarView.setDate(randomCalendar);
-            } catch (OutOfDateRangeException exception) {
-                exception.printStackTrace();
-
-                Toast.makeText(getApplicationContext(),
-                        "Date is out of range",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
 
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,14 +111,5 @@ public class CalendarActivity extends AppCompatActivity {
         calendars.add(secondDisabled);
         calendars.add(thirdDisabled);
         return calendars;
-    }
-
-    private Calendar getRandomCalendar() {
-        Random random = new Random();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, random.nextInt(99));
-
-        return calendar;
     }
 }

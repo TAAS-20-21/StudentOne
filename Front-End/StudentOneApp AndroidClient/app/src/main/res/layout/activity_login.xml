@@ -23,12 +23,12 @@
 
     <EditText
         android:id="@+id/etUserName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="300dp"
         android:ems="10"
         android:hint="Email"
-        android:inputType="text"
+        android:inputType="text|textEmailAddress"
         android:textAlignment="center"
         android:textColorHighlight="#000000"
         android:textColorLink="#000000"
@@ -41,8 +41,8 @@
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -52,9 +52,10 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUserName"
-        app:layout_constraintVertical_bias="0.026" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnLogin"
@@ -70,8 +71,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:layout_constraintVertical_bias="0.741" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.941" />
 
     <TextView
         android:id="@+id/tvRegisterLink"
@@ -81,6 +82,7 @@
         android:gravity="center"
         android:text="Nuovo utente?\nClicca qui per registrarti"
         android:textColor="#676565"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
@@ -99,6 +101,7 @@
 
         android:textColor="#000000"
         android:textSize="18dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.544"

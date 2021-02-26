@@ -23,9 +23,6 @@ public class UserTwo implements Serializable {
     @SerializedName("roles")
     @Expose
     private List<String> roles = null;
-    @SerializedName("isProfessor")
-    @Expose
-    private Boolean isProfessor;
 
     public String getId() {
         return id;
@@ -67,14 +64,6 @@ public class UserTwo implements Serializable {
         this.roles = roles;
     }
 
-    public Boolean getProfessor() {
-        return isProfessor;
-    }
-
-    public void setProfessor(Boolean professor) {
-        isProfessor = professor;
-    }
-
     @Override
     public String toString() {
         return "UserTwo{" +
@@ -83,7 +72,6 @@ public class UserTwo implements Serializable {
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", roles=" + roles +
-                ", isProfessor=" + isProfessor +
                 '}';
     }
 }

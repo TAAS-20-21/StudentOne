@@ -49,9 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         signOut = findViewById(R.id.signOutButton);
         calendarButton = findViewById(R.id.calendarButton);
 
-        TextView nome = findViewById(R.id.PersonName);
-        nome.setText(name);
-
+        /*
         System.out.println(user);
         Call<Boolean> callIsProfessor = com.example.studentoneapp.RetrofitClient
                 .getInstance(RetrofitClient.COURSE_URL, token)
@@ -72,7 +70,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(Call<Boolean> call, Throwable t) {
                 Toast.makeText(com.example.studentoneapp.HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
 
         Call<List<Course>> call = com.example.studentoneapp.RetrofitClient
                 .getInstance(RetrofitClient.COURSE_URL, token)
@@ -90,10 +88,10 @@ public class HomeActivity extends AppCompatActivity {
                     final TextView nameSecondColumn = new TextView(HomeActivity.this);
 
                     nameFirstColumn.setText("Corsi insegnati");
-                    nameFirstColumn.setTextSize(20);
+                    nameFirstColumn.setTextSize(18);
 
                     nameSecondColumn.setText("Numero ore");
-                    nameSecondColumn.setTextSize(20);
+                    nameSecondColumn.setTextSize(18);
 
                     firstRow.addView(nameFirstColumn);
                     firstRow.addView(nameSecondColumn);
@@ -110,9 +108,9 @@ public class HomeActivity extends AppCompatActivity {
                         final Button thirdColumnValue = new Button(HomeActivity.this);
 
                         firstColumnValue.setText(course.getName());
-                        firstColumnValue.setTextSize(18);
+                        firstColumnValue.setTextSize(16);
                         secondColumnValue.setText(course.getLesson_hours().toString());
-                        secondColumnValue.setTextSize(18);
+                        secondColumnValue.setTextSize(16);
                         if(isProfessor.booleanValue())
                             thirdColumnValue.setText("Insegnante");
                         else
@@ -126,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
                         mTableLayout.addView(row);
                     }
                 } catch(Exception e) {
-                    Toast.makeText(com.example.studentoneapp.HomeActivity.this, "Errore nella richiesta!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(com.example.studentoneapp.HomeActivity.this, "Errore nella richiesta, attenzione!", Toast.LENGTH_LONG).show();
                 }
             }
 
