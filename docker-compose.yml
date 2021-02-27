@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+    eureka:
+        image: 'eurekaserver.jar:latest'
+        container_name: Eureka
+        hostname: eurekahostname
+        build:
+          context: ./microservizi/EurekaServer
+        ports:
+            - 8761:8761
+    
+    zuul:
+        image: 'zuulapigateway.jar:latest'
+        container_name: Zuul
+        hostname: zuulhostname
+        build:
+          context: ./microservizi/ZuulApiGateway
+        ports:
+            - 8080:8080
+            
+    authentication:
+        image: 'authenticationms.jar:latest'
+        container_name: Authentication
+        hostname: authenticationhostname
+        environment:
+             - DB_SERVER=postgres
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Authenticate
+             - SPRING_RABBITMQ_HOST=rabbitmq
+        build:
+          context: .\microservizi\AuthenticationMS
+        ports:
+            - 8081:8081
+        links:
+            - postgres
+            
+    postgres:
+        image: postgres:latest
+        container_name: postgres
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        environment:
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Authenticate
+             
+    rabbitmq3:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        environment:
+            RABBITMQ_ERLANG_COOKIE: 'secret cookie here'
+        ports:
+            - 5672:5672
+            - 15672:15672
+        
+volumes:
+    postgres-data:
