@@ -43,6 +43,7 @@ public class CourseController {
 
     @PostMapping("/course/courseById")
     public ResponseEntity<Course> getCourse(@RequestBody Course course){
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + courseRepo.findById(course.getId()).get());
         return ResponseEntity.ok(courseRepo.findById(course.getId()).get());
     }
 }

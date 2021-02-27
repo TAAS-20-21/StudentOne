@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 services:
     eureka:
@@ -6,7 +6,7 @@ services:
         container_name: Eureka
         hostname: eurekahostname
         build:
-          context: ./microservizi/EurekaServer
+          context: .
         ports:
             - 8761:8761
     
@@ -15,7 +15,7 @@ services:
         container_name: Zuul
         hostname: zuulhostname
         build:
-          context: ./microservizi/ZuulApiGateway
+          context: .
         ports:
             - 8080:8080
             
@@ -30,7 +30,7 @@ services:
              - POSTGRES_DB=Authenticate
              - SPRING_RABBITMQ_HOST=rabbitmq
         build:
-          context: .\microservizi\AuthenticationMS
+          context: .
         ports:
             - 8081:8081
         links:
@@ -59,3 +59,4 @@ services:
         
 volumes:
     postgres-data:
+      
