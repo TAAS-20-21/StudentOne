@@ -60,7 +60,7 @@ public class AuthenticateFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
         String g = request.getRequestURL().toString();
         String token = request.getHeader("Authorization");
-        if(token == null && !g.toLowerCase().contains("authenticateservice") && !g.toLowerCase().contains("/socket")){
+        if(token == null && !g.toLowerCase().contains("authenticationservice") && !g.toLowerCase().contains("/socket")){
             ctx.setSendZuulResponse(false);
             ctx.setResponseBody("not authorized");
             ctx.getResponse().setHeader("Content-Type", "text/plain;charset=UTF-8");
