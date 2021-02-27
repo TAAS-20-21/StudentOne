@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
     eureka:
-        image: 'eurekaserver-0.0.1-snapshot.jar:latest'
+        image: 'eurekaserver.jar:latest'
         container_name: Eureka
         hostname: eurekahostname
         build:
@@ -11,7 +11,7 @@ services:
             - 8761:8761
     
     zuul:
-        image: 'zuulapigateway-0.0.1-snapshot.jar:latest'
+        image: 'zuulapigateway.jar:latest'
         container_name: Zuul
         hostname: zuulhostname
         build:
@@ -20,7 +20,7 @@ services:
             - 8080:8080
             
     authentication:
-        image: 'authenticationms-0.0.1-snapshot.jar:latest'
+        image: 'authenticationms.jar:latest'
         container_name: Authentication
         hostname: authenticationhostname
         environment:
@@ -34,35 +34,19 @@ services:
         ports:
             - 8081:8081
         links:
-            - dbAuthenticate
+            - postgres
             
-    dbAuthenticate:
+    postgres:
         image: postgres:latest
-        restart: always
-        environment:
-            POSTGRES_DB: Authenticate
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: pie
-            PGDATA: /var/lib/postgresql/data
         container_name: postgres
         volumes:
-            - db-data:/var/lib/postgresql/data
+            - postgres-data:/var/lib/postgresql/data
         ports:
             - 5432:5432
-        
-    pgadmin:
-        image: dpage/pgadmin4:4.18
-        restart: always
-        depends_on:
-            - dbAuthenticate
         environment:
-            PGADMIN_DEFAULT_EMAIL: mariobove1996@gmail.com
-            PGADMIN_DEFAULT_PASSWORD: admin
-            PGADMIN_LISTEN_PORT: 50
-        ports:
-            - "5050:50"
-        volumes:
-            - pgadmin-data:/var/lib/pgadmin
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Authenticate
              
     rabbitmq3:
         image: rabbitmq:3-management
@@ -74,5 +58,4 @@ services:
             - 15672:15672
         
 volumes:
-    db-data:
-    pgadmin-data:
+    postgres-data:
