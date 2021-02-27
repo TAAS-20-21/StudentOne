@@ -11,6 +11,10 @@ eureka:
     serviceUrl:
       defaultZone: http://eurekahostname:8761/eureka/
 
+spring:
+  application:
+    name: zuulservice
+
 
   eureka:
     enabled: true
@@ -23,10 +27,6 @@ management:
 
 zuul:
   sensitive-headers:
-  routes:
-    authenticationservice:
-      path: /authenticationservice/**
-      url: http://localhost:8081
 
 ribbon:
   ReadTimeout: 100000
