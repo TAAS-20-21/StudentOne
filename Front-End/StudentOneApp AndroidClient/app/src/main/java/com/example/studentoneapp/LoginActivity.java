@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 try{
                     Intent intent = new Intent(context, HomeActivity.class).putExtra("user", response.body().getUser()).putExtra("access-token", response.body().getAccessToken());
                     startActivity(intent);
+                    finish();
                 } catch(Exception e) {
                     Toast.makeText(com.example.studentoneapp.LoginActivity.this, "Errore nel login!", Toast.LENGTH_LONG).show();
                 }

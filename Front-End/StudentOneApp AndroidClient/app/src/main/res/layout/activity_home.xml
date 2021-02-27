@@ -43,7 +43,7 @@
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="1.0"></TableLayout>
+        app:layout_constraintVertical_bias="0.414"></TableLayout>
 
     <TextView
         android:id="@+id/textView"

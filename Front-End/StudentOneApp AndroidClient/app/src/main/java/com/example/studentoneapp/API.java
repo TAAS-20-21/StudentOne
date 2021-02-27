@@ -40,4 +40,24 @@ public interface API {
             @Body UserTwo user
     );
 
+    @POST("student/addLikedCourse")
+    Call<Object> addLikedCourse(
+            @Body CourseUserObject courseUser
+    );
+
+    @POST("student/deleteLikedCourse")
+    Call<Object> deleteLikedCourse(
+            @Body CourseUserObject courseUser
+    );
+
+    @POST("teacher/addAssignedCourse")
+    Call<Object> addAssignedCourse(
+            @Body CourseUserObject courseUser
+    );
+
+    @POST("teacher/deleteAssignedCourse")
+    Call<Object> deleteAssignedCourse(
+            @Body CourseUserObject courseUser
+    );
+
 }

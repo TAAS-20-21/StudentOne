@@ -20,9 +20,9 @@ public class UserTwo implements Serializable {
     @SerializedName("email")
     @Expose
     private String email;
-    @SerializedName("roles")
+    /*@SerializedName("roles")
     @Expose
-    private List<String> roles = null;
+    private List<String> roles = null;*/
 
     public String getId() {
         return id;
@@ -56,13 +56,13 @@ public class UserTwo implements Serializable {
         this.email = email;
     }
 
-    public List<String> getRoles() {
+    /*public List<String> getRoles() {
         return roles;
     }
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
-    }
+    }*/
 
     @Override
     public String toString() {
@@ -71,7 +71,7 @@ public class UserTwo implements Serializable {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", roles=" + roles +
+                //", roles=" + roles +
                 '}';
     }
 }

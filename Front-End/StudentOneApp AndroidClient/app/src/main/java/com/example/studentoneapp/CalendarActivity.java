@@ -39,6 +39,9 @@ public class CalendarActivity extends AppCompatActivity {
 
         homeButton = findViewById(R.id.homeButton);
 
+        UserTwo user = (UserTwo) getIntent().getSerializableExtra("user");
+        String token = (String) getIntent().getSerializableExtra("access-token");
+
         List<EventDay> events = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
@@ -88,8 +91,9 @@ public class CalendarActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.homeButton:
-                        Intent intent = new Intent(CalendarActivity.this, HomeActivity.class);
+                        Intent intent = new Intent(CalendarActivity.this, HomeActivity.class).putExtra("user", user).putExtra("access-token", token);
                         startActivity(intent);
+                        finish();
                 }
             }
         });
