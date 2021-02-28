@@ -1,5 +1,6 @@
 <div class="cont">
     <form *ngIf="!isSuccessful" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+        <img src="/assets/img/logoBG.png" style="vertical-align:middle" class="center" alt="StudentOne">
         <div class="img">
             <div class="img__text m--up">
                 <h2>Sei già dei nostri?</h2>
@@ -58,6 +59,6 @@
         <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
             Registrazione fallita!<br />{{ errorMessage }}
         </div>
+        <div class="alert alert-success" *ngIf="isSuccessful">Registrazione completata!</div>
     </form>
-    <div class="alert alert-success" *ngIf="isSuccessful">Registrazione completata!</div>
 </div>
