@@ -23,10 +23,6 @@ management:
 
 zuul:
   sensitive-headers:
-  routes:
-    authenticationservice:
-      path: /authenticationservice/**
-      url: http://localhost:8081
 
 ribbon:
   ReadTimeout: 100000

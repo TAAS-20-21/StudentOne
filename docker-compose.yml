@@ -1,50 +1,8 @@
-version: '3'
-
+version: "3.7"
 services:
-    eureka:
-        image: 'eurekaserver.jar:latest'
-        container_name: Eureka
-        hostname: eurekahostname
-        build:
-          context: ./microservizi/EurekaServer
-          dockerfile: Dockerfile
-        ports:
-            - 8761:8761
-    
-    zuul:
-        image: 'zuulapigateway.jar:latest'
-        container_name: Zuul
-        hostname: zuulhostname
-        build:
-            context: ./microservizi/ZuulApiGateway
-            dockerfile: Dockerfile
-        ports:
-            - 8080:8080
-            
-    authentication:
-        image: 'authenticationms.jar:latest'
-        container_name: Authentication
-        hostname: authenticationhostname
-        environment:
-             - DB_SERVER=db_authenticate
-             - POSTGRES_PASSWORD=pie
-             - POSTGRES_USER=postgres
-             - POSTGRES_DB=Authenticate
-             - SPRING_RABBITMQ_HOST=rabbitmq
-        build:
-            context: ./microservizi/AuthenticationMS
-            dockerfile: Dockerfile
-        ports:
-            - 8081:8081
-        links:
-            - db_authenticate
-        depends_on: 
-            - eureka
-            - db_authenticate
-            
-    db_authenticate:
+    authenticationDb:
         image: postgres:latest
-        container_name: db_authenticate
+        hostname: authenticationDb
         restart: always
         environment:
             POSTGRES_DB: Authenticate
@@ -52,10 +10,24 @@ services:
             POSTGRES_PASSWORD: pie
             PGDATA: /var/lib/postgresql/data
         volumes:
-            - db-data:/var/lib/postgresql/data
+            - authenticate-data:/var/lib/postgresql/data
         ports:
-            - 5433:5433
-             
+            - "5432:5432"
+ 
+    pgadmin:
+        image: dpage/pgadmin4:4.18
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: mariobove1996@gmail.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+            PGADMIN_LISTEN_PORT: 50
+        ports:
+            - "5050:50"
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
+        links:
+            - "authenticationDb:pgsql-server"
+            
     rabbitmq3:
         image: rabbitmq:3-management
         container_name: rabbitmq
@@ -64,8 +36,41 @@ services:
         ports:
             - 5672:5672
             - 15672:15672
-        
+       
+    eureka:
+        image: 'eurekaserver-0.0.1-snapshot.jar:latest'
+        container_name: Eureka
+        hostname: eurekahostname
+        build:
+            context: ./microservizi/EurekaServer
+        ports:
+            - "8761:8761"
+    
+    zuul:
+        image: 'zuulapigateway-0.0.1-snapshot.jar:latest'
+        container_name: Zuul
+        build:
+            context: ./microservizi/ZuulApiGateway
+        ports:
+            - "8080:8080"
+       
+    authentication:
+        image: 'authenticationms-0.0.1-snapshot.jar:latest'
+        container_name: AuthenticationMS
+        hostname: authenticationhostname
+        environment:
+             - DB_SERVER=authenticationDb:5432
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Authenticate
+             - SPRING_RABBITMQ_HOST=rabbitmq
+        build:
+          context: ./microservizi/AuthenticationMS
+        ports:
+            - "8081:8081"
+        depends_on:
+            - authenticationDb
+           
 volumes:
-   db-data:
+   authenticate-data:
    pgadmin-data:
-      
