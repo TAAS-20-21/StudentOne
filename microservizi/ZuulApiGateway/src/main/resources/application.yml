@@ -29,6 +29,7 @@ management:
 
 zuul:
   sensitive-headers:
+<<<<<<< HEAD
   routes:
     authenticationservice:
       path: /authenticationservice/**
@@ -37,6 +38,8 @@ zuul:
 spring:
     application:
       name: ZUULSERVICE
+=======
+>>>>>>> 416beaedabc5959dc06b25d99621d29fe8dc5b12
 
 ribbon:
   ReadTimeout: 100000
