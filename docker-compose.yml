@@ -57,7 +57,7 @@ services:
     authentication:
         image: 'authenticationms-0.0.1-snapshot.jar:latest'
         container_name: AuthenticationMS
-        hostname: authenticationhostname
+        hostname: authenticationservice.it
         environment:
              - DB_SERVER=authenticationDb:5432
              - POSTGRES_PASSWORD=pie
