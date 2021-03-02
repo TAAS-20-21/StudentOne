@@ -12,7 +12,21 @@ services:
         volumes:
             - authenticate-data:/var/lib/postgresql/data
         ports:
-            - "5432:5432"
+            - "54032:5432"
+    
+    calendarDb:
+        image: postgres:latest
+        hostname: calendarDb
+        restart: always
+        environment:
+            POSTGRES_DB: Calendar
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: pie
+            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - calendar-data:/var/lib/postgresql/data
+        ports:
+            - "54033:5432"
  
     pgadmin:
         image: dpage/pgadmin4:4.18
@@ -27,6 +41,7 @@ services:
             - pgadmin-data:/var/lib/pgadmin
         links:
             - "authenticationDb:pgsql-server"
+            - "calendarDb:pgsql-server"
             
     rabbitmq3:
         image: rabbitmq:3-management
@@ -59,7 +74,7 @@ services:
     authentication:
         image: 'authenticationms-0.0.1-snapshot.jar:latest'
         container_name: AuthenticationMS
-        hostname: authenticationservice.it
+        hostname: authenticationservice
         environment:
              - DB_SERVER=authenticationDb:5432
              - POSTGRES_PASSWORD=pie
@@ -72,7 +87,25 @@ services:
             - "8081:8081"
         depends_on:
             - authenticationDb
+            
+    calendar:
+        image: 'calendarms-0.0.1-snapshot.jar:latest'
+        container_name: CalendarMS
+        hostname: calendarservice
+        environment:
+             - DB_SERVER=calendarDb:5433
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Calendar
+             - SPRING_RABBITMQ_HOST=rabbitmq
+        build:
+          context: ./microservizi/CalendarMS
+        ports:
+            - "8082:8082"
+        depends_on:
+            - calendarDb
            
 volumes:
    authenticate-data:
    pgadmin-data:
+   calendar-data:
