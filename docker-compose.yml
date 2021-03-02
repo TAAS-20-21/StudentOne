@@ -2,6 +2,7 @@ version: "3.7"
 services:
     authenticationDb:
         image: postgres:latest
+        container_name: authenticationDb
         hostname: authenticationDb
         restart: always
         environment:
@@ -13,9 +14,40 @@ services:
             - authenticate-data:/var/lib/postgresql/data
         ports:
             - "5432:5432"
+
+    chatDb:
+        image: postgres:latest
+        container_name: chatDb
+        hostname: chatDb
+        restart: always
+        environment:
+            POSTGRES_DB: Chat
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: pie
+            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - chat-data:/var/lib/postgresql/data
+        ports:
+            - "5433:5432"
+            
+    courseDb:
+        image: postgres:latest
+        container_name: courseDb
+        hostname: courseDb
+        restart: always
+        environment:
+            POSTGRES_DB: Courses
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: pie
+            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - course-data:/var/lib/postgresql/data
+        ports:
+            - "5434:5432"
  
     pgadmin:
         image: dpage/pgadmin4:4.18
+        container_name: pgadmin
         restart: always
         environment:
             PGADMIN_DEFAULT_EMAIL: mariobove1996@gmail.com
@@ -26,7 +58,9 @@ services:
         volumes:
             - pgadmin-data:/var/lib/pgadmin
         links:
-            - "authenticationDb:pgsql-server"
+            - "chatDb:serverChat"
+            - "authenticationDb:serverAuthenticate"
+            - "courseDb:serverCourses"
             
     rabbitmq3:
         image: rabbitmq:3-management
@@ -70,7 +104,48 @@ services:
             - "8081:8081"
         depends_on:
             - authenticationDb
+            - eureka
+            - rabbitmq3
+
+    course:
+        image: 'coursesms-0.0.1-snapshot.jar:latest'
+        container_name: CourseMS
+        environment:
+             - DB_SERVER=courseDb:5432
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Courses
+             - SPRING_RABBITMQ_HOST=rabbitmq
+        build:
+          context: ./microservizi/CoursesMS
+        ports:
+            - "8082:8082"
+        depends_on:
+            - courseDb
+            - eureka
+            - rabbitmq3
+
+    chat:
+        image: 'chatms-0.0.1-snapshot.jar:latest'
+        container_name: ChatMS
+        hostname: chathostname
+        environment:
+             - DB_SERVER=chatDb:5432
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Chat
+             - SPRING_RABBITMQ_HOST=rabbitmq
+        build:
+          context: ./microservizi/ChatMS
+        ports:
+            - "8083:8083"
+        depends_on:
+            - chatDb
+            - eureka
+            - rabbitmq3
            
 volumes:
    authenticate-data:
+   chat-data:
+   course-data:
    pgadmin-data:
