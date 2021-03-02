@@ -43,6 +43,21 @@ services:
             - course-data:/var/lib/postgresql/data
         ports:
             - "5434:5432"
+            
+    calendarDb:
+        image: postgres:latest
+        container_name: calendarDb
+        hostname: calendarDb
+        restart: always
+        environment:
+            POSTGRES_DB: Calendar
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: pie
+            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - calendar-data:/var/lib/postgresql/data
+        ports:
+            - "5435:5432"
  
     pgadmin:
         image: dpage/pgadmin4:4.18
@@ -60,6 +75,7 @@ services:
             - "chatDb:serverChat"
             - "authenticationDb:serverAuthenticate"
             - "courseDb:serverCourses"
+            - "calendarDb:serverCalendar"
             
     rabbitmq3:
         image: rabbitmq:3-management
@@ -92,7 +108,7 @@ services:
     authentication:
         image: 'authenticationms-0.0.1-snapshot.jar:latest'
         container_name: AuthenticationMS
-        hostname: authenticationservice
+        hostname: 127.0.0.1.xip.io
         environment:
              - DB_SERVER=authenticationDb:5432
              - POSTGRES_PASSWORD=pie
@@ -118,7 +134,7 @@ services:
         build:
           context: ./microservizi/CoursesMS
         ports:
-            - "8082:8082"
+            - "8084:8084"
         depends_on:
             - courseDb
             - eureka
@@ -142,9 +158,29 @@ services:
             - chatDb
             - eureka
             - rabbitmq3
+            
+    calendar:
+        image: 'calendarms-0.0.1-snapshot.jar:latest'
+        container_name: CalendarMS
+        hostname: calendarhostname
+        environment:
+             - DB_SERVER=calendarDb:5432
+             - POSTGRES_PASSWORD=pie
+             - POSTGRES_USER=postgres
+             - POSTGRES_DB=Calendar
+             - SPRING_RABBITMQ_HOST=rabbitmq
+        build:
+          context: ./microservizi/CalendarMS
+        ports:
+            - "8082:8082"
+        depends_on:
+            - calendarDb
+            - eureka
+            - rabbitmq3
            
 volumes:
    authenticate-data:
    chat-data:
    course-data:
+   calendar-data:
    pgadmin-data:
