@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'calendar', component: OurCalendarComponent },
   { path: 'chat', component: ChatComponent },
   { path: 'courses', component: CoursesComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
 @NgModule({
