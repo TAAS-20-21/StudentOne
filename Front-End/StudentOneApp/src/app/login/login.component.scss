@@ -3,6 +3,12 @@
     background: #ededed;
   }
   
+
+  h2 {
+    margin-top: 60px;
+    margin-bottom: 0.5rem;
+  }
+
   input {
     border: none;
     outline: none;
@@ -10,7 +16,7 @@
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   }
   
-  $contW: 900px;
+  $contW: 1100px;
   $imgW: 260px;
   $formW: $contW - $imgW;
   $switchAT: 1.2s;
@@ -29,7 +35,7 @@
   .cont {
     overflow: hidden;
     position: relative;
-    width: $contW;
+    width: 70%;
     height: 800px;
     margin: 0 auto 100px;
     background: #fff;
@@ -69,7 +75,15 @@
   button.btn.btn-primary.btn-block {
     margin-top: 20px;
 }
-  
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 15%;
+  margin-top: 40px;
+}  
+
   .img {
     overflow: hidden;
     z-index: 2;
@@ -226,5 +240,6 @@
   .form-group {
     margin-bottom:0ch;
   }
+
 
   }

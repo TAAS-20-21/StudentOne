@@ -1,7 +1,7 @@
 <div class="container" *ngIf="currentUser; else loggedOut">
   <div>
       <h6 class="text-muted py-5">
-          <strong>{{ currentUser.displayName }}</strong> Profile
+        Profilo di <strong>{{ currentUser.name + " " + currentUser.surname }}</strong>
       </h6>
   </div>
   <p>
