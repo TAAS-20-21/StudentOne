@@ -50,6 +50,8 @@ public class CourseUserEventListener {
         jo.put("courseId",event.getCourseUserRel().getCourseId());
         jo.put("userId",event.getCourseUserRel().getPersonId());
         //rabbitTemplate.convertAndSend(queueOrderCreateName,jo.toString());
+        System.out.println("PRIMA DI CONVERT AND SEND");
         rabbitTemplate.convertAndSend(CoursesMsApplication.getTopicExchangeCourseUserDelete(),"course-user.delete.course",jo.toString());
+        System.out.println("DOPO DI CONVERT AND SEND");
     }
 }

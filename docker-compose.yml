@@ -109,7 +109,7 @@ services:
     authentication:
         image: 'authenticationms-0.0.1-snapshot.jar:latest'
         container_name: AuthenticationMS
-        hostname: 127.0.0.1.xip.io
+        hostname: authenticateservice
         environment:
              - DB_SERVER=authenticationDb:5432
              - POSTGRES_PASSWORD=pie
@@ -126,6 +126,7 @@ services:
     course:
         image: 'coursesms-0.0.1-snapshot.jar:latest'
         container_name: CourseMS
+        hostname: courseservice
         environment:
              - DB_SERVER=courseDb:5432
              - POSTGRES_PASSWORD=pie
@@ -144,7 +145,7 @@ services:
     chat:
         image: 'chatms-0.0.1-snapshot.jar:latest'
         container_name: ChatMS
-        hostname: chathostname
+        hostname: chatservice
         environment:
              - DB_SERVER=chatDb:5432
              - POSTGRES_PASSWORD=pie
@@ -163,7 +164,7 @@ services:
     calendar:
         image: 'calendarms-0.0.1-snapshot.jar:latest'
         container_name: CalendarMS
-        hostname: calendarhostname
+        hostname: calendarservice
         environment:
              - DB_SERVER=calendarDb:5432
              - POSTGRES_PASSWORD=pie
