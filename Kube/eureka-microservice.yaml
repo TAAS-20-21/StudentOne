@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-microservice
+spec:
+  hostAliases:
+  - ip: "127.0.0.1"
+    hostnames:
+    - "eurekahostanme"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-microservice
+  template:
+    metadata:
+      labels:
+        app: eureka-microservice
+    spec:
+      containers:
+        - name: eureka-microservice
+          image: taas2021/eureka-microservice:latest
+          ports:
+            - containerPort: 8761
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-microservice
+spec:
+  selector:
+    app: eureka-microservice
+  ports:
+    - port: 8761
+      targetPort: 8761
+      nodePort: 8761
+  type: LoadBalancer

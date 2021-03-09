@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pg-admin
+  template:
+    metadata:
+      labels:
+        app: pg-admin
+    spec:
+      containers:
+        - name: pg-admin
+          image: dpage/pgadmin4:latest
+          env:
+          - name: PGADMIN_DEFAULT_EMAIL
+            value: "mariobove1996@gmail.com"
+          - name: PGADMIN_DEFAULT_PASSWORD
+            value: "admin"
+          - name: PGADMIN_LISTEN_PORT
+            value: "50"
+          ports:
+            - containerPort: 50
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pg-admin
+spec:
+  selector:
+    app: pg-admin
+  ports:
+    - port: 5050
+      targetPort: 50
+      nodePort: 5050
+  type: LoadBalancer
