@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zuul
+spec:
+  selector:
+    app: zuul
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 8080
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zuul
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zuul
+  template:
+    metadata:
+      labels:
+        app: zuul
+    spec:
+      containers:
+        - name: zuul
+          image: taas2021/zuul-microservice-kube:latest
+          envFrom:
+            - configMapRef:
+                name: zuul-config
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zuul-config
+data:
+     SPRING_APPLICATION_NAME: zuul-service

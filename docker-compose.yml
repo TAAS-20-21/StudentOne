@@ -3,7 +3,7 @@ services:
     authenticationDb:
         image: postgres:latest
         container_name: authenticationDb
-        hostname: authenticationDb
+        #hostname: authenticationDb
         restart: always
         environment:
             POSTGRES_DB: Authenticate
@@ -18,7 +18,7 @@ services:
     chatDb:
         image: postgres:latest
         container_name: chatDb
-        hostname: chatDb
+        #hostname: chatDb
         restart: always
         environment:
             POSTGRES_DB: Chat
@@ -33,7 +33,7 @@ services:
     courseDb:
         image: postgres:latest
         container_name: courseDb
-        hostname: courseDb
+        #hostname: courseDb
         restart: always
         environment:
             POSTGRES_DB: Courses
@@ -48,7 +48,7 @@ services:
     calendarDb:
         image: postgres:latest
         container_name: calendarDb
-        hostname: calendarDb
+        #hostname: calendarDb
         restart: always
         environment:
             POSTGRES_DB: Calendar
@@ -88,9 +88,9 @@ services:
             - 15672:15672
        
     eureka:
-        image: 'eurekaserver-0.0.1-snapshot.jar:latest'
+        image: taas2021/eureka-microservice
         container_name: Eureka
-        hostname: eurekahostname
+        #hostname: eureka#hostname
         build:
             context: ./microservizi/EurekaServer
         ports:
@@ -109,7 +109,7 @@ services:
     authentication:
         image: 'authenticationms-0.0.1-snapshot.jar:latest'
         container_name: AuthenticationMS
-        hostname: authenticateservice
+        #hostname: authenticateservice
         environment:
              - DB_SERVER=authenticationDb:5432
              - POSTGRES_PASSWORD=pie
@@ -126,7 +126,7 @@ services:
     course:
         image: 'coursesms-0.0.1-snapshot.jar:latest'
         container_name: CourseMS
-        hostname: courseservice
+        #hostname: courseservice
         environment:
              - DB_SERVER=courseDb:5432
              - POSTGRES_PASSWORD=pie
@@ -145,7 +145,7 @@ services:
     chat:
         image: 'chatms-0.0.1-snapshot.jar:latest'
         container_name: ChatMS
-        hostname: chatservice
+        #hostname: chatservice
         environment:
              - DB_SERVER=chatDb:5432
              - POSTGRES_PASSWORD=pie
@@ -164,7 +164,7 @@ services:
     calendar:
         image: 'calendarms-0.0.1-snapshot.jar:latest'
         container_name: CalendarMS
-        hostname: calendarservice
+        #hostname: calendarservice
         environment:
              - DB_SERVER=calendarDb:5432
              - POSTGRES_PASSWORD=pie

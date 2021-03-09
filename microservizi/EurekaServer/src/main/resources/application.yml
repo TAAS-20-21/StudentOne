@@ -8,7 +8,7 @@ eureka:
   #server:
   #  waitTimeInMsWhenSyncEmpty: 5
   service-url:
-    zone1: http://eurekahostname:8761/eureka/
+    zone1: http://127.0.0.1:8761/eureka/
     region: region1
     availability-zones:
       region1: zone1

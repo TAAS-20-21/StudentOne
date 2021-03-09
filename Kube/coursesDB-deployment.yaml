@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: courses-db      #DNS name
+  labels:
+    app: courses-db
+    tier: database
+spec:
+  ports:
+    - port: 5434
+      targetPort: 5432
+  selector:       # mysql Pod Should contain same labels
+    app: courses-db
+    tier: database
+---
+#  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant
+
+# Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: courses-db-pv-claim # name of PVC essential for identifying the storage data
+  labels:
+    app: courses-db
+    tier: database
+spec:
+  accessModes:
+    - ReadWriteOnce   #This specifies the mode of the claim that we are trying to create.
+  resources:
+    requests:
+      storage: 256Mi    #This will tell kubernetes about the amount of space we are trying to claim.
+---
+# Configure 'Deployment' of mysql server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: courses-db
+  labels:
+    app: courses-db
+    tier: database
+spec:
+  selector: # mysql Pod Should contain same labels
+    matchLabels:
+      app: courses-db
+      tier: database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: # Must match 'Service' and 'Deployment' selectors
+        app: courses-db
+        tier: database
+    spec:
+      containers:
+        - image: postgres:latest # image from docker-hub
+          name: postgres
+          envFrom:
+            - configMapRef:
+                name: courses-db-config
+          ports:
+            - containerPort: 5434
+              name: courses-db
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: courses-db
+      volumes:
+        - name: courses-db # Obtaining 'volume' from PVC
+          persistentVolumeClaim:
+            claimName: courses-db-pv-claim
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: courses-db-config
+data:
+    POSTGRES_DB: Courses
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: pie
+    PGDATA: /var/lib/postgresql/data

@@ -3,10 +3,6 @@ kind: Deployment
 metadata:
   name: eureka-microservice
 spec:
-  hostAliases:
-  - ip: "127.0.0.1"
-    hostnames:
-    - "eurekahostanme"
   replicas: 1
   selector:
     matchLabels:
@@ -18,7 +14,7 @@ spec:
     spec:
       containers:
         - name: eureka-microservice
-          image: taas2021/eureka-microservice:latest
+          image: taas2021/eureka-microservice-kube:latest
           ports:
             - containerPort: 8761
           imagePullPolicy: Always

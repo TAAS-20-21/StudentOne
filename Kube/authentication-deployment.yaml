@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: authentication
-          image: taas2021/authentication-microservice:latest
+          image: taas2021/authentication-microservice-kube:latest
           envFrom:
             - configMapRef:
                 name: authentication-config
