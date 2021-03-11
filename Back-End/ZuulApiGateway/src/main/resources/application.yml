@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /StudentOne
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eurekahostname:8761/eureka/
+
+
+  eureka:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+zuul:
+  sensitive-headers:
+
+spring:
+  application:
+    name: zuulservice
+
+ribbon:
+  ReadTimeout: 100000
+  ConnectTimeout: 100000
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+
+

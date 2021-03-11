@@ -91,16 +91,16 @@ services:
         image: taas2021/eureka-microservice
         container_name: Eureka
         hostname: eurekahostname
-        build:
-            context: ./microservizi/EurekaServer
+        #build:
+        #    context: ./Back-end/EurekaServer
         ports:
             - "8761:8761"
     
     zuul:
         image: taas2021/zuul-microservice
         container_name: Zuul
-        build:
-            context: ./microservizi/ZuulApiGateway
+        #build:
+        #    context: ./Back-end/ZuulApiGateway
         ports:
             - 8080:8080
         environment:
@@ -116,8 +116,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Authenticate
              - SPRING_RABBITMQ_HOST=rabbitmq
-        build:
-          context: ./microservizi/AuthenticationMS
+        #build:
+        #  context: ./Back-end/AuthenticationMS
         ports:
             - "8081:8081"
         depends_on:
@@ -133,8 +133,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Courses
              - SPRING_RABBITMQ_HOST=rabbitmq
-        build:
-          context: ./microservizi/CoursesMS
+        #build:
+        #  context: ./Back-end/CoursesMS
         ports:
             - "8084:8084"
         depends_on:
@@ -152,8 +152,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Chat
              - SPRING_RABBITMQ_HOST=rabbitmq
-        build:
-          context: ./microservizi/ChatMS
+        #build:
+        #  context: ./Back-end/ChatMS
         ports:
             - "8083:8083"
         depends_on:
@@ -171,8 +171,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Calendar
              - SPRING_RABBITMQ_HOST=rabbitmq
-        build:
-          context: ./microservizi/CalendarMS
+        #build:
+        #  context: ./Back-end/CalendarMS
         ports:
             - "8082:8082"
         depends_on:

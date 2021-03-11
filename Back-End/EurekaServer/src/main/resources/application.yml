@@ -1,0 +1,26 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  #server:
+  #  waitTimeInMsWhenSyncEmpty: 5
+  service-url:
+    zone1: http://eurekahostname:8761/eureka/
+    region: region1
+    availability-zones:
+      region1: zone1
+    instance:
+      hostname: service-registry
+      metadata-map:
+        zone: zone1
+
+
+logging:
+  level:
+    com.netflix: DEBUG
+    org.springframework.web: DEBUG
+    com.gruppo13: DEBUG
+

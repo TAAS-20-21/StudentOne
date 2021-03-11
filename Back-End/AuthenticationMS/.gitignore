@@ -1,0 +1,7 @@
+/*/target/
+/*/bin/
+/*/.settings/
+/*/.idea/
+.project
+.settings
+.sts4-cache
