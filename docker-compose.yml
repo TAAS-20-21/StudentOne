@@ -92,7 +92,7 @@ services:
         container_name: Eureka
         hostname: eurekahostname
         #build:
-        #    context: ./Back-end/EurekaServer
+        #    context: ./Back-End/EurekaServer
         ports:
             - "8761:8761"
     
@@ -100,7 +100,7 @@ services:
         image: taas2021/zuul-microservice
         container_name: Zuul
         #build:
-        #    context: ./Back-end/ZuulApiGateway
+        #    context: ./Back-End/ZuulApiGateway
         ports:
             - 8080:8080
         environment:
@@ -117,7 +117,7 @@ services:
              - POSTGRES_DB=Authenticate
              - SPRING_RABBITMQ_HOST=rabbitmq
         #build:
-        #  context: ./Back-end/AuthenticationMS
+        #  context: ./Back-End/AuthenticationMS
         ports:
             - "8081:8081"
         depends_on:
@@ -134,7 +134,7 @@ services:
              - POSTGRES_DB=Courses
              - SPRING_RABBITMQ_HOST=rabbitmq
         #build:
-        #  context: ./Back-end/CoursesMS
+        #  context: ./Back-End/CoursesMS
         ports:
             - "8084:8084"
         depends_on:
@@ -153,7 +153,7 @@ services:
              - POSTGRES_DB=Chat
              - SPRING_RABBITMQ_HOST=rabbitmq
         #build:
-        #  context: ./Back-end/ChatMS
+        #  context: ./Back-End/ChatMS
         ports:
             - "8083:8083"
         depends_on:
@@ -172,7 +172,7 @@ services:
              - POSTGRES_DB=Calendar
              - SPRING_RABBITMQ_HOST=rabbitmq
         #build:
-        #  context: ./Back-end/CalendarMS
+        #  context: ./Back-End/CalendarMS
         ports:
             - "8082:8082"
         depends_on:
