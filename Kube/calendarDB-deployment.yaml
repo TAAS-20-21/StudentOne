@@ -13,6 +13,16 @@ spec:
     app: calendar-db
     tier: database
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calendar-db-config
+data:
+    POSTGRES_DB: Calendar
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: pie
+    PGDATA: /var/lib/postgresql/data
+---
 #  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant
 
 # Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
@@ -67,13 +77,3 @@ spec:
         - name: calendar-db # Obtaining 'volume' from PVC
           persistentVolumeClaim:
             claimName: calendar-db-pv-claim
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: calendar-db-config
-data:
-    POSTGRES_DB: Courses
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: pie
-    PGDATA: /var/lib/postgresql/data

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: calendar
+spec:
+  selector:
+    app: calendar
+  ports:
+    - port: 8082
+      targetPort: 8082
+      nodePort: 8082
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calendar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calendar
+  template:
+    metadata:
+      labels:
+        app: calendar
+    spec:
+      containers:
+        - name: calendar
+          image: taas2021/calendar-microservice-kube:latest
+          envFrom:
+            - configMapRef:
+                name: calendar-config
+          ports:
+            - containerPort: 8082
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calendar-config
+data:
+     DB_SERVER: calendar-db:5435
+     POSTGRES_PASSWORD: pie
+     POSTGRES_USER: postgres
+     POSTGRES_DB: Calendar
+     SPRING_RABBITMQ_HOST: rabbitmq
