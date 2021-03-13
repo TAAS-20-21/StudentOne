@@ -3,15 +3,20 @@ server:
   servlet:
     context-path: /StudentOne
 eureka:
-  instance:
-    preferIpAddress: true
   client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://127.0.0.1:8761/eureka/
+    register-with-eureka: true
+    service-url:
+      zone1: http://eureka-microservice:8761/eureka/
       #defaultZone: http://eurekahostname:8761/eureka/
-
+    prefer-same-zone-eureka: true
+    region: region1
+    availability-zones:
+      region1: zone1
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      zone: zone1
+    hostname: zuul
 
   eureka:
     enabled: true
