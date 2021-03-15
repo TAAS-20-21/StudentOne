@@ -1,8 +1,13 @@
   body {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     background: #ededed;
+
   }
   
+  .contt{
+    padding-left: 20%;
+    width: 100%;
+  }
 
   h2 {
     margin-top: 60px;
@@ -16,8 +21,8 @@
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   }
   
-  $contW: 1100px;
-  $imgW: 260px;
+  $contW: 100%;
+  $imgW: 20%;
   $formW: $contW - $imgW;
   $switchAT: 1.2s;
   
@@ -76,6 +81,16 @@
     margin-top: 20px;
 }
 
+.title{
+  display: block;
+  font-size: 1.5em;
+  margin:auto;
+  text-align: center;
+  font-weight: bold;
+  padding: 2%;
+  width: auto;
+}
+
 .center {
   display: block;
   margin-left: auto;
@@ -90,9 +105,11 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: $imgW;
+    width: 15%;
     height: 100%;
     padding-top: 360px;
+    min-width: 100px !important; 
+    max-width: 20%;
   
     &:before {
       content: '';
