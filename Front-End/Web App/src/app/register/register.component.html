@@ -8,57 +8,61 @@
             </div>
             <div class="img__btn" onclick="location='http://localhost:4200/login'"><span>Accedi</span></div>
         </div>
-        <h2>È tempo di sentirsi a casa</h2>
-        <div class="form-group">
-            <label for="displayName"><span>Display Name</span></label> <input type="text" class="form-control" name="displayName" [(ngModel)]="form.displayName" required minlength="3"
-                maxlength="20" #displayName="ngModel" />
-            <div class="alert alert-danger" *ngIf="f.submitted && displayName.invalid">
-                <div class="alert alert-danger" role="alert" *ngIf="displayName.errors.required">*Il campo è obbligatorio!</div>
-                <div *ngIf="displayName.errors.minlength">*Il displayname deve essere almeno di 3 caratteri</div>
-                <div *ngIf="displayName.errors.maxlength">*Il displayname deve essere al massimo di 20 caratteri</div>
+        <div class="contt">
+            <div class="title">
+                È tempo di sentirsi a casa
             </div>
-        </div>
-        <div class="form-group">
-            <label for="name"><span>Nome</span></label> <input type="text" class="form-control" name="name" [(ngModel)]="form.name" #name="ngModel" />
-            <div class="alert alert-danger" *ngIf="f.submitted && name.invalid">
-                <div class="alert alert-danger" role="alert" *ngIf="name.errors.required">*Il campo è obbligatorio!</div>
+            <div class="form-group">
+                <label for="displayName"><span>Display Name</span></label> <input type="text" class="form-control" name="displayName" [(ngModel)]="form.displayName" required minlength="3"
+                    maxlength="20" #displayName="ngModel" />
+                <div class="alert alert-danger" *ngIf="f.submitted && displayName.invalid">
+                    <div class="alert alert-danger" role="alert" *ngIf="displayName.errors.required">*Il campo è obbligatorio!</div>
+                    <div *ngIf="displayName.errors.minlength">*Il displayname deve essere almeno di 3 caratteri</div>
+                    <div *ngIf="displayName.errors.maxlength">*Il displayname deve essere al massimo di 20 caratteri</div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="surname"><span>Cognome</span></label> <input type="text" class="form-control" name="surname" [(ngModel)]="form.surname" #surname="ngModel" />
-            <div class="alert alert-danger" *ngIf="f.submitted && surname.invalid">
-                <div class="alert alert-danger" role="alert" *ngIf="surname.errors.required">*Il campo è obbligatorio!</div>
+            <div class="form-group">
+                <label for="name"><span>Nome</span></label> <input type="text" class="form-control" name="name" required [(ngModel)]="form.name" #name="ngModel" />
+                <div class="alert alert-danger" *ngIf="f.submitted && name.invalid">
+                    <div class="alert alert-danger" role="alert" *ngIf="name.errors.required">*Il campo è obbligatorio!</div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="email"><span>Email</span></label> <input type="email" class="form-control" name="email" [(ngModel)]="form.email" required email #email="ngModel" />
-            <div class="alert alert-danger" role="alert" *ngIf="f.submitted && email.invalid">
-                <div *ngIf="email.errors.required">*Il campo è obbligatorio!</div>
-                <div *ngIf="email.errors.email">*Deve essere una mail valida</div>
+            <div class="form-group">
+                <label for="surname"><span>Cognome</span></label> <input type="text" class="form-control" name="surname" required [(ngModel)]="form.surname" #surname="ngModel" />
+                <div class="alert alert-danger" *ngIf="f.submitted && surname.invalid">
+                    <div class="alert alert-danger" role="alert" *ngIf="surname.errors.required">*Il campo è obbligatorio!</div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="password"><span>Password</span></label> <input type="password" class="form-control" name="password" [(ngModel)]="form.password" required minlength="6"
-                #password="ngModel" />
-            <div class="alert alert-danger" role="alert" *ngIf="f.submitted && password.invalid">
-                <div *ngIf="password.errors.required">*Il campo è obbligatorio!</div>
-                <div *ngIf="password.errors.minlength">*La password deve essere almeno di 6 caratteri</div>
+            <div class="form-group">
+                <label for="email"><span>Email</span></label> <input type="email" class="form-control" name="email" [(ngModel)]="form.email" required email #email="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && email.invalid">
+                    <div *ngIf="email.errors.required">*Il campo è obbligatorio!</div>
+                    <div *ngIf="email.errors.email">*Deve essere una mail valida</div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="matchingPassword"><span>Conferma la password</span></label> <input type="password" class="form-control" name="matchingPassword" [(ngModel)]="form.matchingPassword"
-                required minlength="6" #matchingPassword="ngModel" />
-            <div class="alert alert-danger" role="alert" *ngIf="f.submitted && matchingPassword.invalid">
-                <div *ngIf="matchingPassword.errors.required">*Il campo è obbligatorio!</div>
-                <div *ngIf="matchingPassword.errors.minlength">*La password di conferma deve essere almeno di 6 caratteri</div>
+            <div class="form-group">
+                <label for="password"><span>Password</span></label> <input type="password" class="form-control" name="password" [(ngModel)]="form.password" required minlength="6"
+                    #password="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && password.invalid">
+                    <div *ngIf="password.errors.required">*Il campo è obbligatorio!</div>
+                    <div *ngIf="password.errors.minlength">*La password deve essere almeno di 6 caratteri</div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary btn-block">Iscriviti</button>
-        </div>
-        <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
-            Registrazione fallita!<br />{{ errorMessage }}
-        </div>
-        <div class="alert alert-success" *ngIf="isSuccessful">Registrazione completata!</div>
+            <div class="form-group">
+                <label for="matchingPassword"><span>Conferma la password</span></label> <input type="password" class="form-control" name="matchingPassword" [(ngModel)]="form.matchingPassword"
+                    required minlength="6" #matchingPassword="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && matchingPassword.invalid">
+                    <div *ngIf="matchingPassword.errors.required">*Il campo è obbligatorio!</div>
+                    <div *ngIf="matchingPassword.errors.minlength">*La password di conferma deve essere almeno di 6 caratteri</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-block">Iscriviti</button>
+            </div>
+            <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
+                Registrazione fallita!<br />{{ errorMessage }}
+            </div>
+            <div class="alert alert-success" *ngIf="isSuccessful">Registrazione completata!</div>
+        </div>    
     </form>
 </div>

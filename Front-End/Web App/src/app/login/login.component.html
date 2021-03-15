@@ -1,6 +1,5 @@
 <div class="cont">
     <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
-        <img src="/assets/img/logoBG.png" style="vertical-align:middle" class="center" alt="StudentOne">
         <div class="img">
             <div class="img__text m--up">
                 <h2>Sei nuovo qui?</h2>
@@ -8,28 +7,33 @@
             </div>
             <div class="img__btn" onclick="location='http://localhost:4200/register'"><span>Iscriviti</span></div>
         </div>
-        <h2>Bentornato su StudentOne!</h2>
-        <div class="form-group">
-            <label for="username"><span>Email</span></label> 
-            <input type="text" class="form-control" name="username" [(ngModel)]="form.username" required #username="ngModel" />
-            <div class="alert alert-danger" role="alert" *ngIf="f.submitted && username.invalid">*Il campo è obbligatorio!</div>
-        </div>
-        <div class="form-group">
-            <label for="password"><span>Password</span></label> 
-            <input type="password" class="form-control" name="password" [(ngModel)]="form.password" required minlength="6"
-                #password="ngModel" />
-            <div class="alert alert-danger" role="alert" *ngIf="f.submitted && password.invalid">
-                <div *ngIf="password.errors.required">*Il campo è obbligatorio</div>
-                <div *ngIf="password.errors.minlength">*La password deve essere almeno di 6 caratteri!</div>
+        <div class="contt">
+            <img src="/assets/img/logoBG.png" style="vertical-align:middle" class="center" width="auto" height="auto" alt="StudentOne">
+            <div class="title">
+                Bentornato su StudentOne!
             </div>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary btn-block"><span>Accedi</span></button>
-            <a href="{{ googleURL }}" class="ml-2"><button type="button" class="fb-btn">Accedi con <span>Google</span></button></a>
-        </div>
-        <div class="form-group">
-            <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">Login fallito: {{ errorMessage }}</div>
-        </div>
+            <div class="form-group">
+                <label for="username"><span>Email</span></label> 
+                <input type="text" class="form-control" name="username" [(ngModel)]="form.username" required #username="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && username.invalid">*Il campo è obbligatorio!</div>
+            </div>
+            <div class="form-group">
+                <label for="password"><span>Password</span></label> 
+                <input type="password" class="form-control" name="password" [(ngModel)]="form.password" required minlength="6"
+                    #password="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && password.invalid">
+                    <div *ngIf="password.errors.required">*Il campo è obbligatorio</div>
+                    <div *ngIf="password.errors.minlength">*La password deve essere almeno di 6 caratteri!</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-block"><span>Accedi</span></button>
+                <a href="{{ googleURL }}" class="ml-2"><button type="button" class="fb-btn">Accedi con <span>Google</span></button></a>
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">Login fallito: {{ errorMessage }}</div>
+            </div>
+        </div>   
     </form>
     <div class="alert alert-success" *ngIf="isLoggedIn">Benvenuto {{currentUser.name}} <br>Sei entrato come {{ currentUser.roles }}.</div>
 </div>
