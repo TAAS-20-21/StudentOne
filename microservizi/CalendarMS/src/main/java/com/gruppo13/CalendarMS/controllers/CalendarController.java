@@ -207,29 +207,31 @@ public class CalendarController {
                     newEvent.setStartTime(obj.getStartDate());
 
                 try {
-                    Calendar service = new CalendarFromTokenCreator().getService(token);
-                    Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
-                    service.events().delete("primary", _event.getId()).execute();
+                    if(user.getUser().getProvider().equals("google")) {
+                        Calendar service = new CalendarFromTokenCreator().getService(token);
+                        Event _event = service.events().get("primary", newEvent.getGoogleId()).execute();
+                        service.events().delete("primary", _event.getId()).execute();
 
 
-                    String id = new String("studentone");
-                    String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
-                    id += number;
-                    newEvent.setGoogleId(id);
-                    Event temp = new Event()
-                            .setId(id)
-                            .setSummary(newEvent.getTitle())
-                            .setLocation("")
-                            .setDescription("");
-                    ;
-                    EventDateTime start = new EventDateTime()
-                            .setDateTime(new DateTime(newEvent.getStartTime()));
-                    EventDateTime end = new EventDateTime()
-                            .setDateTime(new DateTime(newEvent.getEndTime()));
-                    temp.setStart(start);
-                    temp.setEnd(end);
+                        String id = new String("studentone");
+                        String number = Integer.toString(Math.abs(MIN + (int) (Math.random() * ((MAX - MIN) + 1))));
+                        id += number;
+                        newEvent.setGoogleId(id);
+                        Event temp = new Event()
+                                .setId(id)
+                                .setSummary(newEvent.getTitle())
+                                .setLocation("")
+                                .setDescription("");
+                        ;
+                        EventDateTime start = new EventDateTime()
+                                .setDateTime(new DateTime(newEvent.getStartTime()));
+                        EventDateTime end = new EventDateTime()
+                                .setDateTime(new DateTime(newEvent.getEndTime()));
+                        temp.setStart(start);
+                        temp.setEnd(end);
 
-                    Event updatedEvent = service.events().insert("primary", temp).execute();
+                        Event updatedEvent = service.events().insert("primary", temp).execute();
+                    }
                     eventRepo.saveAndFlush(newEvent);
                 } catch (Exception e) {
                     e.printStackTrace();
