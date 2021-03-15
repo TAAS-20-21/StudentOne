@@ -306,6 +306,7 @@ export class OurCalendarComponent {
 			oldStartDate: changeInfo.oldEvent.start,
 			oldEndDate: changeInfo.oldEvent.end
 		}
+		console.log("Data da cambiare: ", _dataToUpload);
 		this.calendarService.changeTime(_dataToUpload)
 			.subscribe(
 				response => {
@@ -507,7 +508,6 @@ export class OurCalendarComponent {
 		const calendarApi = this.fullcalendar.getApi();
 		for (let entry of data) {
 			if(entry.daysOfWeek == null){
-				console.log("ricorrente");
 				calendarApi.addEvent({
 					id: entry.angularId,
 					title: entry.title,
