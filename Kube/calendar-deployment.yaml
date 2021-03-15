@@ -1,47 +1,47 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: authentication
+  name: calendar
 spec:
   selector:
-    app: authentication
+    app: calendar
   ports:
-    - port: 8081
-      targetPort: 8081
-      nodePort: 8081
+    - port: 8082
+      targetPort: 8082
+      nodePort: 8082
   type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authentication
+  name: calendar
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authentication
+      app: calendar
   template:
     metadata:
       labels:
-        app: authentication
+        app: calendar
     spec:
       containers:
-        - name: authentication
-          image: taas2021/authentication-microservice-kube:latest
+        - name: calendar
+          image: taas2021/calendar-microservice-kube:latest
           envFrom:
             - configMapRef:
-                name: authentication-config
+                name: calendar-config
           ports:
-            - containerPort: 8081
+            - containerPort: 8082
           imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: authentication-config
+  name: calendar-config
 data:
-     DB_SERVER: authenticate-db
+     DB_SERVER: calendar-db:5435
      POSTGRES_PASSWORD: pie
      POSTGRES_USER: postgres
-     POSTGRES_DB: Authenticate
+     POSTGRES_DB: Calendar
      SPRING_RABBITMQ_HOST: rabbitmq

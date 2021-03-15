@@ -3,19 +3,17 @@ server:
 
 eureka:
   client:
-    registerWithEureka: false
-    fetchRegistry: false
-  #server:
-  #  waitTimeInMsWhenSyncEmpty: 5
-  service-url:
-    zone1: http://127.0.0.1:8761/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      zone1: http://eureka-microservice:8761/eureka/
     region: region1
     availability-zones:
       region1: zone1
-    instance:
-      hostname: service-registry
-      metadata-map:
-        zone: zone1
+  instance:
+    hostname: eureka-microservice
+    metadata-map:
+      zone: zone1
 
 
 logging:
