@@ -508,7 +508,6 @@ export class OurCalendarComponent {
 		const calendarApi = this.fullcalendar.getApi();
 		for (let entry of data) {
 			if(entry.daysOfWeek == null){
-				console.log("ricorrente");
 				calendarApi.addEvent({
 					id: entry.angularId,
 					title: entry.title,
