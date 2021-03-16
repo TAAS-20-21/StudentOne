@@ -7,8 +7,8 @@
             </div>
             <div class="img__btn" onclick="location='http://localhost:4200/register'"><span>Iscriviti</span></div>
         </div>
-        <div class="contt">
-            <img src="/assets/img/logoBG.png" style="vertical-align:middle" class="center" width="auto" height="auto" alt="StudentOne">
+        <img src="/assets/img/logoBG.png" style="vertical-align:middle" class="center" alt="StudentOne">
+        <div class="window">
             <div class="title">
                 Bentornato su StudentOne!
             </div>
@@ -33,7 +33,7 @@
             <div class="form-group">
                 <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">Login fallito: {{ errorMessage }}</div>
             </div>
-        </div>   
+        </div>
     </form>
     <div class="alert alert-success" *ngIf="isLoggedIn">Benvenuto {{currentUser.name}} <br>Sei entrato come {{ currentUser.roles }}.</div>
 </div>
