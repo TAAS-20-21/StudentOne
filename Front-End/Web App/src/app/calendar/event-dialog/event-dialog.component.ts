@@ -78,7 +78,6 @@ export class EventDialogComponent implements OnInit {
 					id:this.loggedUser.id
 			}
 			if(this.isProfessor == false){
-				console.log("Studente", this.loggedUser);
 				this.calendarService.getWorkingGroupsById(_dataToUpload)
 				.subscribe(
 					response => {
@@ -88,8 +87,6 @@ export class EventDialogComponent implements OnInit {
 						console.log(error)
 				});
 			}else{
-				console.log("Docente", this.loggedUser);
-				//DA MODIFICARE!!!! ORA È UNA CHIAMATA A STUDENTE, NON A DOCENTE
 				this.calendarService.getCoursesById(_dataToUpload)
 				.subscribe(
 					response => {
@@ -105,10 +102,6 @@ export class EventDialogComponent implements OnInit {
 
     }
 	
-	/*selected(){
-		console.log(this.form.value.dropDown);
-	}*/
-	
 	initializeListDropDown(response){
 		this.listDropDownWG = [];
 		this.listDropDownCourses = [];
@@ -122,7 +115,6 @@ export class EventDialogComponent implements OnInit {
 				this.calendarService.getCourse(_dataToUpload)
 					.subscribe(
 						response => {
-							//console.log("CORSO",response);
 							this.setResponseName(response, this.listDropDown[i]);
 						},
 						error => {
@@ -132,7 +124,6 @@ export class EventDialogComponent implements OnInit {
 				this.calendarService.getWorkingGroup(_dataToUpload)
 					.subscribe(
 						response => {
-							//console.log("WG",response);
 							this.setResponseName(response, this.listDropDown[i]);
 						},
 						error => {
