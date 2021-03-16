@@ -41,15 +41,11 @@ $diffRatio: ($contW - $imgW) / $contW;
   margin-top: 40px;
 }  
 
-.contt{
-  width: 100%;
-}
-
 
 .cont {
   overflow: hidden;
   position: relative;
-  width: $contW;
+  width: 70%;
   height: 100%;
   margin: 0 auto 100px;
   background: #fff;
@@ -101,12 +97,22 @@ button.btn.btn-primary.btn-block {
   margin-top: 20px;
 }
 
+.window{
+  background: #f3f1f14f;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+  margin-top: 1%;
+}
+
+
 .img {
   overflow: hidden;
   z-index: 2;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
+  margin-right:-0.3%;
+  border-radius: 10px;
   width: $imgW;
   height: 100%;
   padding-top: 360px;
@@ -225,12 +231,14 @@ input {
   font-size: 14px;
   text-align: center;
   width: 40%;
+  background: transparent;
+  border-color: transparent;
 }
 
 .alert-danger{
   color:#bd3a3a;
-  background-color:#fff;
-  border-color:#fff;
+  background: transparent;
+  border-color: transparent;
 }
 
 .fb-btn {
