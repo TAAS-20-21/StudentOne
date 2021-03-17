@@ -113,9 +113,11 @@ button.btn.btn-primary.btn-block {
   top: 0;
   margin-right:-0.3%;
   border-radius: 10px;
-  width: $imgW;
+  width: 15%;
   height: 100%;
   padding-top: 360px;
+  min-width: 100px !important; 
+  max-width: 10%;
 
   &:before {
     content: '';
