@@ -9,7 +9,7 @@ spec:
     - port: 8081
       targetPort: 8081
       nodePort: 8081
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
