@@ -2,9 +2,15 @@ package com.gruppo13.ChatMS;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication
-public class ChatMsApplication {
+@SpringBootApplication(scanBasePackages = "com.gruppo13.ChatMS")
+@EnableJpaRepositories
+@EnableTransactionManagement
+public class ChatMsApplication extends SpringBootServletInitializer {
 
 	static final String topicExchangeNameCourse = "{exchange.course-create}";
 	static final String topicExchangeNameUser = "{exchange.user-create}";
@@ -17,7 +23,13 @@ public class ChatMsApplication {
 	static final String queueCourseUserDeleted = "{queue.course-user-delete}";
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChatMsApplication.class, args);
+		SpringApplicationBuilder app = new SpringApplicationBuilder(ChatMsApplication.class);
+		app.run();
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(ChatMsApplication.class);
 	}
 
 	public static String getTopicExchangeNameCourse() {
