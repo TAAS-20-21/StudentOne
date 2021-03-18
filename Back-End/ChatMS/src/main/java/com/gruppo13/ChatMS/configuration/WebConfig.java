@@ -26,59 +26,35 @@ import java.util.List;
 import java.util.Locale;
 
 @Configuration
-@EnableAutoConfiguration
-@EnableScheduling
-public class WebConfig  implements WebMvcConfigurer{
+public class WebConfig implements WebMvcConfigurer {
+
+    private final long MAX_AGE_SECS = 3600;
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // enable cache for static files
-/*        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/")
-                .setCachePeriod(3600 * 24 * 7);*/
-        // serve pre gzip files in static folder
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/")
-                .setCachePeriod(3600 * 24 * 7)
-                .resourceChain(false)
-                .addResolver(new EncodedResourceResolver());
-        registry.addResourceHandler("/index.html")
-                .addResourceLocations("classpath:/static/")
-                .setCachePeriod(0);
-
-        registry
-                .addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-
-        registry
-                .addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-
-    }
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-
-        registry.addViewController("/notFound").setViewName("forward:/index.html");
-        registry.addViewController("/swagger-ui.html#/**").setViewName("forward:/swagger-ui.html");
+    public void addCorsMappings(CorsRegistry registry) {
+        //registry.addMapping("/**").allowedOrigins("*").allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE").allowedHeaders("*").maxAge(MAX_AGE_SECS);
 
     }
 
     @Bean
-    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
-        return container -> {
-            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,
-                    "/notFound"));
-        };
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        final CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+        cookieLocaleResolver.setDefaultLocale(Locale.ITALIAN);
+        return cookieLocaleResolver;
     }
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
-        converters.add(gsonHttpMessageConverter);
+    public Validator getValidator() {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(messageSource());
+        return validator;
     }
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-    }
-
 }

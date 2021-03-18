@@ -88,26 +88,26 @@ services:
             - 15672:15672
        
     eureka:
-        image: taas2021/eureka-microservice
+        image: eurekaserver-0.0.1-snapshot.jar
         container_name: Eureka
         hostname: eurekahostname
-        #build:
-        #    context: ./Back-End/EurekaServer
+        build:
+            context: ./Back-End/EurekaServer
         ports:
             - "8761:8761"
     
     zuul:
-        image: taas2021/zuul-microservice
+        image: zuulapigateway-0.0.1-snapshot.jar
         container_name: Zuul
-        #build:
-        #    context: ./Back-End/ZuulApiGateway
+        build:
+            context: ./Back-End/ZuulApiGateway
         ports:
             - 8080:8080
         environment:
             - SPRING_APPLICATION_NAME=zuul-service
 
     authentication:
-        image: taas2021/authentication-microservice
+        image: authenticationms-0.0.1-snapshot.jar
         container_name: AuthenticationMS
         hostname: authenticateservice
         environment:
@@ -116,15 +116,15 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Authenticate
              - SPRING_RABBITMQ_HOST=rabbitmq
-        #build:
-        #  context: ./Back-End/AuthenticationMS
+        build:
+          context: ./Back-End/AuthenticationMS
         ports:
             - "8081:8081"
         depends_on:
             - authenticationDb
 
     course:
-        image: taas2021/course-microservice
+        image: coursesms-0.0.1-snapshot.jar
         container_name: CourseMS
         hostname: courseservice
         environment:
@@ -133,8 +133,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Courses
              - SPRING_RABBITMQ_HOST=rabbitmq
-        #build:
-        #  context: ./Back-End/CoursesMS
+        build:
+          context: ./Back-End/CoursesMS
         ports:
             - "8084:8084"
         depends_on:
@@ -143,7 +143,7 @@ services:
             - rabbitmq3
 
     chat:
-        image: taas2021/chat-microservice
+        image: chatms-0.0.1-snapshot.jar:latest
         container_name: ChatMS
         hostname: chatservice
         environment:
@@ -152,8 +152,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Chat
              - SPRING_RABBITMQ_HOST=rabbitmq
-        #build:
-        #  context: ./Back-End/ChatMS
+        build:
+          context: ./Back-End/ChatMS
         ports:
             - "8083:8083"
         depends_on:
@@ -162,7 +162,7 @@ services:
             - rabbitmq3
             
     calendar:
-        image: taas2021/calendar-microservice
+        image: calendarms-0.0.1-snapshot.jar
         container_name: CalendarMS
         hostname: calendarservice
         environment:
@@ -171,8 +171,8 @@ services:
              - POSTGRES_USER=postgres
              - POSTGRES_DB=Calendar
              - SPRING_RABBITMQ_HOST=rabbitmq
-        #build:
-        #  context: ./Back-End/CalendarMS
+        build:
+          context: ./Back-End/CalendarMS
         ports:
             - "8082:8082"
         depends_on:

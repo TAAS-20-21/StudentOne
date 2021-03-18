@@ -63,15 +63,11 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseLogin>() {
             @Override
             public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
-                if(response!=null){
-                    String token = response.body().getAccessToken();
-                    com.example.studentoneapp.UserTwo user = response.body().getUser();
-                    SharedPreferences preferences = com.example.studentoneapp.LoginActivity.this.getSharedPreferences("studentone", Context.MODE_PRIVATE);
-                    preferences.edit().putString("token",token).apply();
-
-                    Intent intent = new Intent(context, HomeActivity.class);
+                try{
+                    Intent intent = new Intent(context, HomeActivity.class).putExtra("user", response.body().getUser()).putExtra("access-token", response.body().getAccessToken());
                     startActivity(intent);
-                } else {
+                    finish();
+                } catch(Exception e) {
                     Toast.makeText(com.example.studentoneapp.LoginActivity.this, "Errore nel login!", Toast.LENGTH_LONG).show();
                 }
             }
