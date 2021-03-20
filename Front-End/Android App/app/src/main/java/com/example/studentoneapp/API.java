@@ -12,12 +12,12 @@ import retrofit2.http.POST;
 
 public interface API {
 
-    @POST("authenticationservice/api/auth/signup")
+    @POST("authenticateservice/api/auth/signup")
     Call<ResponseBody> createUser(
             @Body RegisterRequest user
     );
 
-    @POST("authenticationservice/api/auth/signin")
+    @POST("authenticateservice/api/auth/signin")
     Call<ResponseLogin> checkUser(
             @Body LoginRequest user
     );
