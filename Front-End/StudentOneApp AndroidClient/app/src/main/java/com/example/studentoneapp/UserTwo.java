@@ -3,9 +3,10 @@ package com.example.studentoneapp;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserTwo {
+public class UserTwo implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -19,9 +20,9 @@ public class UserTwo {
     @SerializedName("email")
     @Expose
     private String email;
-    @SerializedName("roles")
+    /*@SerializedName("roles")
     @Expose
-    private List<String> roles = null;
+    private List<String> roles = null;*/
 
     public String getId() {
         return id;
@@ -55,11 +56,22 @@ public class UserTwo {
         this.email = email;
     }
 
-    public List<String> getRoles() {
+    /*public List<String> getRoles() {
         return roles;
     }
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }*/
+
+    @Override
+    public String toString() {
+        return "UserTwo{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                //", roles=" + roles +
+                '}';
     }
 }

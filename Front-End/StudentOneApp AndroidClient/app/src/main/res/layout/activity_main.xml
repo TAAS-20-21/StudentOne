@@ -8,42 +8,70 @@
     android:padding="20dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="281dp"
-        android:layout_height="83dp"
-        android:gravity="center"
-        android:text="Student One"
-        android:textColor="#656262"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.112" />
-
     <Button
         android:id="@+id/btnToRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_width="296dp"
+        android:layout_height="56dp"
+        android:background="#000000"
+        android:backgroundTint="#80000000"
         android:text="Registrati"
-        android:textColor="@android:color/background_dark"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:cornerRadius="50dp"
         app:layout_constraintBottom_toTopOf="@+id/btnToLogin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/btnToLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="296dp"
+        android:layout_height="59dp"
+        android:background="#000000"
+        android:backgroundTint="#80000000"
         android:text="Accedi"
-        android:textColor="@android:color/background_dark"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.827" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="341dp"
+        android:layout_height="132dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.571"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06"
+        app:srcCompat="@mipmap/ic_logo_studentapp" />
+
+    <EditText
+        android:id="@+id/editTextSlogan"
+        android:layout_width="343dp"
+        android:layout_height="30dp"
+        android:background="@null"
+        android:clickable="false"
+        android:editable="false"
+        android:focusable="false"
+        android:hint="App per studenti realizzata dagli studenti!"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+
+        android:textColor="#000000"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.544"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.021" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

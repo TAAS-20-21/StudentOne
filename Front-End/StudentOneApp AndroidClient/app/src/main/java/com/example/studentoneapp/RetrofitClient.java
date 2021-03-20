@@ -1,7 +1,7 @@
 package com.example.studentoneapp;
 
-import android.util.Base64;
 
+import android.util.Base64;
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -11,15 +11,17 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 public class RetrofitClient {
     private String AUTH ="";
-    public static  final String BASE_URL = "http://192.168.1.126:8080/StudentOne/";
-    public static final String AUTH_URL = BASE_URL + "authenticationservice/api/";
-    public static  final String COURSE_URL = "http://192.168.1.126:8084/courses/";
+    public static  final String BASE_URL = "http://10.0.2.2:8080/StudentOne/";
+    public static final String AUTH_URL = BASE_URL + "authenticateservice/api/";
+    public static  final String COURSE_URL = "http://10.0.2.2:8080/StudentOne/courseservice/api/";
     private static com.example.studentoneapp.RetrofitClient mInstance;
     private Retrofit retrofit;
 
     private RetrofitClient (String url, final String token) {
+
         if(token!=null){
             AUTH = "Basic " + Base64.encodeToString((token).getBytes(), Base64.NO_WRAP);
             OkHttpClient okHttpClient = new OkHttpClient.Builder()

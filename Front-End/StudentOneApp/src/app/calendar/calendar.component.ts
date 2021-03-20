@@ -298,24 +298,26 @@ export class OurCalendarComponent {
 	
 	//Metodo per effettuare la richiesta a backend per modificare gli orari di un evento.
 	changeTimeEvent(changeInfo, response){
-		const _calendarApi = this.fullcalendar.getApi()
-		const _dataToUpload = {
-			id: response.id,
-			startDate: changeInfo.event.start,
-			endDate: changeInfo.event.end,
-			oldStartDate: changeInfo.oldEvent.start,
-			oldEndDate: changeInfo.oldEvent.end
+		if(!(this.isProfessor == false && response.course != null)){
+			const _calendarApi = this.fullcalendar.getApi()
+			const _dataToUpload = {
+				id: response.id,
+				startDate: changeInfo.event.start,
+				endDate: changeInfo.event.end,
+				oldStartDate: changeInfo.oldEvent.start,
+				oldEndDate: changeInfo.oldEvent.end
+			}
+			console.log("Data da cambiare: ", _dataToUpload);
+			this.calendarService.changeTime(_dataToUpload)
+				.subscribe(
+					response => {
+						this.updateEventsInFrontEnd(response, changeInfo);
+						//changeInfo.event.remove();
+				},
+				error => {
+					console.log(error);
+				});
 		}
-		console.log("Data da cambiare: ", _dataToUpload);
-		this.calendarService.changeTime(_dataToUpload)
-			.subscribe(
-				response => {
-					this.updateEventsInFrontEnd(response, changeInfo);
-					//changeInfo.event.remove();
-			},
-			error => {
-				console.log(error);
-			});
 	}
 
 	//Metodo per la gestione della sincronizzazione tra front-end e DB in caso di rimozione di un evento.
